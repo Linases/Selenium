@@ -9,7 +9,7 @@ namespace Selenium
         ChromeDriver driver = new ChromeDriver();
 
         [Test]
-        public void TestWebsiteLogin()
+        public void SuccessfulLogin()
         {
 
             driver.Navigate().GoToUrl("https://www.saucedemo.com/");
