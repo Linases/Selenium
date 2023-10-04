@@ -3,15 +3,14 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
 namespace Selenium
-{
+{ 
+    [TestFixture]
     public class SeleniumTests
     {
-        ChromeDriver driver = new ChromeDriver();
-
         [Test]
         public void SuccessfulLogin()
         {
-
+            ChromeDriver driver = new ChromeDriver();
             driver.Navigate().GoToUrl("https://www.saucedemo.com/");
             IWebElement elementUserName = driver.FindElement(By.Id("user-name"));
             elementUserName.SendKeys("standard_user");
