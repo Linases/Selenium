@@ -12,6 +12,7 @@ namespace Selenium
     public class SeleniumTests
     {
         private IWebDriver driver;
+
         [OneTimeSetUp]
         public void SetUp()
         {
