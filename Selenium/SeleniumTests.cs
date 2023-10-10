@@ -20,7 +20,7 @@ namespace Selenium
         private IWebDriver _driver;
         private string _mainUrl;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void SetUp()
         {
             _driver = new ChromeDriver();
@@ -28,7 +28,7 @@ namespace Selenium
             _driver.Navigate().GoToUrl(_mainUrl);
         }
 
-        [OneTimeTearDown]
+        [TearDown]
         public void TearDown()
         {
             _driver.Quit();
@@ -37,7 +37,6 @@ namespace Selenium
         [Test, Order(1)]
         public void SuccessfullLoginAndItemOpening()
         {
-            _driver.Navigate().GoToUrl(_mainUrl);
             var elementUserName = _driver.FindElement(By.Id("user-name"));
             elementUserName.SendKeys("standard_user");
             var elementPassword = _driver.FindElement(By.Id("password"));
@@ -47,15 +46,15 @@ namespace Selenium
             elementLoginButton.Click();
 
             var pageUrl = _driver.Url;
-            Assert.That(pageUrl, Is.EqualTo("https://www.saucedemo.com/inventory.html"));
-            string pageTitle = _driver.Title;
+            Assert.That(pageUrl, Is.EqualTo($"{_mainUrl}inventory.html"));
+            var pageTitle = _driver.Title;
             Assert.That(pageTitle, Is.EqualTo("Swag Labs"));
 
             var elementItem = _driver.FindElement(By.Id("item_4_title_link"));
             elementItem.Click();
 
             var itemUrl = _driver.Url;
-            Assert.That(itemUrl, Is.EqualTo("https://www.saucedemo.com/inventory-item.html?id=4"));
+            Assert.That(itemUrl, Is.EqualTo($"{_mainUrl}inventory-item.html?id=4"));
 
             var itemTitle = _driver.FindElement(By.CssSelector("[class*='inventory_details_name']"));
             Assert.That(itemTitle.Text.Contains("Sauce Labs Backpack"));
@@ -70,7 +69,6 @@ namespace Selenium
         [Test, Order(2)]
         public void FailedLoginWithEmptyCredentials()
         {
-            _driver.Navigate().GoToUrl(_mainUrl);
             var elementUserName = _driver.FindElement(By.Id("user-name"));
             Assert.That(elementUserName.GetAttribute("value"), Is.Empty);
             var elementPassword = _driver.FindElement(By.Id("password"));
@@ -83,13 +81,11 @@ namespace Selenium
 
             CheckErrorIcon(elementUserName);
             CheckErrorIcon(elementPassword);
-            
         }
 
         [Test, Order(3)]
         public void FailedLoginWithInvalidCredentials()
         {
-            _driver.Navigate().GoToUrl(_mainUrl);
             var elementUserName = _driver.FindElement(By.Id("user-name"));
             elementUserName.SendKeys("invalid_user");
             var elementPassword = _driver.FindElement(By.Id("password"));
@@ -104,6 +100,7 @@ namespace Selenium
             CheckErrorIcon(elementUserName);
             CheckErrorIcon(elementPassword);
         }
+
         private void CheckErrorIcon (IWebElement webElement)
         {
             var parentElement = webElement.FindElement(By.XPath(".."));
@@ -112,7 +109,3 @@ namespace Selenium
         }
     }
 }
-
-
-
-
