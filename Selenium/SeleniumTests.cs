@@ -76,6 +76,7 @@ namespace Selenium
             var elementLoginButton = _driver.FindElement(By.Id("login-button"));
             elementLoginButton.Click();
             var errorMessage = _driver.FindElement(By.CssSelector("[data-test*='error']"));
+
             Assert.That(errorMessage.Displayed);
             Assert.That(errorMessage.Text.Contains("Username is required"));
 
