@@ -20,15 +20,20 @@ namespace Selenium
         private IWebDriver _driver;
         private string _mainUrl;
 
-        [SetUp]
-        public void SetUp()
+        [OneTimeSetUp]
+        public void OneTimeSetup()
         {
             _driver = new ChromeDriver();
             _mainUrl = "https://www.saucedemo.com/";
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
             _driver.Navigate().GoToUrl(_mainUrl);
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void TearDown()
         {
             _driver.Quit();
@@ -93,7 +98,7 @@ namespace Selenium
             elementPassword.SendKeys("invalid_password");
             var elementLoginButton = _driver.FindElement(By.Id("login-button"));
             elementLoginButton.Click();
-            
+
             var errorMessage = _driver.FindElement(By.CssSelector("[data-test*='error']"));
             Assert.That(errorMessage.Displayed);
             Assert.That(errorMessage.Text.Contains("Username and password do not match"));
@@ -102,7 +107,7 @@ namespace Selenium
             CheckErrorIcon(elementPassword);
         }
 
-        private void CheckErrorIcon (IWebElement webElement)
+        private void CheckErrorIcon(IWebElement webElement)
         {
             var parentElement = webElement.FindElement(By.XPath(".."));
             var errorMarkIcon = parentElement.FindElement(By.CssSelector("[class*='svg-inline--fa']"));
