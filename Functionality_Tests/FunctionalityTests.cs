@@ -29,20 +29,19 @@ namespace Functionality_Tests_Suit
             var elementItemsList = driver.FindElements(By.ClassName("inventory_list"));
             Assert.That(elementItemsList, Is.Ordered.Ascending);
         }
-    
+
         [Test, Order(2)]
         public void RemoveFromCart()
         {
             AddProductToCart();
-            
             var elementShopingCartIcon = driver.FindElement(By.ClassName("shopping_cart_link"));
             elementShopingCartIcon.Click();
             var elementAddedItem = driver.FindElement(By.ClassName("shopping_cart_badge"));
             Assert.That(elementAddedItem.Text.Contains('1'));
             var elementRemoveButton = driver.FindElement(By.XPath("//button[text() = 'Remove']"));
             elementRemoveButton.Click();
-            Assert.That(elementAddedItem.Displayed, Is.False);
-          
+            var elementAddedItem2 = driver.FindElements(By.ClassName("shopping_cart_badge"));
+            Assert.That(elementAddedItem2, Is.Empty);
         }
 
         [Test, Order(3)]
@@ -51,7 +50,7 @@ namespace Functionality_Tests_Suit
             SuccessfulLogin();
             var elementMeniuButton = driver.FindElement(By.Id("react-burger-menu-btn"));
             elementMeniuButton.Click();
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
             wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("logout_sidebar_link"))).Click();
             var pageUrl = driver.Url;
             Assert.That(pageUrl, Is.EqualTo(mainUrl));
