@@ -9,54 +9,52 @@ using System.Threading.Tasks;
 using NUnit.Framework.Internal;
 
 namespace Functionality_Tests_Suit
-{
+{    
     public class BaseTest
     {
-        public IWebDriver driver;
-        protected string mainUrl;
+        protected readonly IWebDriver Driver;
+        protected readonly string MainUrl;
 
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public BaseTest()
         {
-            driver = new ChromeDriver();
-            mainUrl = "https://www.saucedemo.com/";
-           
+            MainUrl = "https://www.saucedemo.com/";
+            Driver = new ChromeDriver();
         }
 
-        [SetUp] public void Setup()
+        [SetUp]
+        public void Setup()
         {
-            driver.Navigate().GoToUrl(mainUrl);
+            Driver.Navigate().GoToUrl(MainUrl);
         }
 
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
-            driver.Quit();
+            Driver.Quit();
         }
 
         public void SuccessfulLogin()
         {
-          
-            var elementUserName = driver.FindElement(By.Id("user-name"));
+            var elementUserName = Driver.FindElement(By.Id("user-name"));
             elementUserName.SendKeys("standard_user");
-            var elementPassword = driver.FindElement(By.Id("password"));
+            var elementPassword = Driver.FindElement(By.Id("password"));
             elementPassword.SendKeys("secret_sauce");
-            var elementLoginButton = driver.FindElement(By.Id("login-button"));
+            var elementLoginButton = Driver.FindElement(By.Id("login-button"));
             elementLoginButton.Click();
-            var pageUrl = driver.Url;
-            Assert.That(pageUrl, Is.EqualTo($"{mainUrl}inventory.html"));
-            var pageTitle = driver.Title;
+            var pageUrl = Driver.Url;
+            Assert.That(pageUrl, Is.EqualTo($"{MainUrl}inventory.html"));
+            var pageTitle = Driver.Title;
             Assert.That(pageTitle, Is.EqualTo("Swag Labs"));
         }
 
         public void AddProductToCart()
         {
             SuccessfulLogin();
-            var elementItem = driver.FindElement(By.Id("item_4_title_link"));
+            var elementItem = Driver.FindElement(By.Id("item_4_title_link"));
             elementItem.Click();
-            var elementAddButton = driver.FindElement(By.XPath("//button[text() = 'Add to cart']"));
+            var elementAddButton = Driver.FindElement(By.XPath("//button[text() = 'Add to cart']"));
             elementAddButton.Click();
-            var elementAddedItem = driver.FindElement(By.ClassName("shopping_cart_badge"));
+            var elementAddedItem = Driver.FindElement(By.ClassName("shopping_cart_badge"));
             Assert.That(elementAddedItem.Text.Contains('1'));
         }
     }
