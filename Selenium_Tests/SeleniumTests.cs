@@ -22,31 +22,31 @@ namespace Selenium
         public void SuccessfullLoginAndItemOpening()
         {
             SuccessfulLogin();
-            var elementItem =Driver.FindElement(By.Id("item_4_title_link"));
+            var elementItem = Driver.FindElement(By.Id("item_4_title_link"));
             elementItem.Click();
-            var itemUrl =Driver.Url;
+            var itemUrl = Driver.Url;
             Assert.That(itemUrl, Is.EqualTo($"{MainUrl}inventory-item.html?id=4"));
 
             var itemTitle = Driver.FindElement(By.CssSelector("[class*='inventory_details_name']"));
             Assert.That(itemTitle.Text.Contains("Sauce Labs Backpack"));
 
-            var itemDescription =Driver.FindElement(By.CssSelector("[class*='inventory_details_desc']"));
+            var itemDescription = Driver.FindElement(By.CssSelector("[class*='inventory_details_desc']"));
             Assert.That(itemDescription.Text.Contains("streamlined Sly Pack"));
 
-            var itemPrice =Driver.FindElement(By.ClassName("inventory_details_price"));
+            var itemPrice = Driver.FindElement(By.ClassName("inventory_details_price"));
             Assert.That(itemPrice.Text.Contains("$29.99"));
         }
 
         [Test, Order(2)]
         public void FailedLoginWithEmptyCredentials()
         {
-            var elementUserName =Driver.FindElement(By.Id("user-name"));
+            var elementUserName = Driver.FindElement(By.Id("user-name"));
             Assert.That(elementUserName.GetAttribute("value"), Is.Empty);
-            var elementPassword =Driver.FindElement(By.Id("password"));
+            var elementPassword = Driver.FindElement(By.Id("password"));
             Assert.That(elementPassword.GetAttribute("value"), Is.Empty);
-            var elementLoginButton =Driver.FindElement(By.Id("login-button"));
+            var elementLoginButton = Driver.FindElement(By.Id("login-button"));
             elementLoginButton.Click();
-            var errorMessage =Driver.FindElement(By.CssSelector("[data-test*='error']"));
+            var errorMessage = Driver.FindElement(By.CssSelector("[data-test*='error']"));
 
             Assert.That(errorMessage.Displayed);
             Assert.That(errorMessage.Text.Contains("Username is required"));
@@ -58,14 +58,14 @@ namespace Selenium
         [Test, Order(3)]
         public void FailedLoginWithInvalidCredentials()
         {
-            var elementUserName =Driver.FindElement(By.Id("user-name"));
+            var elementUserName = Driver.FindElement(By.Id("user-name"));
             elementUserName.SendKeys("invalid_user");
-            var elementPassword =Driver.FindElement(By.Id("password"));
+            var elementPassword = Driver.FindElement(By.Id("password"));
             elementPassword.SendKeys("invalid_password");
-            var elementLoginButton =Driver.FindElement(By.Id("login-button"));
+            var elementLoginButton = Driver.FindElement(By.Id("login-button"));
             elementLoginButton.Click();
 
-            var errorMessage =Driver.FindElement(By.CssSelector("[data-test*='error']"));
+            var errorMessage = Driver.FindElement(By.CssSelector("[data-test*='error']"));
             Assert.That(errorMessage.Displayed);
             Assert.That(errorMessage.Text.Contains("Username and password do not match"));
 
