@@ -18,22 +18,14 @@ namespace Selenium
     [TestFixture]
     public class SeleniumTests: BaseTest
     {
-        //[SetUp]
-        //public void SetUp()
-        //{
-        //   driver.Navigate().GoToUrl(_mainUrl);
-        //}
-    
+          
         [Test, Order(1)]
         public void SuccessfullLoginAndItemOpening()
         {
             SuccessfulLogin();
-            var pageTitle =driver.Title;
-            Assert.That(pageTitle, Is.EqualTo("Swag Labs"));
-
+            
             var elementItem =driver.FindElement(By.Id("item_4_title_link"));
             elementItem.Click();
-
             var itemUrl =driver.Url;
             Assert.That(itemUrl, Is.EqualTo($"{mainUrl}inventory-item.html?id=4"));
 

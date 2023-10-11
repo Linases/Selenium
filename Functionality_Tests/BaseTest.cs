@@ -13,13 +13,19 @@ namespace Functionality_Tests_Suit
     public class BaseTest
     {
         public IWebDriver driver;
-        public string mainUrl;
+        protected string mainUrl;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
             driver = new ChromeDriver();
             mainUrl = "https://www.saucedemo.com/";
+           
+        }
+
+        [SetUp] public void Setup()
+        {
+            driver.Navigate().GoToUrl(mainUrl);
         }
 
         [OneTimeTearDown]
@@ -30,7 +36,7 @@ namespace Functionality_Tests_Suit
 
         public void SuccessfulLogin()
         {
-            driver.Navigate().GoToUrl(mainUrl);
+          
             var elementUserName = driver.FindElement(By.Id("user-name"));
             elementUserName.SendKeys("standard_user");
             var elementPassword = driver.FindElement(By.Id("password"));
@@ -39,6 +45,8 @@ namespace Functionality_Tests_Suit
             elementLoginButton.Click();
             var pageUrl = driver.Url;
             Assert.That(pageUrl, Is.EqualTo($"{mainUrl}inventory.html"));
+            var pageTitle = driver.Title;
+            Assert.That(pageTitle, Is.EqualTo("Swag Labs"));
         }
 
         public void AddProductToCart()
