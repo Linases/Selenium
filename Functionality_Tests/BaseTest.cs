@@ -47,6 +47,7 @@ namespace Functionality_Tests_Suit
             var elementItem = driver.FindElement(By.Id("item_4_title_link"));
             elementItem.Click();
             var elementAddButton = driver.FindElement(By.XPath("//button[text() = 'Add to cart']"));
+
             elementAddButton.Click();
             var elementAddedItem = driver.FindElement(By.ClassName("shopping_cart_badge"));
             Assert.That(elementAddedItem.Text.Contains('1'));
