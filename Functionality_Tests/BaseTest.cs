@@ -13,11 +13,13 @@ namespace Functionality_Tests_Suit
     public class BaseTest
     {
         public IWebDriver driver;
+        public string mainUrl;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
             driver = new ChromeDriver();
+            mainUrl = "https://www.saucedemo.com/";
         }
 
         [OneTimeTearDown]
@@ -28,15 +30,15 @@ namespace Functionality_Tests_Suit
 
         public void SuccessfulLogin()
         {
-            driver.Navigate().GoToUrl("https://www.saucedemo.com/");
+            driver.Navigate().GoToUrl(mainUrl);
             var elementUserName = driver.FindElement(By.Id("user-name"));
             elementUserName.SendKeys("standard_user");
             var elementPassword = driver.FindElement(By.Id("password"));
             elementPassword.SendKeys("secret_sauce");
             var elementLoginButton = driver.FindElement(By.Id("login-button"));
             elementLoginButton.Click();
-            string pageUrl = driver.Url;
-            Assert.That(pageUrl, Is.EqualTo("https://www.saucedemo.com/inventory.html"));
+            var pageUrl = driver.Url;
+            Assert.That(pageUrl, Is.EqualTo($"{mainUrl}inventory.html"));
         }
 
         public void AddProductToCart()
@@ -45,7 +47,6 @@ namespace Functionality_Tests_Suit
             var elementItem = driver.FindElement(By.Id("item_4_title_link"));
             elementItem.Click();
             var elementAddButton = driver.FindElement(By.XPath("//button[text() = 'Add to cart']"));
-
             elementAddButton.Click();
             var elementAddedItem = driver.FindElement(By.ClassName("shopping_cart_badge"));
             Assert.That(elementAddedItem.Text.Contains('1'));

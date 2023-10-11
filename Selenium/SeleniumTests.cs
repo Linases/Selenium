@@ -20,11 +20,13 @@ namespace Selenium
         {
             driver = new ChromeDriver();
         }
+
         [OneTimeTearDown]
         public void TearDown()
         {
             driver.Quit();
         }
+
         [Test, Order(1)]
         public void SuccessfullLoginAndItemOpening()
         {
@@ -57,6 +59,7 @@ namespace Selenium
             var itemPrice = driver.FindElement(By.ClassName("inventory_details_price"));
             Assert.That(itemDescription.Text.Contains("$29.99"));
         }
+
         [Test, Order(2)]
         public void FailedLoginWithEmptyCredentials()
         {
@@ -74,6 +77,7 @@ namespace Selenium
             var errorMarkPassword = driver.FindElement(By.CssSelector("[class*=svg-inline--fa]"));
             Assert.That(errorMarkPassword.Displayed);
         }
+
         [Test, Order(3)]
         public void FailedLoginWithInvalidCredentials()
         {
@@ -96,7 +100,3 @@ namespace Selenium
         }
     }
 }
-
-
-
-

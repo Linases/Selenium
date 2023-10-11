@@ -13,12 +13,9 @@ using OpenQA.Selenium.DevTools.V115.Page;
 namespace Functionality_Tests_Suit
 {
     [TestFixture]
-
     public class FunctionalityTests : BaseTest
     {
-
         [Test, Order(1)]
-
         public void PriceSorting()
         {
             SuccessfulLogin();
@@ -34,19 +31,21 @@ namespace Functionality_Tests_Suit
         }
     
         [Test, Order(2)]
-
         public void RemoveFromCart()
         {
             AddProductToCart();
-            var elementShopingcartIcon = driver.FindElement(By.ClassName("shopping_cart_link"));
-            elementShopingcartIcon.Click();
+            
+            var elementShopingCartIcon = driver.FindElement(By.ClassName("shopping_cart_link"));
+            elementShopingCartIcon.Click();
+            var elementAddedItem = driver.FindElement(By.ClassName("shopping_cart_badge"));
+            Assert.That(elementAddedItem.Text.Contains('1'));
             var elementRemoveButton = driver.FindElement(By.XPath("//button[text() = 'Remove']"));
             elementRemoveButton.Click();
-            var elementShopingcartIcon2 = driver.FindElement(By.ClassName("shopping_cart_link"));
-            Assert.That(elementShopingcartIcon2.Text.Contains('1'), Is.False);
+            Assert.That(elementAddedItem.Displayed, Is.False);
+          
         }
-        [Test, Order(3)]
 
+        [Test, Order(3)]
         public void Logout()
         {
             SuccessfulLogin();
@@ -54,8 +53,8 @@ namespace Functionality_Tests_Suit
             elementMeniuButton.Click();
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
             wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("logout_sidebar_link"))).Click();
-            string pageUrl = driver.Url;
-            Assert.That(pageUrl, Is.EqualTo("https://www.saucedemo.com/"));
+            var pageUrl = driver.Url;
+            Assert.That(pageUrl, Is.EqualTo(mainUrl));
             var elementLoginButton = driver.FindElement(By.Id("login-button"));
             Assert.That(elementLoginButton.Displayed);
         }
