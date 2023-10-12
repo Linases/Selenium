@@ -7,18 +7,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework.Internal;
+using Functionality_Tests_Suit.FactoryPattern;
+
 
 namespace Functionality_Tests_Suit
-{    
+{
     public class BaseTest
     {
-        protected readonly IWebDriver Driver;
+        protected IWebDriver Driver;
         protected readonly string MainUrl;
 
         public BaseTest()
         {
-            MainUrl = "https://www.saucedemo.com/";
-            Driver = new ChromeDriver();
+            MainUrl = "https://www.saucedemo.com";
+        }
+      
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            Driver = BrowserFactory.GetDriver(BrowserFactory.BrowserType.Chrome);
         }
 
         [SetUp]
@@ -26,11 +33,11 @@ namespace Functionality_Tests_Suit
         {
             Driver.Navigate().GoToUrl(MainUrl);
         }
-
+        
         [OneTimeTearDown]
-        public void OneTimeTearDown()
+        public void TearDown()
         {
-            Driver.Quit();
+            BrowserFactory.CloseDriver();
         }
 
         public void SuccessfulLogin()
@@ -42,7 +49,7 @@ namespace Functionality_Tests_Suit
             var elementLoginButton = Driver.FindElement(By.Id("login-button"));
             elementLoginButton.Click();
             var pageUrl = Driver.Url;
-            Assert.That(pageUrl, Is.EqualTo($"{MainUrl}inventory.html"));
+            Assert.That(pageUrl, Is.EqualTo($"{MainUrl}/inventory.html"));
             var pageTitle = Driver.Title;
             Assert.That(pageTitle, Is.EqualTo("Swag Labs"));
         }

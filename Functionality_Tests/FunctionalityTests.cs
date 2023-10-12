@@ -9,6 +9,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using OpenQA.Selenium.DevTools.V115.Page;
+using Functionality_Tests_Suit.FactoryPattern;
 
 namespace Functionality_Tests_Suit
 {

@@ -25,7 +25,7 @@ namespace Selenium
             var elementItem = Driver.FindElement(By.Id("item_4_title_link"));
             elementItem.Click();
             var itemUrl = Driver.Url;
-            Assert.That(itemUrl, Is.EqualTo($"{MainUrl}inventory-item.html?id=4"));
+            Assert.That(itemUrl, Is.EqualTo($"{MainUrl}/inventory-item.html?id=4"));
 
             var itemTitle = Driver.FindElement(By.CssSelector("[class*='inventory_details_name']"));
             Assert.That(itemTitle.Text.Contains("Sauce Labs Backpack"));
