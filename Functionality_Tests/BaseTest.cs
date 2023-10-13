@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework.Internal;
 using Functionality_Tests_Suit.FactoryPattern;
-
+using Functionality_Tests_Suit.Constants;
 
 namespace Functionality_Tests_Suit
 {
@@ -25,7 +25,7 @@ namespace Functionality_Tests_Suit
         [OneTimeSetUp]
         public static void OneTimeSetUp()
         {
-            Driver = BrowserFactory.GetDriver(BrowserFactory.BrowserType.Firefox);
+            Driver = BrowserFactory.GetDriver(BrowserType.Firefox);
         }
 
         [SetUp]

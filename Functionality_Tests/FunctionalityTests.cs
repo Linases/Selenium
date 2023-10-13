@@ -15,7 +15,6 @@ namespace Functionality_Tests_Suit
 {
     [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
     [Parallelizable(scope: ParallelScope.Self)]
-   
     public class FunctionalityTests : BaseTest
     {
         [Test, Order(1)]

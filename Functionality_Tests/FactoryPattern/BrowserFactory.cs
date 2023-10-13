@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Functionality_Tests_Suit.Constants;
 
 namespace Functionality_Tests_Suit.FactoryPattern
 {
@@ -43,12 +44,6 @@ namespace Functionality_Tests_Suit.FactoryPattern
             return _driver;
         }
 
-        public enum BrowserType
-        {
-            Firefox,
-            Chrome
-        }
-         
         public static void CloseDriver()
         {
             if (_driver != null)
