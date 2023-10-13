@@ -13,7 +13,9 @@ using Functionality_Tests_Suit.FactoryPattern;
 
 namespace Functionality_Tests_Suit
 {
-    [TestFixture]
+    [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
+    [Parallelizable(scope: ParallelScope.Self)]
+   
     public class FunctionalityTests : BaseTest
     {
         [Test, Order(1)]
@@ -54,7 +56,7 @@ namespace Functionality_Tests_Suit
             var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20));
             wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("logout_sidebar_link"))).Click();
             var pageUrl = Driver.Url;
-            Assert.That(pageUrl, Is.EqualTo(MainUrl));
+            Assert.That(pageUrl, Is.EqualTo($"{MainUrl}/"));
             var elementLoginButton = Driver.FindElement(By.Id("login-button"));
             Assert.That(elementLoginButton.Displayed);
         }

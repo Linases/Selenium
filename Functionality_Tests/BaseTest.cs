@@ -14,18 +14,18 @@ namespace Functionality_Tests_Suit
 {
     public class BaseTest
     {
-        protected IWebDriver Driver;
+        protected static IWebDriver Driver;
         protected readonly string MainUrl;
 
         public BaseTest()
         {
             MainUrl = "https://www.saucedemo.com";
         }
-      
+
         [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public static void OneTimeSetUp()
         {
-            Driver = BrowserFactory.GetDriver(BrowserFactory.BrowserType.Chrome);
+            Driver = BrowserFactory.GetDriver(BrowserFactory.BrowserType.Firefox);
         }
 
         [SetUp]
@@ -33,9 +33,9 @@ namespace Functionality_Tests_Suit
         {
             Driver.Navigate().GoToUrl(MainUrl);
         }
-        
+
         [OneTimeTearDown]
-        public void TearDown()
+        public static void TearDown()
         {
             BrowserFactory.CloseDriver();
         }
@@ -57,8 +57,7 @@ namespace Functionality_Tests_Suit
         public void AddProductToCart()
         {
             SuccessfulLogin();
-            var elementItem = Driver.FindElement(By.Id("item_4_title_link"));
-            elementItem.Click();
+            var elementItem = Driver.FindElement(By.Id("item_4_title_link")).Click;
             var elementAddButton = Driver.FindElement(By.XPath("//button[text() = 'Add to cart']"));
             elementAddButton.Click();
             var elementAddedItem = Driver.FindElement(By.ClassName("shopping_cart_badge"));

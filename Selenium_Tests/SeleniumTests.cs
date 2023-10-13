@@ -12,18 +12,21 @@ using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
 using System;
 using Functionality_Tests_Suit;
+using SeleniumExtras.WaitHelpers;
 
 namespace Selenium
 {
-    [TestFixture]
-    public class SeleniumTests: BaseTest
+    [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
+    [Parallelizable(scope: ParallelScope.Self)]
+
+    public class SeleniumTests : BaseTest
     {
         [Test, Order(1)]
         public void SuccessfullLoginAndItemOpening()
         {
             SuccessfulLogin();
-            var elementItem = Driver.FindElement(By.Id("item_4_title_link"));
-            elementItem.Click();
+            var elementItemm = Driver.FindElement(By.Id("item_4_title_link"));
+            elementItemm.Click();
             var itemUrl = Driver.Url;
             Assert.That(itemUrl, Is.EqualTo($"{MainUrl}/inventory-item.html?id=4"));
 

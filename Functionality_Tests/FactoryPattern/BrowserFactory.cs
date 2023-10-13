@@ -11,36 +11,36 @@ namespace Functionality_Tests_Suit.FactoryPattern
 {
     public class BrowserFactory
     {
-        private static IWebDriver Driver;
+        private static IWebDriver _driver;
         
         public static IWebDriver GetDriver(BrowserType browserType)
         {
-            if (Driver == null)
+            if (_driver == null)
             {
-                Driver = CreateDriverInstance(browserType);
+                _driver = CreateDriverInstance(browserType);
             }
-            return Driver;
+            return _driver;
         }
 
         private static IWebDriver CreateDriverInstance(BrowserType browserType)
         {
-            IWebDriver Driver = null;
+            IWebDriver _driver = null;
             switch (browserType)
             {
                 case BrowserType.Firefox:
                     {
-                        Driver = new FirefoxDriver();
+                        _driver = new FirefoxDriver();
                         break;
                     }
                 case BrowserType.Chrome:
                     {
-                        Driver = new ChromeDriver();
+                        _driver = new ChromeDriver();
                         break;
                     }
                 default:
                     throw new NotSupportedException($"Browser type '{browserType}' is not supported.");
             }
-            return Driver;
+            return _driver;
         }
 
         public enum BrowserType
@@ -51,10 +51,10 @@ namespace Functionality_Tests_Suit.FactoryPattern
          
         public static void CloseDriver()
         {
-            if (Driver != null)
+            if (_driver != null)
             {
-                Driver.Quit();
-                Driver = null;
+                _driver.Quit();
+                _driver = null;
             }
         }
     }
