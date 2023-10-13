@@ -12,20 +12,23 @@ using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
 using System;
 using Functionality_Tests_Suit;
+using SeleniumExtras.WaitHelpers;
+using OpenQA.Selenium.Interactions;
 
 namespace Selenium
 {
-    [TestFixture]
-    public class SeleniumTests: BaseTest
+    [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
+    [Parallelizable(scope: ParallelScope.Self)]
+    public class SeleniumTests : BaseTest
     {
         [Test, Order(1)]
         public void SuccessfullLoginAndItemOpening()
         {
             SuccessfulLogin();
-            var elementItem = Driver.FindElement(By.Id("item_4_title_link"));
-            elementItem.Click();
+            IWebElement element = Driver.FindElement(By.XPath("//*[@id='item_4_title_link']/div")); Actions act = new Actions(Driver); act.MoveToElement(element).Click().Perform();
+            Thread.Sleep(2000);
             var itemUrl = Driver.Url;
-            Assert.That(itemUrl, Is.EqualTo($"{MainUrl}inventory-item.html?id=4"));
+            Assert.That(itemUrl, Is.EqualTo($"{MainUrl}/inventory-item.html?id=4"));
 
             var itemTitle = Driver.FindElement(By.CssSelector("[class*='inventory_details_name']"));
             Assert.That(itemTitle.Text.Contains("Sauce Labs Backpack"));

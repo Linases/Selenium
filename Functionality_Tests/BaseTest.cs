@@ -7,18 +7,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework.Internal;
+using Functionality_Tests_Suit.FactoryPattern;
+using Functionality_Tests_Suit.Constants;
 
 namespace Functionality_Tests_Suit
-{    
+{
     public class BaseTest
     {
-        protected readonly IWebDriver Driver;
+        protected static IWebDriver Driver;
         protected readonly string MainUrl;
 
         public BaseTest()
         {
-            MainUrl = "https://www.saucedemo.com/";
-            Driver = new ChromeDriver();
+            MainUrl = "https://www.saucedemo.com";
+        }
+
+        [OneTimeSetUp]
+        public static void OneTimeSetUp()
+        {
+            Driver = BrowserFactory.GetDriver(BrowserType.Firefox);
         }
 
         [SetUp]
@@ -28,9 +35,9 @@ namespace Functionality_Tests_Suit
         }
 
         [OneTimeTearDown]
-        public void OneTimeTearDown()
+        public static void TearDown()
         {
-            Driver.Quit();
+            BrowserFactory.CloseDriver();
         }
 
         public void SuccessfulLogin()
@@ -42,7 +49,7 @@ namespace Functionality_Tests_Suit
             var elementLoginButton = Driver.FindElement(By.Id("login-button"));
             elementLoginButton.Click();
             var pageUrl = Driver.Url;
-            Assert.That(pageUrl, Is.EqualTo($"{MainUrl}inventory.html"));
+            Assert.That(pageUrl, Is.EqualTo($"{MainUrl}/inventory.html"));
             var pageTitle = Driver.Title;
             Assert.That(pageTitle, Is.EqualTo("Swag Labs"));
         }
@@ -50,8 +57,7 @@ namespace Functionality_Tests_Suit
         public void AddProductToCart()
         {
             SuccessfulLogin();
-            var elementItem = Driver.FindElement(By.Id("item_4_title_link"));
-            elementItem.Click();
+            var elementItem = Driver.FindElement(By.Id("item_4_title_link")).Click;
             var elementAddButton = Driver.FindElement(By.XPath("//button[text() = 'Add to cart']"));
             elementAddButton.Click();
             var elementAddedItem = Driver.FindElement(By.ClassName("shopping_cart_badge"));
