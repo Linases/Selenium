@@ -18,10 +18,9 @@ namespace Browser_Actions
         [OneTimeSetUp]
         public static void OneTimeSetUp()
         {
-            Driver = BrowserFactory.GetDriver(BrowserType.Chrome);
+            Driver = BrowserFactory.GetDriver(BrowserType.Firefox);
         }
 
-        [SetUp]
         public void Setup()
         {
             Driver.Navigate().GoToUrl(MainUrl);
@@ -32,6 +31,5 @@ namespace Browser_Actions
         {
             BrowserFactory.CloseDriver();
         }
-
     }
 }
