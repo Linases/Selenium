@@ -14,6 +14,7 @@ using System;
 using Functionality_Tests_Suit;
 using SeleniumExtras.WaitHelpers;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.DevTools.V115.FedCm;
 
 namespace Selenium
 {
@@ -24,9 +25,11 @@ namespace Selenium
         [Test, Order(1)]
         public void SuccessfullLoginAndItemOpening()
         {
-            SuccessfulLogin();
-            IWebElement element = Driver.FindElement(By.XPath("//*[@id='item_4_title_link']/div")); Actions act = new Actions(Driver); act.MoveToElement(element).Click().Perform();
-            Thread.Sleep(2000);
+            StandardUserLogin();
+            IWebElement element = Driver.FindElement(By.XPath("//*[@id='item_4_title_link']/div"));
+            Actions act = new Actions(Driver);
+            act.MoveToElement(element).Click().Perform();
+            Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
             var itemUrl = Driver.Url;
             Assert.That(itemUrl, Is.EqualTo($"{MainUrl}/inventory-item.html?id=4"));
 
@@ -61,12 +64,9 @@ namespace Selenium
         [Test, Order(3)]
         public void FailedLoginWithInvalidCredentials()
         {
+            InvalidUserLogin();
             var elementUserName = Driver.FindElement(By.Id("user-name"));
-            elementUserName.SendKeys("invalid_user");
             var elementPassword = Driver.FindElement(By.Id("password"));
-            elementPassword.SendKeys("invalid_password");
-            var elementLoginButton = Driver.FindElement(By.Id("login-button"));
-            elementLoginButton.Click();
 
             var errorMessage = Driver.FindElement(By.CssSelector("[data-test*='error']"));
             Assert.That(errorMessage.Displayed);

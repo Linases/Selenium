@@ -10,6 +10,7 @@ using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using OpenQA.Selenium.DevTools.V115.Page;
 using Functionality_Tests_Suit.FactoryPattern;
+using OpenQA.Selenium.DevTools.V115.FedCm;
 
 namespace Functionality_Tests_Suit
 {
@@ -17,14 +18,23 @@ namespace Functionality_Tests_Suit
     [Parallelizable(scope: ParallelScope.Self)]
     public class FunctionalityTests : BaseTest
     {
-        [Test, Order(1)]
+        private bool needToRemoveFromTheCart;
+        private List<string> itemsToRemove = new List<string>();
+
+        [SetUp]
+        public void SetUp()
+        {
+            StandardUserLogin();
+        }
+
+        [Test]
         public void PriceSorting()
         {
-            SuccessfulLogin();
-            var elementItemSorting = Driver.FindElement(By.TagName("select"));
-            elementItemSorting.Click();
-            var elementPriceSorting = Driver.FindElement(By.CssSelector("[value='lohi']"));
-            elementPriceSorting.Click();
+            var selectElement = Driver.FindElement(By.TagName("select"));
+            selectElement.Click();
+            var select = new SelectElement(selectElement);
+            select.SelectByValue("lohi");
+
             var elementMinPrice = Driver.FindElement(By.CssSelector("[class='inventory_list']:first-child"));
             Assert.That(elementMinPrice.Text.Contains("7.99"));
 
@@ -32,10 +42,22 @@ namespace Functionality_Tests_Suit
             Assert.That(elementItemsList, Is.Ordered.Ascending);
         }
 
-        [Test, Order(2)]
-        public void RemoveFromCart()
+        [Test]
+        public void AddToCart()
         {
             AddProductToCart();
+            needToRemoveFromTheCart = true;
+            itemsToRemove.Add("1");
+        }
+        [Test]
+        public void AddAndRemoveFromCart()
+        {
+            AddProductToCart();
+            RemoveItemFromCart();
+        }
+
+        public void RemoveItemFromCart()
+        {
             var elementShopingCartIcon = Driver.FindElement(By.ClassName("shopping_cart_link"));
             elementShopingCartIcon.Click();
             var elementAddedItem = Driver.FindElement(By.ClassName("shopping_cart_badge"));
@@ -46,10 +68,9 @@ namespace Functionality_Tests_Suit
             Assert.That(elementAddedItem2, Is.Empty);
         }
 
-        [Test, Order(3)]
+        [Test]
         public void Logout()
         {
-            SuccessfulLogin();
             var elementMeniuButton = Driver.FindElement(By.Id("react-burger-menu-btn"));
             elementMeniuButton.Click();
             var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20));
@@ -58,6 +79,20 @@ namespace Functionality_Tests_Suit
             Assert.That(pageUrl, Is.EqualTo($"{MainUrl}/"));
             var elementLoginButton = Driver.FindElement(By.Id("login-button"));
             Assert.That(elementLoginButton.Displayed);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (needToRemoveFromTheCart)
+            {
+                foreach (var item in itemsToRemove)
+                {
+                    RemoveItemFromCart();
+                }
+                itemsToRemove.Clear();
+            }
+            needToRemoveFromTheCart = false;
         }
     }
 }

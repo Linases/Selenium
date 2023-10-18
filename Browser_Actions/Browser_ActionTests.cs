@@ -23,10 +23,9 @@ namespace Browser_Actions
             Setup();
             string originalWindow = Driver.CurrentWindowHandle;
             Assert.AreEqual(Driver.WindowHandles.Count, 1);
-
             var elementMultipleWindows = Driver.FindElement(By.CssSelector("[href*='windows']"));
             elementMultipleWindows.Click();
-            var elementClickHere = Driver.FindElement(By.CssSelector("[href*='windows']"));
+            var elementClickHere = Driver.FindElement(By.XPath("//*[@class='example']//a[1]"));
             elementClickHere.Click();
             var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20));
             wait.Until(wd => wd.WindowHandles.Count == 2);
@@ -53,7 +52,7 @@ namespace Browser_Actions
             elementUsername.SendKeys("tomsmith");
             var elemenPassword = Driver.FindElement(By.Id("password"));
             elemenPassword.SendKeys("SuperSecretPassword!");
-            var elementLoginButton = Driver.FindElement(By.ClassName("radius"));
+            var elementLoginButton = Driver.FindElement(By.XPath("//*[@class='radius']"));
             elementLoginButton.Click();
             var elementLogoutButton = Driver.FindElement(By.CssSelector("[href*='logout']"));
             elementLogoutButton.Click();
@@ -71,11 +70,10 @@ namespace Browser_Actions
             Setup();
             var elementDynamicLoading = Driver.FindElement(By.CssSelector("[href*='dynamic_loading']"));
             elementDynamicLoading.Click();
-            var elementExample = Driver.FindElement(By.CssSelector("[href='/dynamic_loading/1']"));
+            var elementExample = Driver.FindElement(By.XPath("//*[@id='content']//a[1]"));
             elementExample.Click();
             var elementStartButton = Driver.FindElement(By.TagName("button"));
             elementStartButton.Click();
-
             var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20));
             Assert.That(wait.Until(ExpectedConditions.ElementIsVisible(By.Id("finish"))).Displayed);
             var currentUrl = Driver.Url;
@@ -93,11 +91,12 @@ namespace Browser_Actions
             Setup();
             var elementLargeDeepDom = Driver.FindElement(By.CssSelector("[href*='large']"));
             elementLargeDeepDom.Click();
-            var elementLastDom = Driver.FindElement(By.XPath("//*[@id=\"large-table\"]/tbody/tr[50]/td[50]"));
+            var elementLastDom = Driver.FindElement(By.XPath("//*[@id='large-table']/tbody/tr[50]/td[50]"));
             ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView();", elementLastDom);
+            Assert.That(elementLastDom.Displayed);
             Driver.Manage().Window.Maximize();
            
-            var elementFirstLine = Driver.FindElement(By.XPath("//*[@id=\"content\"]/div/h3"));
+            var elementFirstLine = Driver.FindElement(By.XPath("//*[@id='content']/div/h3"));
             ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView();", elementFirstLine);
             Assert.That(elementFirstLine.Displayed);
            
@@ -119,7 +118,7 @@ namespace Browser_Actions
             var elementChecked = Driver.FindElement(By.XPath("//*[@id='checkboxes']/input[1]"));
             elementChecked.Click();
             Assert.That(elementChecked.Selected, Is.True);
-            var elementUnchecked = Driver.FindElement(By.XPath("//*[@id=\"checkboxes\"]/input[2]"));
+            var elementUnchecked = Driver.FindElement(By.XPath("//*[@id='checkboxes']/input[2]"));
             elementUnchecked.Click();
             Assert.That(elementUnchecked.Selected, Is.False);
         }
