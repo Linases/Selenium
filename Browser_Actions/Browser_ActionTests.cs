@@ -125,20 +125,20 @@ namespace Browser_Actions
         [Test]
         public void HeadlessMode()
         {
-            BrowserFactory.CloseDriver();
             var options = new ChromeOptions();
-            options.AddArgument("--headless=new");
-            _driver = new ChromeDriver(options);
+            options.AddArguments("--headless=new");
+            using var headlessDriver = new ChromeDriver(options);
 
-            _driver.Navigate().GoToUrl(_mainUrl);
-            var elementCheckboxes = _driver.FindElement(By.CssSelector("[href*='checkboxes']"));
+            headlessDriver.Navigate().GoToUrl(_mainUrl);
+            var elementCheckboxes = headlessDriver.FindElement(By.CssSelector("[href*='checkboxes']"));
             elementCheckboxes.Click();
-            var elementChecked = _driver.FindElement(By.XPath("//*[@id='checkboxes']/input[1]"));
+            var elementChecked = headlessDriver.FindElement(By.XPath("//*[@id='checkboxes']/input[1]"));
             elementChecked.Click();
             Assert.That(elementChecked.Selected, Is.True, "checkbox 1 is not selected");
-            var elementUnchecked = _driver.FindElement(By.XPath("//*[@id='checkboxes']/input[2]"));
+            var elementUnchecked = headlessDriver.FindElement(By.XPath("//*[@id='checkboxes']/input[2]"));
             elementUnchecked.Click();
             Assert.That(elementUnchecked.Selected, Is.False, "checkbox 2 is selected");
+            headlessDriver.Close();
         }
 
         [OneTimeTearDown]
