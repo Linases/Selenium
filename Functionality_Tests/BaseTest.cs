@@ -1,12 +1,5 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework.Internal;
 using Functionality_Tests_Suit.FactoryPattern;
 using Functionality_Tests_Suit.Constants;
 
@@ -16,6 +9,9 @@ namespace Functionality_Tests_Suit
     {
         protected static IWebDriver Driver;
         protected readonly string MainUrl;
+
+        private (string userName, string userPassword) standartUserCredentials = ("standard_user", "secret_sauce");
+        private (string userName, string userPassword) invalidUserCredentials = ("invalid_user", "invalid_password");
 
         public BaseTest()
         {
@@ -40,23 +36,31 @@ namespace Functionality_Tests_Suit
             BrowserFactory.CloseDriver();
         }
 
-        public void SuccessfulLogin()
+        public void StandardUserLogin()
         {
-            var elementUserName = Driver.FindElement(By.Id("user-name"));
-            elementUserName.SendKeys("standard_user");
-            var elementPassword = Driver.FindElement(By.Id("password"));
-            elementPassword.SendKeys("secret_sauce");
-            var elementLoginButton = Driver.FindElement(By.Id("login-button"));
-            elementLoginButton.Click();
+            Login(standartUserCredentials.userName, standartUserCredentials.userPassword);
             var pageUrl = Driver.Url;
             Assert.That(pageUrl, Is.EqualTo($"{MainUrl}/inventory.html"));
             var pageTitle = Driver.Title;
             Assert.That(pageTitle, Is.EqualTo("Swag Labs"));
         }
+        public void InvalidUserLogin()
+        {
+            Login(invalidUserCredentials.userName, invalidUserCredentials.userPassword);
+        }
+
+        private void Login(string username, string password)
+        {
+            var elementUserName = Driver.FindElement(By.Id("user-name"));
+            elementUserName.SendKeys($"{username}");
+            var elementPassword = Driver.FindElement(By.Id("password"));
+            elementPassword.SendKeys($"{password}");
+            var elementLoginButton = Driver.FindElement(By.Id("login-button"));
+            elementLoginButton.Click();
+        }
 
         public void AddProductToCart()
         {
-            SuccessfulLogin();
             var elementItem = Driver.FindElement(By.Id("item_4_title_link")).Click;
             var elementAddButton = Driver.FindElement(By.XPath("//button[text() = 'Add to cart']"));
             elementAddButton.Click();

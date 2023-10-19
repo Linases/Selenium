@@ -1,18 +1,7 @@
-﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using NUnit.Framework.Internal;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using System.Text;
-using OpenQA.Selenium.Support.UI;
-using System.ComponentModel;
-using System.Linq;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics.X86;
-using System;
 using Functionality_Tests_Suit;
-using SeleniumExtras.WaitHelpers;
 using OpenQA.Selenium.Interactions;
 
 namespace Selenium
@@ -24,20 +13,22 @@ namespace Selenium
         [Test, Order(1)]
         public void SuccessfullLoginAndItemOpening()
         {
-            SuccessfulLogin();
-            IWebElement element = Driver.FindElement(By.XPath("//*[@id='item_4_title_link']/div")); Actions act = new Actions(Driver); act.MoveToElement(element).Click().Perform();
-            Thread.Sleep(2000);
+            StandardUserLogin();
+            IWebElement element = Driver.FindElement(By.XPath("//*[@id='item_4_title_link']/div"));
+            Actions act = new Actions(Driver);
+            act.MoveToElement(element).Click().Perform();
+            Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
             var itemUrl = Driver.Url;
             Assert.That(itemUrl, Is.EqualTo($"{MainUrl}/inventory-item.html?id=4"));
 
             var itemTitle = Driver.FindElement(By.CssSelector("[class*='inventory_details_name']"));
-            Assert.That(itemTitle.Text.Contains("Sauce Labs Backpack"));
+            Assert.That(itemTitle.Text.Contains("Sauce Labs Backpack"), "'Sauce Labs Backpack' is not found in the context");
 
             var itemDescription = Driver.FindElement(By.CssSelector("[class*='inventory_details_desc']"));
             Assert.That(itemDescription.Text.Contains("streamlined Sly Pack"));
 
             var itemPrice = Driver.FindElement(By.ClassName("inventory_details_price"));
-            Assert.That(itemPrice.Text.Contains("$29.99"));
+            Assert.That(itemPrice.Text.Contains("$29.99"), "Item price is not $29.99");
         }
 
         [Test, Order(2)]
@@ -61,12 +52,9 @@ namespace Selenium
         [Test, Order(3)]
         public void FailedLoginWithInvalidCredentials()
         {
+            InvalidUserLogin();
             var elementUserName = Driver.FindElement(By.Id("user-name"));
-            elementUserName.SendKeys("invalid_user");
             var elementPassword = Driver.FindElement(By.Id("password"));
-            elementPassword.SendKeys("invalid_password");
-            var elementLoginButton = Driver.FindElement(By.Id("login-button"));
-            elementLoginButton.Click();
 
             var errorMessage = Driver.FindElement(By.CssSelector("[data-test*='error']"));
             Assert.That(errorMessage.Displayed);
