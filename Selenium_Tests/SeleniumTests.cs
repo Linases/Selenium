@@ -1,20 +1,8 @@
-﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using NUnit.Framework.Internal;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using System.Text;
-using OpenQA.Selenium.Support.UI;
-using System.ComponentModel;
-using System.Linq;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics.X86;
-using System;
 using Functionality_Tests_Suit;
-using SeleniumExtras.WaitHelpers;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.DevTools.V115.FedCm;
 
 namespace Selenium
 {
@@ -34,13 +22,13 @@ namespace Selenium
             Assert.That(itemUrl, Is.EqualTo($"{MainUrl}/inventory-item.html?id=4"));
 
             var itemTitle = Driver.FindElement(By.CssSelector("[class*='inventory_details_name']"));
-            Assert.That(itemTitle.Text.Contains("Sauce Labs Backpack"));
+            Assert.That(itemTitle.Text.Contains("Sauce Labs Backpack"), "'Sauce Labs Backpack' is not found in the context");
 
             var itemDescription = Driver.FindElement(By.CssSelector("[class*='inventory_details_desc']"));
             Assert.That(itemDescription.Text.Contains("streamlined Sly Pack"));
 
             var itemPrice = Driver.FindElement(By.ClassName("inventory_details_price"));
-            Assert.That(itemPrice.Text.Contains("$29.99"));
+            Assert.That(itemPrice.Text.Contains("$29.99"), "Item price is not $29.99");
         }
 
         [Test, Order(2)]

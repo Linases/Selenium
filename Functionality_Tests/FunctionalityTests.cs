@@ -1,16 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
-using OpenQA.Selenium.DevTools.V115.Page;
-using Functionality_Tests_Suit.FactoryPattern;
-using OpenQA.Selenium.DevTools.V115.FedCm;
 
 namespace Functionality_Tests_Suit
 {
@@ -36,10 +27,10 @@ namespace Functionality_Tests_Suit
             select.SelectByValue("lohi");
 
             var elementMinPrice = Driver.FindElement(By.CssSelector("[class='inventory_list']:first-child"));
-            Assert.That(elementMinPrice.Text.Contains("7.99"));
+            Assert.That(elementMinPrice.Text.Contains("7.99"), "Minimal price is not $7.99");
 
             var elementItemsList = Driver.FindElements(By.ClassName("inventory_list"));
-            Assert.That(elementItemsList, Is.Ordered.Ascending);
+            Assert.That(elementItemsList, Is.Ordered.Ascending, "List of items is not ordered in ascending order");
         }
 
         [Test]
@@ -49,10 +40,12 @@ namespace Functionality_Tests_Suit
             needToRemoveFromTheCart = true;
             itemsToRemove.Add("1");
         }
+
         [Test]
         public void AddAndRemoveFromCart()
         {
             AddProductToCart();
+            needToRemoveFromTheCart = true;
             RemoveItemFromCart();
         }
 
@@ -61,11 +54,14 @@ namespace Functionality_Tests_Suit
             var elementShopingCartIcon = Driver.FindElement(By.ClassName("shopping_cart_link"));
             elementShopingCartIcon.Click();
             var elementAddedItem = Driver.FindElement(By.ClassName("shopping_cart_badge"));
-            Assert.That(elementAddedItem.Text.Contains('1'));
+            Assert.That(elementAddedItem.Text.Contains('1'), "Added item in a cart is not 1");
             var elementRemoveButton = Driver.FindElement(By.XPath("//button[text() = 'Remove']"));
-            elementRemoveButton.Click();
+            if (elementRemoveButton.Displayed)
+            {
+                elementRemoveButton.Click();
+            }
             var elementAddedItem2 = Driver.FindElements(By.ClassName("shopping_cart_badge"));
-            Assert.That(elementAddedItem2, Is.Empty);
+            Assert.That(elementAddedItem2, Is.Empty, "Shopping cart is not empty");
         }
 
         [Test]
