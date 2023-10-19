@@ -6,6 +6,7 @@ using System.Drawing;
 using Functionality_Tests_Suit.Constants;
 using Functionality_Tests_Suit.FactoryPattern;
 using OpenQA.Selenium.Chrome;
+using System;
 
 namespace Browser_Actions
 {
@@ -29,7 +30,9 @@ namespace Browser_Actions
         [SetUp]
         public void Setup()
         {
-            _driver.Navigate().GoToUrl(_mainUrl);
+           _driver.Navigate().GoToUrl(_mainUrl);
+            var mainPageUrl = _driver.Url;
+            Assert.That(mainPageUrl, Is.EqualTo($"{_mainUrl}/"), "Website did not load successfully");
         }
 
         [Test]
@@ -106,7 +109,7 @@ namespace Browser_Actions
             var elementLargeDeepDom = _driver.FindElement(By.CssSelector("[href*='large']"));
             elementLargeDeepDom.Click();
 
-            var elementLastDom = _driver.FindElement(By.XPath("//*[@id='large-table']//tr[50]/td[50]"));
+            var elementLastDom = _driver.FindElement(By.XPath("//*[@id='large-table']//*[text()='50.50']"));
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView();", elementLastDom);
             Assert.That(elementLastDom.Displayed, "Last DOM '50.50' is not displayed");
             _driver.Manage().Window.Maximize();
@@ -139,6 +142,25 @@ namespace Browser_Actions
             elementUnchecked.Click();
             Assert.That(elementUnchecked.Selected, Is.False, "checkbox 2 is selected");
             headlessDriver.Close();
+        }
+
+        [Test]
+        public void HandlingSimpleAlert ()
+        {
+            var javaScriptAlert = _driver.FindElement(By.XPath("//*[@id='content']//*[text()='JavaScript Alerts']"));
+            javaScriptAlert.Click();
+            var pageUrl = _driver.Url;
+            Assert.That(pageUrl, Is.EqualTo($"{_mainUrl}/javascript_alerts"), "'JavaScript Alerts' page is not shown");
+            var allertButton = _driver.FindElement(By.XPath("//*[@onclick='jsAlert()']"));
+            allertButton.Click();
+            var simpleAlert = _driver.SwitchTo().Alert();
+            Assert.That(simpleAlert.Text, Is.EqualTo("I am a JS Alert"), "Alert dialog with text 'I am a JS Alert' is not displayed");
+            var simpleAlertText = simpleAlert.Text;
+            simpleAlert.Accept();
+            var acceptanceMessage = _driver.FindElement(By.Id("result"));
+            Assert.That(acceptanceMessage.Displayed, "Alert acceptance message 'You successfully clicked an alert' is not shown");
+
+
         }
 
         [OneTimeTearDown]
