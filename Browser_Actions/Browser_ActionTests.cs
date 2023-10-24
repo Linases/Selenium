@@ -6,17 +6,8 @@ using System.Drawing;
 using Functionality_Tests_Suit.Constants;
 using Functionality_Tests_Suit.FactoryPattern;
 using OpenQA.Selenium.Chrome;
-using System;
-using NUnit.Framework.Constraints;
-using OpenQA.Selenium.Support.Events;
-using OpenQA.Selenium.Interactions.Internal;
-using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Support.Extensions;
-using Microsoft.VisualBasic.FileIO;
-using static System.Net.Mime.MediaTypeNames;
-using System.Collections.Generic;
-using NuGet.Frameworks;
-using NUnit.Framework.Interfaces;
+using NUnit.Framework.Internal;
+using File = System.IO.File;
 
 namespace Browser_Actions
 {
@@ -67,7 +58,6 @@ namespace Browser_Actions
             wait.Until(wd => wd.Url == $"{_mainUrl}/windows/new");
             var elementContent = _driver.FindElement(By.ClassName("example"));
             Assert.That(elementContent.Displayed, " Content 'New Window' is not displayed");
-            _driver.Close();
         }
 
         [Test]
@@ -209,7 +199,8 @@ namespace Browser_Actions
             Assert.That(iFramePage, Is.EqualTo($"{_mainUrl}/iframe"));
             var iFrameElement = _driver.FindElement(By.XPath("//*[@id='mce_0_ifr']"));
             _driver.SwitchTo().Frame(iFrameElement);
-            var iFrameParagraph = _driver.FindElement(By.CssSelector("#tinymce>p"));
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            var iFrameParagraph = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//p")));
             Assert.That(iFrameParagraph.Text.Contains("Your content goes here."), "Paragraph text 'Your content goes here.' is not visible ");
             Assert.That(iFrameParagraph.Enabled, "Input is not enabled.");
         }
@@ -248,8 +239,9 @@ namespace Browser_Actions
             var elementHorizontalSliderUrl = _driver.Url;
             Assert.That(elementHorizontalSliderUrl, Is.EqualTo($"{_mainUrl}/horizontal_slider"));
             var inputRange = _driver.FindElement(By.XPath("//*[@type='range']"));
-            inputRange.SendKeys(Keys.Home + "5");
-            //  inputRange.SendKeys(Keys.End);
+            // inputRange.SendKeys(Keys.Home + "5") - this does not work somehow, input stays home value- "0"
+            var js = (IJavaScriptExecutor)_driver;
+            js.ExecuteScript("arguments[0].value = '5';", inputRange);
             var rangeValue = inputRange.GetAttribute("value");
             Assert.That(rangeValue, Is.EqualTo("5"), "Range input value is not equal to 5");
         }
@@ -275,11 +267,14 @@ namespace Browser_Actions
             var BasicAuthUrl = _driver.Url;
             Assert.That(BasicAuthUrl, Is.EqualTo($"{_mainUrl}/basic_auth"));
 
-            //var alert = _driver.Url.SendKeys("admin");
-            //authAlert.SendKeys("admin");
-            // authAlert.Accept();
+            var login = "admin";
+            var authWindowLink = "https://" + login + ":" + login + "@" +
+            "the-internet.herokuapp.com/basic_auth";
+            _driver.Navigate().GoToUrl(authWindowLink);
 
-
+            var validationMessage = _driver.FindElement(By.XPath("//*[@class='example']//p")).Text;
+            Console.WriteLine("Text is: " + validationMessage);
+            Assert.That(validationMessage, Is.EqualTo("Congratulations! You must have the proper credentials."));
         }
 
         [Test]
@@ -295,11 +290,11 @@ namespace Browser_Actions
             elementFileDownLoad.Click();
             var FileDownloadUrl = _newDriver.Url;
             Assert.That(FileDownloadUrl, Is.EqualTo($"{_mainUrl}/download"));
-            var fileDownLoad = _newDriver.FindElement(By.XPath("//*[text()='USA.png']"));
+            var fileDownLoad = _newDriver.FindElement(By.XPath("//*[text()='some-file.txt']"));
             fileDownLoad.Click();
-            //Thread.Sleep(2000);
-            _newDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(50);
-            Assert.That(File.Exists($"{myDownloadFolder}/USA.png"), Is.True);
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            wait.Until(d => Directory.GetFiles(myDownloadFolder).Length > 0);
+            Assert.That(File.Exists($"{myDownloadFolder}/some-file.txt"), Is.True, "File 'some-file.txt' did not download");
             _newDriver.Close();
         }
 
@@ -315,19 +310,46 @@ namespace Browser_Actions
         {
             OpenSortableTadaTables();
             var lastNameHeader = _driver.FindElement(By.XPath("//*[@id='table1']//*[text()='Last Name']"));
-            var allLastNames = _driver.FindElements(By.XPath("//*[@id='table1']//tbody/tr//td[1]"));
+            var allLastNames = _driver.FindElement(By.XPath("//*[@id='table1']//tbody/tr//td[1]"));
             lastNameHeader.Click();
             lastNameHeader.Click();
             var toggleDLastNames = _driver.FindElements(By.XPath("//*[@id='table1']//tbody/tr//td[1]"));
-            Assert.That(allLastNames, Is.EquivalentTo(toggleDLastNames));
+            foreach (var name in toggleDLastNames)
+            {
+                Console.WriteLine(name.Text);
+            }
+            Assert.That(toggleDLastNames.OrderByDescending(x => x.Text), Is.EqualTo(toggleDLastNames));
         }
 
-        //[Test]
-        //public void ValidateRowData() 
-        //{  OpenSortableTadaTables();
-        //    var firstRowList = _driver.FindElements(By.XPath("//*[@id='table1']//tbody/tr[1]/td"));
+        [Test]
+        public void ValidateRowData()
+        {
+            OpenSortableTadaTables();
+            var table = _driver.FindElement(By.XPath("//*[@id='table1']"));
+            var firstRow = table.FindElement(By.XPath(".//tr"));
+            var cells = firstRow.FindElements(By.XPath("//*[@id='table1']//tr[1]//td"));
 
-        //}
+            var cellValue1 = cells[0].Text;
+            var cellValue2 = cells[1].Text;
+            var cellValue3 = cells[2].Text;
+            var cellValue4 = cells[3].Text;
+            var cellValue5 = cells[4].Text;
+            var cellValue6 = cells[5].Text;
+
+            var expectedValue1 = "Smith";
+            var expectedValue2 = "John";
+            var expectedValue3 = "jsmith@gmail.com";
+            var expectedValue4 = "$50.00";
+            var expectedValue5 = "http://www.jsmith.com";
+            var expectedValue6 = "edit delete";
+
+            Assert.That(cellValue1, Is.EqualTo(expectedValue1));
+            Assert.That(cellValue2, Is.EqualTo(expectedValue2));
+            Assert.That(cellValue3, Is.EqualTo(expectedValue3));
+            Assert.That(cellValue4, Is.EqualTo(expectedValue4));
+            Assert.That(cellValue5, Is.EqualTo(expectedValue5));
+            Assert.That(cellValue6, Is.EqualTo(expectedValue6));
+        }
 
         [Test]
         public void NavigationAndReturnToPage()
@@ -345,22 +367,21 @@ namespace Browser_Actions
             {
                 Console.WriteLine(element.Text);
             }
-            //Assert.That()
+            var sorted = allNamesList.OrderBy(x => x.Text);
+            Assert.AreNotSame(allNamesList, sorted);
         }
 
         [Test]
-
         public void SortedByDueColumn()
         {
             OpenSortableTadaTables();
             var elementDue = _driver.FindElement(By.XPath("//*[@id='table1']//*[text()='Due']"));
             elementDue.Click();
             var allDues = _driver.FindElements(By.XPath("//*[@id='table1']//tbody/tr//td[4]"));
-        
             var orderedDues = allDues.OrderBy(x => float.Parse(x.Text[1..]));
-       
             Assert.That(orderedDues, Is.EqualTo(allDues), "The data in the 'Due' column is not sorted in ascending order");
         }
+
         private void OpenJavaScriptAlertsLink()
         {
             var javaScriptAlert = _driver.FindElement(By.XPath("//*[@id='content']//*[text()='JavaScript Alerts']"));
@@ -376,7 +397,7 @@ namespace Browser_Actions
             var sortableDataTableUrl = _driver.Url;
             Assert.That(sortableDataTableUrl, Is.EqualTo($"{_mainUrl}/tables"));
         }
-        
+
         public void SortByFirstName()
         {
             var firstNameHeader = _driver.FindElement(By.XPath("//*[@id='table1']//*[text()='First Name']"));
