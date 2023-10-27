@@ -8,6 +8,7 @@ using Functionality_Tests_Suit.FactoryPattern;
 using OpenQA.Selenium.Chrome;
 using NUnit.Framework.Internal;
 using File = System.IO.File;
+using OpenQA.Selenium.Interactions;
 
 namespace Browser_Actions
 {
@@ -239,7 +240,6 @@ namespace Browser_Actions
             var elementHorizontalSliderUrl = _driver.Url;
             Assert.That(elementHorizontalSliderUrl, Is.EqualTo($"{_mainUrl}/horizontal_slider"));
             var inputRange = _driver.FindElement(By.XPath("//*[@type='range']"));
-            // inputRange.SendKeys(Keys.Home + "5") - this does not work somehow, input stays home value- "0"
             var js = (IJavaScriptExecutor)_driver;
             js.ExecuteScript("arguments[0].value = '5';", inputRange);
             var rangeValue = inputRange.GetAttribute("value");
@@ -267,8 +267,7 @@ namespace Browser_Actions
             var BasicAuthUrl = _driver.Url;
             Assert.That(BasicAuthUrl, Is.EqualTo($"{_mainUrl}/basic_auth"));
 
-            var login = "admin";
-            var authWindowLink = "https://" + login + ":" + login + "@" +
+            var authWindowLink = "https://" + "admin:admin@" +
             "the-internet.herokuapp.com/basic_auth";
             _driver.Navigate().GoToUrl(authWindowLink);
 
@@ -280,9 +279,14 @@ namespace Browser_Actions
         [Test]
         public void FileDownload()
         {
-            var myDownloadFolder = @"C:\Users\lina.seskiene\SeleniumDownload";
+            var myDownloadFolder = "SeleniumDownload";
+            var downloadDirectory = Path.Combine(Directory.GetCurrentDirectory(), myDownloadFolder);
+            if (!Directory.Exists(downloadDirectory))
+            {
+                Directory.CreateDirectory(downloadDirectory);
+            }
             var options = new ChromeOptions();
-            options.AddUserProfilePreference("download.default_directory", myDownloadFolder);
+            options.AddUserProfilePreference("download.default_directory", downloadDirectory);
             using var _newDriver = new ChromeDriver(options);
 
             _newDriver.Navigate().GoToUrl(_mainUrl);
@@ -309,10 +313,9 @@ namespace Browser_Actions
         public void ToggleLastName()
         {
             OpenSortableTadaTables();
+            var act = new Actions(_driver);
             var lastNameHeader = _driver.FindElement(By.XPath("//*[@id='table1']//*[text()='Last Name']"));
-            var allLastNames = _driver.FindElement(By.XPath("//*[@id='table1']//tbody/tr//td[1]"));
-            lastNameHeader.Click();
-            lastNameHeader.Click();
+            act.DoubleClick(lastNameHeader).Perform();
             var toggleDLastNames = _driver.FindElements(By.XPath("//*[@id='table1']//tbody/tr//td[1]"));
             foreach (var name in toggleDLastNames)
             {
@@ -329,26 +332,12 @@ namespace Browser_Actions
             var firstRow = table.FindElement(By.XPath(".//tr"));
             var cells = firstRow.FindElements(By.XPath("//*[@id='table1']//tr[1]//td"));
 
-            var cellValue1 = cells[0].Text;
-            var cellValue2 = cells[1].Text;
-            var cellValue3 = cells[2].Text;
-            var cellValue4 = cells[3].Text;
-            var cellValue5 = cells[4].Text;
-            var cellValue6 = cells[5].Text;
-
-            var expectedValue1 = "Smith";
-            var expectedValue2 = "John";
-            var expectedValue3 = "jsmith@gmail.com";
-            var expectedValue4 = "$50.00";
-            var expectedValue5 = "http://www.jsmith.com";
-            var expectedValue6 = "edit delete";
-
-            Assert.That(cellValue1, Is.EqualTo(expectedValue1));
-            Assert.That(cellValue2, Is.EqualTo(expectedValue2));
-            Assert.That(cellValue3, Is.EqualTo(expectedValue3));
-            Assert.That(cellValue4, Is.EqualTo(expectedValue4));
-            Assert.That(cellValue5, Is.EqualTo(expectedValue5));
-            Assert.That(cellValue6, Is.EqualTo(expectedValue6));
+            Assert.That(cells[0].Text, Is.EqualTo("Smith"));
+            Assert.That(cells[1].Text, Is.EqualTo("John"));
+            Assert.That(cells[2].Text, Is.EqualTo("jsmith@gmail.com"));
+            Assert.That(cells[3].Text, Is.EqualTo("$50.00"));
+            Assert.That(cells[4].Text, Is.EqualTo("http://www.jsmith.com"));
+            Assert.That(cells[5].Text, Is.EqualTo("edit delete"));
         }
 
         [Test]
@@ -382,6 +371,12 @@ namespace Browser_Actions
             Assert.That(orderedDues, Is.EqualTo(allDues), "The data in the 'Due' column is not sorted in ascending order");
         }
 
+        [OneTimeTearDown]
+        public static void TearDown()
+        {
+            BrowserFactory.CloseDriver();
+        }
+
         private void OpenJavaScriptAlertsLink()
         {
             var javaScriptAlert = _driver.FindElement(By.XPath("//*[@id='content']//*[text()='JavaScript Alerts']"));
@@ -404,12 +399,6 @@ namespace Browser_Actions
             firstNameHeader.Click();
             var allNamesList = _driver.FindElements(By.XPath("//*[@id='table1']//tbody/tr//td[2]"));
             Assert.That(allNamesList.OrderBy(x => x.Text), Is.EqualTo(allNamesList), "'First Name' column is not sorted in ascending order");
-        }
-
-        [OneTimeTearDown]
-        public static void TearDown()
-        {
-            BrowserFactory.CloseDriver();
         }
     }
 }
