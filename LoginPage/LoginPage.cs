@@ -1,7 +1,4 @@
-﻿using Apache.NMS;
-using Authentication;
-using OpenQA.Selenium;
-using OpenQA.Selenium.DevTools;
+﻿using OpenQA.Selenium;
 
 namespace Authentication
 {
@@ -24,7 +21,7 @@ namespace Authentication
 
         public void ClickLoginButton() => _driver.FindElement(loginButton).Click();
 
-        public void ValidLogin(string username, string password)
+        public void Login(string username, string password)
         {
             EnterUsername(username);
             EnterPassword(password);
@@ -33,9 +30,7 @@ namespace Authentication
 
         public string InvalidLogin(string username, string password)
         {
-            EnterUsername(username);
-            EnterPassword(password);
-            ClickLoginButton();
+           Login (username, password);
             return GetErrorMessage();
         }
 

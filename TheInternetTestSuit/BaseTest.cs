@@ -18,7 +18,6 @@ namespace TheInternetTestSuit
         public void OneTimeSetUp()
         {
             Driver = BrowserFactory.GetDriver(BrowserType.Chrome);
-            Driver.Navigate().GoToUrl(MainUrl);
         }
 
         [OneTimeTearDown]

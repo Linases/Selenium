@@ -1,19 +1,13 @@
-﻿using Apache.NMS;
-using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenQA.Selenium;
 
 namespace Checkboxes
 {
     public class CheckboxesPage
     {
         private readonly IWebDriver _driver;
-        private readonly By countCheckboxes = By.XPath("//*[@type='checkbox']");
+        private readonly By allCheckboxes = By.XPath("//*[@type='checkbox']");
         private readonly By firstCheckbox = By.XPath("//*[@id='checkboxes']/input[1]");
-        
+
         public CheckboxesPage(IWebDriver driver)
         {
             _driver = driver;
@@ -21,7 +15,7 @@ namespace Checkboxes
 
         public int CountCkeckboxes()
         {
-           return _driver.FindElements(countCheckboxes).Count();
+            return _driver.FindElements(allCheckboxes).Count();
         }
 
         public bool SelectFirstCheckbox()
@@ -31,6 +25,12 @@ namespace Checkboxes
             return isChecked;
         }
 
+        public bool SelectBothCheckboxes()
+        {
+            _driver.FindElement(allCheckboxes).Click();
+            bool allChecked = _driver.FindElement(allCheckboxes).Selected;
+            return allChecked;
+        }
     }
 }
 

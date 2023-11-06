@@ -1,9 +1,4 @@
 ﻿using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Authentication
 {
@@ -17,13 +12,12 @@ namespace Authentication
         {
             _driver = driver;
         }
+
         public void ClickLogoutButton() => _driver.FindElement(logoutButton).Click();
 
-        public string getLogoutMessage ()
+        public string GetLogoutMessage ()
         {
             return _driver.FindElement(logoutMessage).Text;
         }
     }
 }
-    
-

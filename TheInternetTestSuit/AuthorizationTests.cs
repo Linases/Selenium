@@ -1,15 +1,11 @@
 global using NUnit.Framework;
-using Functionality_Tests_Suit.Constants;
-using Functionality_Tests_Suit.FactoryPattern;
 using Authentication;
 using Welcome;
-using OpenQA.Selenium;
-using System.Diagnostics.Metrics;
 
 namespace TheInternetTestSuit
 {
     [TestFixture]
-    public class Authorization: BaseTest
+    public class Authorization : BaseTest
     {
         private LoginPage loginPage;
         private LogoutPage logoutPage;
@@ -19,24 +15,25 @@ namespace TheInternetTestSuit
         [SetUp]
         public void TestSetup()
         {
+            Driver.Navigate().GoToUrl(MainUrl);
             loginPage = new LoginPage(Driver);
-            welcomePage= new WelcomePage(Driver);
+            welcomePage = new WelcomePage(Driver);
             secureAreaPage = new SecureAreaPage(Driver);
             logoutPage = new LogoutPage(Driver);
+            welcomePage.DisplayLoginPage();
+            Assert.That(Driver.Url, Is.EqualTo($"{MainUrl}/login"), "Login page is not displayed");
         }
 
         [Test]
         public void ValidLogin()
         {
-            DisplayLoginPage();
-            loginPage.ValidLogin("tomsmith", "SuperSecretPassword!");
+            loginPage.Login("tomsmith", "SuperSecretPassword!");
             Assert.That(secureAreaPage.GetLoginMessage().Contains("You logged into a secure area!"));
         }
 
         [Test]
         public void InvalidLogin()
         {
-            DisplayLoginPage();
             loginPage.InvalidLogin("invalid", "invalid");
             Assert.That(loginPage.GetErrorMessage().Contains("Your username is invalid!"));
         }
@@ -46,23 +43,14 @@ namespace TheInternetTestSuit
         {
             ValidLogin();
             logoutPage.ClickLogoutButton();
-            Assert.That(logoutPage.getLogoutMessage().Contains("You logged out of the secure area!"));
+            Assert.That(logoutPage.GetLogoutMessage().Contains("You logged out of the secure area!"));
         }
 
         [Test]
-        public void LoginWithEmptyCredentials ()
+        public void LoginWithEmptyCredentials()
         {
-            DisplayLoginPage();
             loginPage.InvalidLogin(string.Empty, string.Empty);
             Assert.That(loginPage.GetErrorMessage().Contains("Your username is invalid!"));
         }
-
-        private void DisplayLoginPage()
-        {
-            welcomePage.DisplayLoginPage();
-            Assert.That(Driver.Url, Is.EqualTo($"{MainUrl}/login"), "Login page is not displayed");
-        }
-
-       
     }
 }
