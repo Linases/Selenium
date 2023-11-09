@@ -1,6 +1,7 @@
 using Functionality_Tests_Suit.Constants;
 using Functionality_Tests_Suit.FactoryPattern;
 using OpenQA.Selenium;
+using Welcome;
 
 namespace TheInternetTestSuit
 {

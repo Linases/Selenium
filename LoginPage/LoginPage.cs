@@ -5,21 +5,21 @@ namespace Authentication
     public class LoginPage
     {
         private readonly IWebDriver _driver;
-        private readonly By usernameInput = By.Id("username");
-        private readonly By passwordInput = By.Id("password");
-        private readonly By loginButton = By.TagName("button");
-        private readonly By errormessage = By.Id("flash-messages");
+        private readonly By _usernameInput = By.Id("username");
+        private readonly By _passwordInput = By.Id("password");
+        private readonly By _loginButton = By.TagName("button");
+        private readonly By _errorMessage = By.Id("flash-messages");
 
         public LoginPage(IWebDriver driver)
         {
             _driver = driver;
         }
 
-        public void EnterUsername(string username) => _driver.FindElement(usernameInput).SendKeys(username);
+        public void EnterUsername(string username) => _driver.FindElement(_usernameInput).SendKeys(username);
 
-        public void EnterPassword(string passsword) => _driver.FindElement(passwordInput).SendKeys(passsword);
+        public void EnterPassword(string passsword) => _driver.FindElement(_passwordInput).SendKeys(passsword);
 
-        public void ClickLoginButton() => _driver.FindElement(loginButton).Click();
+        public void ClickLoginButton() => _driver.FindElement(_loginButton).Click();
 
         public void Login(string username, string password)
         {
@@ -34,9 +34,6 @@ namespace Authentication
             return GetErrorMessage();
         }
 
-        public string GetErrorMessage()
-        {
-            return _driver.FindElement(errormessage).Text;
-        }
+        public string GetErrorMessage() => _driver.FindElement(_errorMessage).Text;
     }
 }

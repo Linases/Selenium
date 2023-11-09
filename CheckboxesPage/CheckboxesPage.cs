@@ -5,30 +5,27 @@ namespace Checkboxes
     public class CheckboxesPage
     {
         private readonly IWebDriver _driver;
-        private readonly By allCheckboxes = By.XPath("//*[@type='checkbox']");
-        private readonly By firstCheckbox = By.XPath("//*[@id='checkboxes']/input[1]");
+        private readonly By _allCheckboxes = By.XPath("//*[@type='checkbox']");
+        private readonly By _firstCheckbox = By.XPath("//*[@id='checkboxes']/input[1]");
 
         public CheckboxesPage(IWebDriver driver)
         {
             _driver = driver;
         }
 
-        public int CountCkeckboxes()
-        {
-            return _driver.FindElements(allCheckboxes).Count();
-        }
-
+        public int CountCkeckboxes() => _driver.FindElements(_allCheckboxes).Count();
+    
         public bool SelectFirstCheckbox()
         {
-            _driver.FindElement(firstCheckbox).Click();
-            bool isChecked = _driver.FindElement(firstCheckbox).Selected;
+            _driver.FindElement(_firstCheckbox).Click();
+            bool isChecked = _driver.FindElement(_firstCheckbox).Selected;
             return isChecked;
         }
 
         public bool SelectBothCheckboxes()
         {
-            _driver.FindElement(allCheckboxes).Click();
-            bool allChecked = _driver.FindElement(allCheckboxes).Selected;
+            _driver.FindElement(_allCheckboxes).Click();
+            bool allChecked = _driver.FindElement(_allCheckboxes).Selected;
             return allChecked;
         }
     }

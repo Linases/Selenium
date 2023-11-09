@@ -27,9 +27,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheInternetTestSuit", "TheI
 		{FC4D2C71-6D98-4242-8EF2-33F000E67F4C} = {FC4D2C71-6D98-4242-8EF2-33F000E67F4C}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Welcome", "Welcome\Welcome.csproj", "{24621F14-2A84-499A-B5E0-B117CADD65D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Welcome", "Welcome\Welcome.csproj", "{24621F14-2A84-499A-B5E0-B117CADD65D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dropdown", "Dropdown\Dropdown.csproj", "{B1336CBB-5207-4AD4-9CEE-C0C8308C5186}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dropdown", "Dropdown\Dropdown.csproj", "{B1336CBB-5207-4AD4-9CEE-C0C8308C5186}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{A927A334-973C-4D21-BEDE-7576A856D011}"
+	ProjectSection(SolutionItems) = preProject
+		Functionality_Tests\FactoryPattern\BrowserFactory.cs = Functionality_Tests\FactoryPattern\BrowserFactory.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
