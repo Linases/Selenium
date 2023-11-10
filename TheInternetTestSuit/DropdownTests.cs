@@ -13,7 +13,7 @@ namespace TheInternetTestSuit
         public void TestSetup()
         {
             Driver.Navigate().GoToUrl(MainUrl);
-           _welcomePage = new WelcomePage(Driver);
+            _welcomePage = new WelcomePage(Driver);
             _dropdownPage = new DropdownPage(Driver);
             _welcomePage.DisplayDropdownPage();
             Assert.That(Driver.Url, Is.EqualTo($"{MainUrl}/dropdown"), "Dropdown page is not displayed");
@@ -29,16 +29,14 @@ namespace TheInternetTestSuit
         [Test]
         public void ValidateDropdownOptions()
         {
-            var expectedOptions = new List<string> {"Option 1", "Option 2"};
-            Assert.That(_dropdownPage.ShowAllOptions(), Is.EqualTo(expectedOptions));
+            var expectedOptions = new List<string> { "Option 1", "Option 2" };
+            Assert.That(_dropdownPage.GetAllOptions(), Is.EqualTo(expectedOptions));
         }
 
         [Test]
         public void SelectRandomOption()
         {
-            _dropdownPage.SelectRandomOption();
-            var selectedOption = _dropdownPage.GetSelectRandomOption();
-            Assert.That(selectedOption.Displayed, "The selected option is not displayed in the dropdown.");
+            Assert.That(_dropdownPage.IsSelectedOptionDisplayed(), Is.True, "The selected option is not displayed in the dropdown.");
         }
 
         private void SelectOption()

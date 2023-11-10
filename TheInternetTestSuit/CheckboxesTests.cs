@@ -16,35 +16,33 @@ namespace TheInternetTestSuit
             _welcomePage = new WelcomePage(Driver);
             _checkboxesPage = new CheckboxesPage(Driver);
             _welcomePage.DisplayCkeckboxesPage();
-            Assert.That(_checkboxesPage.CountCkeckboxes(), Is.EqualTo (2), "There are no two checkboxes displayed");
-        }
-
-        [Test]
-        public void ToggleCheckboxes() 
-        {
-            Assert.That(_checkboxesPage.SelectFirstCheckbox(), Is.True, "'Checkbox 1' is not selected");
-            Assert.That(_checkboxesPage.SelectFirstCheckbox(), Is.False, "'Checkbox 1' is selected");
-        }
-
-        [Test]
-        public void CheckBothCheckboxes()
-        {
-            Assert.That(_checkboxesPage.SelectBothCheckboxes(), Is.True, "'Checkbox 1' and 'Checkbox 2' are not selected");
+            Assert.That(_checkboxesPage.GetCheckboxesCount(), Is.EqualTo (2), "There are no two checkboxes displayed");
         }
 
         [Test]
         public void UncheckBothCheckboxes ()
         {
             CheckBothCheckboxes();
-            Assert.That(_checkboxesPage.SelectBothCheckboxes(), Is.False, "'Checkbox 1' and 'Checkbox 2' are selected");
+            Assert.That(_checkboxesPage.AreBothCheckboxesUnchecked, Is.True, "'Checkbox 1' and 'Checkbox 2' are selected");
         }
 
         [Test]
-        public void ToggleCheckboxesRepeatedly() 
+        public void ToggleCheckboxRepeatedly() 
         {
-            ToggleCheckboxes();
-            Assert.That(_checkboxesPage.SelectFirstCheckbox(), Is.True, "'Checkbox 1' is not selected");
-            Assert.That(_checkboxesPage.SelectFirstCheckbox(), Is.False, "'Checkbox 1' is selected");
+            ToggleCheckbox();
+            Assert.That(_checkboxesPage.IsFirstCheckboxChecked(), Is.True, "'Checkbox 1' is not selected");
+            Assert.That(_checkboxesPage.IsFirstCheckboxChecked(), Is.False, "'Checkbox 1' is selected");
+        }
+     
+        private void CheckBothCheckboxes()
+        {
+            Assert.That(_checkboxesPage.AreBothCheckboxesChecked(), Is.True, "'Checkbox 1' and 'Checkbox 2' are not selected");
+        }
+
+        private void ToggleCheckbox()
+        {
+            Assert.That(_checkboxesPage.IsFirstCheckboxChecked(), Is.True, "'Checkbox 1' is not selected");
+            Assert.That(_checkboxesPage.IsFirstCheckboxChecked(), Is.False, "'Checkbox 1' is selected");
         }
     }
 }

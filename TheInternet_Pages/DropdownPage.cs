@@ -6,30 +6,29 @@ namespace Dropdown
     public class DropdownPage
     {
         private readonly IWebDriver _driver;
-        private readonly By _selectOptions = By.Id("dropdown");
 
         public DropdownPage(IWebDriver driver)
         {
             _driver = driver;
         }
 
+        public SelectElement GetDropdown()
+        {
+            var selectElement = _driver.FindElement(By.Id("dropdown"));
+            return new SelectElement(selectElement);
+        }
+
         public string SelectOption(string option)
         {
-            var select = new SelectElement(_driver.FindElement(_selectOptions));
-            select.SelectByText(option);
-            return select.SelectedOption.Text;
+            GetDropdown().SelectByText(option);
+            return GetDropdown().SelectedOption.Text;
         }
-        public List<string> ShowAllOptions()
-        {
-            var select = new SelectElement(_driver.FindElement(_selectOptions));
-            var optionsList = select.Options.Skip(1).Select(x => x.Text).ToList();
-            return optionsList;
-        }
+
+        public List<string> GetAllOptions() => GetDropdown().Options.Skip(1).Select(x => x.Text).ToList();
 
         public void SelectRandomOption()
         {
-            var select = new SelectElement(_driver.FindElement(_selectOptions));
-            var optionList = select.Options;
+            var optionList = GetDropdown().Options;
             Random randomOption = new Random();
             int number;
             do
@@ -37,10 +36,17 @@ namespace Dropdown
                 number = randomOption.Next(optionList.Count);
             }
             while (number == 0);
-            select.SelectByIndex(number);
+            GetDropdown().SelectByIndex(number);
             Console.WriteLine(number);
         }
 
-        public IWebElement GetSelectRandomOption() => _driver.FindElement(By.Id("dropdown")).FindElement(By.XPath("//*[@selected='selected']"));
+        public IWebElement GetSelectedOption()
+        {
+            SelectRandomOption();
+            var selectedOption = _driver.FindElement(By.Id("dropdown")).FindElement(By.XPath("//*[@selected='selected']"));
+            return selectedOption;
+        }
+
+        public bool IsSelectedOptionDisplayed() => GetSelectedOption().Displayed;
     }
 }
