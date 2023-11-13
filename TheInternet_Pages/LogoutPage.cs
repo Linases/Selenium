@@ -5,10 +5,8 @@ namespace Authentication
     public class LogoutPage
     {
         private readonly IWebDriver _driver;
-        private readonly By _logoutButton = By.CssSelector("[href*='logout']");
-        private readonly By _logoutMessage = By.Id("flash-messages");
-        private IWebElement LogoutButton => _driver.FindElement(_logoutButton);
-        private IWebElement LogoutMessage => _driver.FindElement(_logoutMessage);
+        private IWebElement LogoutButton => _driver.FindElement(By.CssSelector("[href*='logout']"));
+        private IWebElement LogoutMessage => _driver.FindElement(By.Id("flash-messages"));
 
         public LogoutPage(IWebDriver driver)
         {
@@ -17,6 +15,6 @@ namespace Authentication
 
         public void ClickLogoutButton() => LogoutButton.Click();
 
-        public string GetLogoutMessage () => LogoutMessage.Text;
+        public string GetLogoutMessage() => LogoutMessage.Text;
     }
 }

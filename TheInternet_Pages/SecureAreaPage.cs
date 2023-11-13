@@ -5,8 +5,7 @@ namespace Authentication
     public class SecureAreaPage
     {
         private readonly IWebDriver _driver;
-        private readonly By _validLoginMessage = By.Id("flash-messages");
-        private IWebElement ValidLoginMessage => _driver.FindElement(_validLoginMessage);
+        private IWebElement ValidLoginMessage => _driver.FindElement(By.Id("flash-messages"));
 
         public SecureAreaPage (IWebDriver driver)
         {

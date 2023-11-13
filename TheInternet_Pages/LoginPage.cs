@@ -6,14 +6,10 @@ namespace Authentication
     public class LoginPage
     {
         private readonly IWebDriver _driver;
-        private readonly By _usernameInput = By.Id("username");
-        private readonly By _passwordInput = By.Id("password");
-        private readonly By _loginButton = By.TagName("button");
-        private readonly By _errorMessage = By.Id("flash-messages");
-        private IWebElement UsernameInput => _driver.FindElement(_usernameInput);
-        private IWebElement PasswordInput => _driver.FindElement(_passwordInput);
-        private IWebElement LoginButton => _driver.FindElement(_loginButton);
-        private IWebElement ErrorMessage => _driver.FindElement(_errorMessage);
+        private IWebElement UsernameInput => _driver.FindElement(By.Id("username"));
+        private IWebElement PasswordInput => _driver.FindElement(By.Id("password"));
+        private IWebElement LoginButton => _driver.FindElement(By.TagName("button"));
+        private IWebElement ErrorMessage => _driver.FindElement(By.Id("flash-messages"));
 
         public LoginPage(IWebDriver driver)
         {

@@ -5,30 +5,30 @@ namespace Checkboxes
     public class CheckboxesPage
     {
         private readonly IWebDriver _driver;
-        private readonly By _allCheckboxes = By.XPath("//*[@type='checkbox']");
-        private readonly By _firstCheckbox = By.XPath("//*[@id='checkboxes']/input[1]");
-        private readonly By _secondCheckox = By.XPath("//*[@id='checkboxes']/input[2]");
+        private IList <IWebElement> AllCheckboxes => _driver.FindElements(By.XPath("//*[@type='checkbox']"));
+        private IWebElement FirstCheckbox => _driver.FindElement(By.XPath("//*[@id='checkboxes']/input[1]"));
+        private IWebElement SecondCheckox => _driver.FindElement(By.XPath("//*[@id='checkboxes']/input[2]"));
 
         public CheckboxesPage(IWebDriver driver)
         {
             _driver = driver;
         }
 
-        public int GetCheckboxesCount() => _driver.FindElements(_allCheckboxes).Count();
+        public int GetCheckboxesCount() => AllCheckboxes.Count;
+     
+        public void SelectFirstCheckbox() => FirstCheckbox.Click();
 
-        public void SelectFirstCheckbox() => _driver.FindElement(_firstCheckbox).Click();
-
-        public void SelectSecondCheckbox() => _driver.FindElement(_secondCheckox).Click();
+        public void SelectSecondCheckbox() => SecondCheckox.Click();
 
         public bool IsFirstCheckboxChecked()
         {
-            bool firstChecked = _driver.FindElement(_firstCheckbox).Selected;
+            bool firstChecked = FirstCheckbox.Selected;
             return firstChecked;
         }
 
         public bool AreBothCheckboxesChecked()
         {
-            bool allChecked = _driver.FindElement(_allCheckboxes).Selected;
+            bool allChecked = AllCheckboxes.All(x => x.Selected);
             return allChecked;
         }
     }
