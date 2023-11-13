@@ -5,7 +5,7 @@ using Functionality_Tests_Suit.Constants;
 
 namespace Functionality_Tests_Suit.FactoryPattern
 {
-    public class BrowserFactory
+    public static class BrowserFactory
     {
         private static IWebDriver _driver;
 
