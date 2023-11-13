@@ -13,12 +13,13 @@ namespace Dropdown
             _driver = driver;
         }
 
-        public string SelectOption(string option)
+        public void ChooseOption(string option)
         {
             Select.SelectByText(option);
-            return Select.SelectedOption.Text;
         }
 
+        public string GetSelectedOption() => Select.SelectedOption.Text;
+          
         public List<string> GetAllOptions() => Select.Options.Skip(1).Select(x => x.Text).ToList();
 
         public void SelectRandomOption()
@@ -35,17 +36,16 @@ namespace Dropdown
             Console.WriteLine(number);
         }
 
-        public IWebElement GetSelectedOption()
+        public bool IsRandomSelectedOptionDisplayed()
         {
-            SelectRandomOption();
-            var selectedOption = _driver.FindElement(By.Id("dropdown")).FindElement(By.XPath("//*[@selected='selected']"));
-            return selectedOption;
+            var isDispayed = GetRandomSelectedOption().Displayed;
+            return isDispayed;
         }
 
-        public bool IsSelectedOptionDisplayed()
+        private IWebElement GetRandomSelectedOption()
         {
-            var isDispayed = GetSelectedOption().Displayed;
-            return isDispayed;
+            var selectedOption = _driver.FindElement(By.Id("dropdown")).FindElement(By.XPath("//*[@selected='selected']"));
+            return selectedOption;
         }
     }
 }

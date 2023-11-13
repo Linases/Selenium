@@ -23,7 +23,8 @@ namespace TheInternetTestSuit
         public void SelectDifferentOption()
         {
             SelectOption();
-            Assert.That(_dropdownPage.SelectOption("Option 2"), Is.EqualTo("Option 2"), "Selected option is not 'Option 2'");
+            _dropdownPage.ChooseOption("Option 2");
+            Assert.That(_dropdownPage.GetSelectedOption, Is.EqualTo("Option 2"), "Selected option is not 'Option 2'");
         }
 
         [Test]
@@ -36,12 +37,14 @@ namespace TheInternetTestSuit
         [Test]
         public void SelectRandomOption()
         {
-            Assert.That(_dropdownPage.IsSelectedOptionDisplayed(), Is.True, "The selected option is not displayed in the dropdown.");
+            _dropdownPage.SelectRandomOption();
+            Assert.That(_dropdownPage.IsRandomSelectedOptionDisplayed(), Is.True, "The selected option is not displayed in the dropdown.");
         }
 
         private void SelectOption()
         {
-            Assert.That(_dropdownPage.SelectOption("Option 1"), Is.EqualTo("Option 1"), "Selected option is not 'Option 1'");
+            _dropdownPage.ChooseOption("Option 1");
+            Assert.That(_dropdownPage.GetSelectedOption, Is.EqualTo("Option 1"), "Selected option is not 'Option 1'");
         }
     }
 }
