@@ -23,25 +23,32 @@ namespace TheInternetTestSuit
         public void UncheckBothCheckboxes ()
         {
             CheckBothCheckboxes();
-            Assert.That(_checkboxesPage.AreBothCheckboxesUnchecked, Is.True, "'Checkbox 1' and 'Checkbox 2' are selected");
+            _checkboxesPage.SelectFirstCheckbox();
+            _checkboxesPage.SelectSecondCheckbox();
+            Assert.That(_checkboxesPage.AreBothCheckboxesChecked, Is.False, "'Checkbox 1' and 'Checkbox 2' are selected");
         }
 
         [Test]
         public void ToggleCheckboxRepeatedly() 
         {
             ToggleCheckbox();
+            _checkboxesPage.SelectFirstCheckbox();
             Assert.That(_checkboxesPage.IsFirstCheckboxChecked(), Is.True, "'Checkbox 1' is not selected");
+            _checkboxesPage.SelectFirstCheckbox();
             Assert.That(_checkboxesPage.IsFirstCheckboxChecked(), Is.False, "'Checkbox 1' is selected");
         }
      
         private void CheckBothCheckboxes()
         {
+            _checkboxesPage.SelectFirstCheckbox();
             Assert.That(_checkboxesPage.AreBothCheckboxesChecked(), Is.True, "'Checkbox 1' and 'Checkbox 2' are not selected");
         }
 
         private void ToggleCheckbox()
         {
+            _checkboxesPage.SelectFirstCheckbox();
             Assert.That(_checkboxesPage.IsFirstCheckboxChecked(), Is.True, "'Checkbox 1' is not selected");
+            _checkboxesPage.SelectFirstCheckbox();
             Assert.That(_checkboxesPage.IsFirstCheckboxChecked(), Is.False, "'Checkbox 1' is selected");
         }
     }

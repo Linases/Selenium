@@ -20,27 +20,9 @@ namespace Checkboxes
 
         public void SelectSecondCheckbox() => _driver.FindElement(_secondCheckox).Click();
 
-        public bool IsFirstCheckboxChecked()
-        {
-            SelectFirstCheckbox();
-            var isChecked = _driver.FindElement(_firstCheckbox).Selected;
-            return isChecked;
-        }
-       
-        public bool AreBothCheckboxesChecked()
-        {
-            SelectFirstCheckbox();
-            bool allChecked = _driver.FindElement(_allCheckboxes).Selected;
-            return allChecked;
-        }
-
-        public bool AreBothCheckboxesUnchecked()
-        {
-            SelectFirstCheckbox();
-            SelectSecondCheckbox();
-            bool allUnchecked = !_driver.FindElement(_allCheckboxes).Selected;
-            return allUnchecked;
-        }
+        public bool IsFirstCheckboxChecked() =>_driver.FindElement(_firstCheckbox).Selected;
+    
+        public bool AreBothCheckboxesChecked() => _driver.FindElement(_allCheckboxes).Selected;
     }
 }
 

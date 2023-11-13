@@ -6,29 +6,24 @@ namespace Dropdown
     public class DropdownPage
     {
         private readonly IWebDriver _driver;
+        private SelectElement Select => new(_driver.FindElement(By.Id("dropdown")));
 
         public DropdownPage(IWebDriver driver)
         {
             _driver = driver;
         }
 
-        public SelectElement GetDropdown()
-        {
-            var selectElement = _driver.FindElement(By.Id("dropdown"));
-            return new SelectElement(selectElement);
-        }
-
         public string SelectOption(string option)
         {
-            GetDropdown().SelectByText(option);
-            return GetDropdown().SelectedOption.Text;
+            Select.SelectByText(option);
+            return Select.SelectedOption.Text;
         }
 
-        public List<string> GetAllOptions() => GetDropdown().Options.Skip(1).Select(x => x.Text).ToList();
+        public List<string> GetAllOptions() => Select.Options.Skip(1).Select(x => x.Text).ToList();
 
         public void SelectRandomOption()
         {
-            var optionList = GetDropdown().Options;
+            var optionList = Select.Options;
             Random randomOption = new Random();
             int number;
             do
@@ -36,7 +31,7 @@ namespace Dropdown
                 number = randomOption.Next(optionList.Count);
             }
             while (number == 0);
-            GetDropdown().SelectByIndex(number);
+            Select.SelectByIndex(number);
             Console.WriteLine(number);
         }
 
