@@ -20,7 +20,7 @@ namespace TheInternetTestSuit
             _welcomePage = new WelcomePage(Driver);
             _secureAreaPage = new SecureAreaPage(Driver);
             _logoutPage = new LogoutPage(Driver);
-            _welcomePage.DisplayLoginPage();
+            _welcomePage.OpenLoginPage();
             Assert.That(Driver.Url, Is.EqualTo($"{MainUrl}/login"), "Login page is not displayed");
         }
 

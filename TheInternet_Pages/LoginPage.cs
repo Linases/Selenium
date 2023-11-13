@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace Authentication
 {
@@ -9,17 +10,21 @@ namespace Authentication
         private readonly By _passwordInput = By.Id("password");
         private readonly By _loginButton = By.TagName("button");
         private readonly By _errorMessage = By.Id("flash-messages");
+        private IWebElement UsernameInput => _driver.FindElement(_usernameInput);
+        private IWebElement PasswordInput => _driver.FindElement(_passwordInput);
+        private IWebElement LoginButton => _driver.FindElement(_loginButton);
+        private IWebElement ErrorMessage => _driver.FindElement(_errorMessage);
 
         public LoginPage(IWebDriver driver)
         {
             _driver = driver;
         }
 
-        public void EnterUsername(string username) => _driver.FindElement(_usernameInput).SendKeys(username);
+        public void EnterUsername(string username) => UsernameInput.SendKeys(username);
 
-        public void EnterPassword(string passsword) => _driver.FindElement(_passwordInput).SendKeys(passsword);
+        public void EnterPassword(string passsword) => PasswordInput.SendKeys(passsword);
 
-        public void ClickLoginButton() => _driver.FindElement(_loginButton).Click();
+        public void ClickLoginButton() => LoginButton.Click();
 
         public void Login(string username, string password)
         {
@@ -34,6 +39,6 @@ namespace Authentication
             return GetErrorMessage();
         }
 
-        public string GetErrorMessage() => _driver.FindElement(_errorMessage).Text;
+        public string GetErrorMessage() => ErrorMessage.Text;
     }
 }

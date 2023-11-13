@@ -15,7 +15,7 @@ namespace TheInternetTestSuit
             Driver.Navigate().GoToUrl(MainUrl);
             _welcomePage = new WelcomePage(Driver);
             _checkboxesPage = new CheckboxesPage(Driver);
-            _welcomePage.DisplayCkeckboxesPage();
+            _welcomePage.OpenCkeckboxesPage();
             Assert.That(_checkboxesPage.GetCheckboxesCount(), Is.EqualTo (2), "There are no two checkboxes displayed");
         }
 
@@ -25,7 +25,7 @@ namespace TheInternetTestSuit
             CheckBothCheckboxes();
             _checkboxesPage.SelectFirstCheckbox();
             _checkboxesPage.SelectSecondCheckbox();
-            Assert.That(_checkboxesPage.AreBothCheckboxesChecked, Is.False, "'Checkbox 1' and 'Checkbox 2' are selected");
+            Assert.That(_checkboxesPage.AreBothCheckboxesChecked(), Is.False, "'Checkbox 1' and 'Checkbox 2' are selected");
         }
 
         [Test]

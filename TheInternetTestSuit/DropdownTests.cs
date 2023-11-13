@@ -15,7 +15,7 @@ namespace TheInternetTestSuit
             Driver.Navigate().GoToUrl(MainUrl);
             _welcomePage = new WelcomePage(Driver);
             _dropdownPage = new DropdownPage(Driver);
-            _welcomePage.DisplayDropdownPage();
+            _welcomePage.OpenDropdownPage();
             Assert.That(Driver.Url, Is.EqualTo($"{MainUrl}/dropdown"), "Dropdown page is not displayed");
         }
 

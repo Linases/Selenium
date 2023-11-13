@@ -9,6 +9,9 @@ namespace Welcome
         private readonly By _formAuthLink = By.XPath("//*[@id='content']//*[text()='Form Authentication']");
         private readonly By _checkboxesLink = By.XPath("//*[@id='content']//*[text()='Checkboxes']");
         private readonly By _dropdownLink = By.XPath("//*[@id='content']//*[text()='Dropdown']");
+        private IWebElement FormAuthLink => _driver.FindElement(_formAuthLink);
+        private IWebElement CheckboxesLink => _driver.FindElement(_checkboxesLink);
+        private IWebElement DropdownLink => _driver.FindElement(_dropdownLink);
 
         public WelcomePage(IWebDriver driver)
         {
@@ -19,10 +22,10 @@ namespace Welcome
             }
         }
 
-        public void DisplayLoginPage() =>_driver.FindElement(_formAuthLink).Click();
+        public void OpenLoginPage() => FormAuthLink.Click();
     
-        public void DisplayCkeckboxesPage() =>_driver.FindElement(_checkboxesLink).Click();
+        public void OpenCkeckboxesPage() => CheckboxesLink.Click();
       
-        public void DisplayDropdownPage() =>_driver.FindElement(_dropdownLink).Click();
+        public void OpenDropdownPage() => DropdownLink.Click();
     }
 }

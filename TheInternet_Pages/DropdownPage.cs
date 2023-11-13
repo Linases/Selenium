@@ -42,6 +42,10 @@ namespace Dropdown
             return selectedOption;
         }
 
-        public bool IsSelectedOptionDisplayed() => GetSelectedOption().Displayed;
+        public bool IsSelectedOptionDisplayed()
+        {
+            var isDispayed = GetSelectedOption().Displayed;
+            return isDispayed;
+        }
     }
 }
