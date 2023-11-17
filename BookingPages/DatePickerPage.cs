@@ -1,7 +1,4 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.DevTools.V117.Animation;
-using SeleniumExtras.WaitHelpers;
-using System.Linq;
 using Utilities;
 
 
@@ -38,7 +35,6 @@ namespace BookingPages
             while (!currentMonthYearText.Contains(desiredMonthYearText))
             {
                 NextMonthArrow.Click();
-                Thread.Sleep(1000);
             }
 
             var desiredDayElement = CurrentDays.FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}"));

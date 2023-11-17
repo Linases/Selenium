@@ -17,8 +17,7 @@ namespace Booking_Tests_Waits
     {
         private HomePage _homePage;
         private CarRentalsPage _carRentalsPage;
-        private CarRentalsDatePickerPage _carRentalsDatePickerPage;
-
+      
         private const string invalidLocation = "hjfkhf";
         DateTime pickUpDate = new DateTime(2023, 11, 18);
         DateTime dropOffDate = new DateTime(2023, 11, 20);
@@ -28,7 +27,6 @@ namespace Booking_Tests_Waits
         {
             _homePage = new HomePage(Driver);
             _carRentalsPage = new CarRentalsPage(Driver);
-            _carRentalsDatePickerPage = new CarRentalsDatePickerPage(Driver);
             _homePage.OpenCarRentalsPage();
             Assert.That(Driver.Url.Contains("cars/"), Is.True, "Car rentals page is not displayed");
         }
@@ -43,10 +41,10 @@ namespace Booking_Tests_Waits
             Assert.That(location, Is.EqualTo(invalidLocation), $"Entered location is not {invalidLocation}");
             _carRentalsPage.ClickSearchButton();
             Assert.That(_carRentalsPage.GetErrorMessage, Is.EqualTo("Please provide a pick-up location"));
-            _carRentalsDatePickerPage.ClickPickUpDateField();
-           
-            _carRentalsDatePickerPage.SelectDate(pickUpDate);
-            _carRentalsDatePickerPage.SelectDate(dropOffDate);
+            _carRentalsPage.ClickPickUpDateField();
+
+            _carRentalsPage.SelectDate(pickUpDate);
+            _carRentalsPage.SelectDate(dropOffDate);
 
 
         }

@@ -19,8 +19,16 @@ namespace BookingPages
         private IWebElement PickUpLocation => _driver.WaitForElementClicable(By.CssSelector("#searchbox-toolbox-fts-pickup"));
         private IWebElement PickUpDateField => _driver.FindElement(By.XPath("//*[@id='searchbox-toolbox-date-picker-pickup-date']/div/div[2]/div/div[2]"));
 
-        private IList<IWebElement> AllDates => PickUpDateField.FindElements(By.TagName("td"));
+        private IWebElement PickUpDate => _driver.WaitForElementVisible(By.XPath("//*[@data-testid ='searchbox-toolbox-date-picker-pickup-date-value']"));
+        private IWebElement DropOffDate => _driver.WaitForElementVisible(By.XPath("//*[@data-testid ='searchbox-toolbox-date-picker-dropoff-date-value']"));
+        private IWebElement Calendar => _driver.WaitForElementVisible(By.XPath("//*[@data-testid='bui-calendar']"));
 
+        private IWebElement NextMonthArrow => Calendar.FindElement(By.XPath("//*[@data-testid='bui-calendar']/ button"));
+
+        private IList<IWebElement> CurrentMonths => Calendar.FindElements(By.XPath("//*[@data-testid='bui-calendar']//h3"));
+
+        private IList<IWebElement> CurrentDays => Calendar.FindElements(By.XPath("//*[@data-testid='bui-calendar']//td"));
+       
         private IWebElement ChosenPickUpDate => _driver.WaitForElementVisible(By.XPath("//*[@id=\"searchbox-toolbox-date-picker-pickup-date\"]/div/div[2]/div/div[2]"));
 
         public CarRentalsPage(IWebDriver driver)
@@ -37,31 +45,23 @@ namespace BookingPages
 
         public void ClickPickUpDateField() => PickUpDateField.Click();
 
+     
+        public string GetPickUpDate() => PickUpDate.Text;
+
+        public string GetDropOffDate() => DropOffDate.Text;
+
         public void SelectDate(DateTime dateToSelect)
         {
-            ClickPickUpDateField();
-            IList<IWebElement> currentMonthYearElements = _driver.FindElements(By.XPath("//*[@class='LPCM_3f5d2395']/h3"));
-            var currentMonthYearText = currentMonthYearElements[0].Text;
+            var currentMonthYearText = CurrentMonths.Select(x => x.Text).ToList();
 
             var desiredMonthYearText = dateToSelect.ToString("MMMM yyyy");
-            while (currentMonthYearText != desiredMonthYearText)
+            while (!currentMonthYearText.Contains(desiredMonthYearText))
             {
-
-                IWebElement nextButton = _driver.FindElement(By.CssSelector(".LPCM_0cabfe7c"));
-                nextButton.Click();
-
-                currentMonthYearElements = _driver.FindElements(By.XPath("//*[@class='LPCM_3f5d2395']/h3"));
-                currentMonthYearText = currentMonthYearElements[0].Text;
-
+                NextMonthArrow.Click();
             }
-
-            IWebElement desiredDayElement = _driver.FindElement(By.XPath($"//*[@id='b2runway_internal_actionPage']/div[3]/main/div[2]/div/div/div/div/div/div[2]/div/div[2]/div/div[1]/span/div/div[1]/div/div/div/div[1]/table/tbody/tr[3]/td[6]/span/span"));
-            desiredDayElement.Click();
+            CurrentDays.FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}")).Click();
         }
-
-        public string GetPickUpSelectedData() => ChosenPickUpDate.GetAttribute("value");
-
-       // public void SelectDropOffDate() => DropOffDate.Click();
-
+    
+    public string GetPickUpSelectedData() => ChosenPickUpDate.GetAttribute("value");
     }
 }

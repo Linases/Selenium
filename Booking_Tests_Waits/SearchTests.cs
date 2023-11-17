@@ -26,7 +26,6 @@ namespace Booking_Tests_Waits
         [Test]
         public void SearchHotels()
         {
-            Thread.Sleep(2000);
             _searchPage.EnterDestination(expectedDestination);
             var destination = _searchPage.GetDestination();
             Assert.That(destination, Is.EqualTo(expectedDestination), $" {expectedDestination} is not entered destination");
@@ -40,8 +39,7 @@ namespace Booking_Tests_Waits
             // Assert.That(_datePickerPage.GetSelectedCheckOutDay().Contains($"{checkOutDate}"));
             //Assert.That(checkOut.Equals(checkOutDate), Is.True);
 
-
-            _searchPage.PressSearchButton();
+             _searchPage.PressSearchButton();
             Assert.That(_searchPage.IsListofHotelsDisplayed(), Is.True, "List of hotels is not diplayed");
         }
     }
