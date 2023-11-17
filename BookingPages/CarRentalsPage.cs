@@ -14,16 +14,14 @@ namespace BookingPages
     {
 
         private readonly IWebDriver _driver;
-        private IWebElement SearchButton => _driver.WaitForElementVisible(By.CssSelector(".submit-button-container"), 20);
-        private IWebElement ErrorMessage => _driver.WaitForElementVisible(By.XPath("//*[text()='Please provide a pick-up location']"), 20);
-        private IWebElement PickUpLocation => _driver.WaitForElementClicable(By.CssSelector("#searchbox-toolbox-fts-pickup"), 20);
+        private IWebElement SearchButton => _driver.WaitForElementVisible(By.CssSelector(".submit-button-container"));
+        private IWebElement ErrorMessage => _driver.WaitForElementVisible(By.XPath("//*[text()='Please provide a pick-up location']"));
+        private IWebElement PickUpLocation => _driver.WaitForElementClicable(By.CssSelector("#searchbox-toolbox-fts-pickup"));
         private IWebElement PickUpDateField => _driver.FindElement(By.XPath("//*[@id='searchbox-toolbox-date-picker-pickup-date']/div/div[2]/div/div[2]"));
 
         private IList<IWebElement> AllDates => PickUpDateField.FindElements(By.TagName("td"));
 
-
-        //  private IWebElement ChosenPickUpDate => _driver.WaitForElementVisible(By.XPath($"//*[text()='{dropOffDate}']"), 20);
-        private IWebElement ChosenPickUpDate => _driver.WaitForElementVisible(By.XPath("//*[@id=\"searchbox-toolbox-date-picker-pickup-date\"]/div/div[2]/div/div[2]"), 20);
+        private IWebElement ChosenPickUpDate => _driver.WaitForElementVisible(By.XPath("//*[@id=\"searchbox-toolbox-date-picker-pickup-date\"]/div/div[2]/div/div[2]"));
 
         public CarRentalsPage(IWebDriver driver)
         {

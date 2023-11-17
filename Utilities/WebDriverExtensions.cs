@@ -9,23 +9,20 @@ namespace Utilities
     {
         private static IWebDriver _driver;
 
-        public static void ImplicitWait (this IWebDriver driver, int timeoutInSeconds)
-        {
-            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(timeoutInSeconds);
-        }
-        public static IWebElement WaitForElementVisible(this IWebDriver driver, By locator, int timeoutInSeconds)
+
+        public static IWebElement WaitForElementVisible(this IWebDriver driver, By locator, int timeoutInSeconds = 20)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
             return wait.Until(ExpectedConditions.ElementIsVisible(locator));
         }
 
-        public static IList<IWebElement> WaitForElementsVisible(this IWebDriver driver, By locator, int timeoutInSeconds)
+        public static IList<IWebElement> WaitForElementsVisible(this IWebDriver driver, By locator, int timeoutInSeconds = 20)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
             return wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(locator));
         }
 
-        public static IWebElement WaitForElementClicable(this IWebDriver driver, By locator, int timeoutInSeconds)
+        public static IWebElement WaitForElementClicable(this IWebDriver driver, By locator, int timeoutInSeconds = 20)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
             return wait.Until(ExpectedConditions.ElementToBeClickable(locator));
@@ -40,7 +37,7 @@ namespace Utilities
             return fluentWait.Until(driver => driver.FindElement(locator));
 
         }
-         public static IWebElement StaleElementExceptionWait(this IWebDriver driver, By locator, int timeoutInSeconds, int miliSeconds)
+        public static IWebElement StaleElementExceptionWait(this IWebDriver driver, By locator, int timeoutInSeconds = 20, int miliSeconds = 500)
         {
             var fluentWait = new DefaultWait<IWebDriver>(driver);
             fluentWait.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
@@ -50,28 +47,6 @@ namespace Utilities
 
         }
 
-        public static WebDriverWait GetWait(
-        this IWebDriver driver,
-        int timeOutSeconds = 10,
-        int pollingIntervalMilliseconds = 250,
-        Type[]? exceptionsToIgnore = null)
-
-        {
-            var timeOut = TimeSpan.FromSeconds(timeOutSeconds);
-            var pollingInterval = TimeSpan.FromMilliseconds(pollingIntervalMilliseconds);
-            var clock = new SystemClock();
-            var wait = new WebDriverWait(clock, driver, timeOut, pollingInterval);
-
-            var exceptionsToIgnoreByDefault = new[]
-            {
-            typeof(StaleElementReferenceException),
-            typeof(NoSuchElementException),
-            typeof(ElementClickInterceptedException),
-            typeof(ElementNotInteractableException),
-        };
-
-            wait.IgnoreExceptionTypes(exceptionsToIgnore ?? exceptionsToIgnoreByDefault);
-            return wait;
-        }
     }
 }
+

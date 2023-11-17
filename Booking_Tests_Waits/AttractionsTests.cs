@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Booking_Tests_Waits
 {
+    [TestFixture]
     public class AttractionsTests : BaseTest
     {
         private HomePage _homePage;

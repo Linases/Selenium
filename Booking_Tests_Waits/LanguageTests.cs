@@ -1,11 +1,5 @@
-﻿using Booking_Pages;
-using BookingPages;
+﻿using BookingPages;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Booking_Tests_Waits
 {
@@ -13,7 +7,7 @@ namespace Booking_Tests_Waits
     internal class LanguageTests : BaseTest
     {
         private LanguagePage _languagePage;
-        private string language = "English";
+        private string existingLanguage = "English";
         private string changedLanguage = "Nederlands";
 
         [SetUp]
@@ -25,13 +19,12 @@ namespace Booking_Tests_Waits
         [Test]
         public void LanguageChange()
         {
-           
-            Assert. That(_languagePage.GetButtonLanguageName(language), Is.EqualTo(language));
-            Thread.Sleep(2000);
+            var languageNow = _languagePage.GetButtonLanguageName(existingLanguage);
+            Assert.That(languageNow, Is.EqualTo(existingLanguage), $"Language now is not {existingLanguage}");
             _languagePage.ClickLanguageButton();
             _languagePage.SelectLanguge();
-            Assert.That(_languagePage.GetButtonLanguageName(changedLanguage), Is.EqualTo(changedLanguage));
-      
+            var languageNew = _languagePage.GetButtonLanguageName(changedLanguage);
+            Assert.That(languageNew, Is.EqualTo(changedLanguage), $" Changed language is not {changedLanguage}");
         }
     }
 }

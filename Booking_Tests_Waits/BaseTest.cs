@@ -25,6 +25,7 @@ namespace Booking_Tests_Waits
             Assert.That(Driver.Url, Is.EqualTo($"{MainUrl}/"), "Homepage is not displayed");
             _homePage = new HomePage(Driver);
             _homePage.DeclineCookies();
+            //_homePage.DissmissAlert();
         }
 
         [OneTimeTearDown]

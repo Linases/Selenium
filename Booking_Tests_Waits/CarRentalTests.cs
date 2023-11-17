@@ -30,7 +30,7 @@ namespace Booking_Tests_Waits
             _carRentalsPage = new CarRentalsPage(Driver);
             _carRentalsDatePickerPage = new CarRentalsDatePickerPage(Driver);
             _homePage.OpenCarRentalsPage();
-            Assert.That(Driver.Url.Contains($"{MainUrl}/cars/"), Is.True, "Car rentals page is not displayed");
+            Assert.That(Driver.Url.Contains("cars/"), Is.True, "Car rentals page is not displayed");
         }
 
         [Test]

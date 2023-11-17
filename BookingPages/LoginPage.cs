@@ -12,12 +12,12 @@ namespace BookingPages
     public class LoginPage
     {
         private readonly IWebDriver _driver;
-        private IWebElement LoginButton => _driver.NoSuchElementExceptionWait(By.XPath("//*[@data-testID='header-sign-in-button']"), 30, 500);
-        private IWebElement EmailField => _driver.WaitForElementVisible(By.Id("username"), 20);
-        private IWebElement ContinueWithEmailButton => _driver.WaitForElementClicable(By.XPath("//*[text()='Continue with email']"), 20);
+        private IWebElement LoginButton => _driver.WaitForElementClicable(By.XPath("//*[@data-testID='header-sign-in-button']"));
+        private IWebElement EmailField => _driver.WaitForElementVisible(By.Id("username"));
+        private IWebElement ContinueWithEmailButton => _driver.WaitForElementClicable(By.XPath("//*[text()='Continue with email']"));
 
-        private IWebElement PasswordField => _driver.WaitForElementVisible(By.XPath("//*[@placeholder='Enter a password']"), 20);
-        private IWebElement ConfirmPasswordField => _driver.WaitForElementVisible(By.XPath("//*[@placeholder='Confirm your password']"), 20);
+        private IWebElement PasswordField => _driver.WaitForElementVisible(By.XPath("//*[@placeholder='Enter a password']"));
+        private IWebElement ConfirmPasswordField => _driver.WaitForElementVisible(By.XPath("//*[@placeholder='Confirm your password']"));
 
         public LoginPage(IWebDriver driver)
         {

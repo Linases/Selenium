@@ -1,9 +1,4 @@
 ﻿using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utilities;
 
 namespace BookingPages
@@ -11,8 +6,8 @@ namespace BookingPages
     public class LanguagePage
     {
         private readonly IWebDriver _driver;
-        private IWebElement LanguagePictureButton => _driver.NoSuchElementExceptionWait(By.XPath("//*[@data-testid='header-language-picker-trigger']"),30,500);
-        private IWebElement LanguageElement => _driver.NoSuchElementExceptionWait(By.XPath("//*[text()='Nederlands']"), 20,500);
+        private IWebElement LanguagePictureButton => _driver.WaitForElementClicable(By.XPath("//*[@data-testid='header-language-picker-trigger']"));
+        private IWebElement LanguageElement => _driver.WaitForElementVisible(By.XPath("//*[text()='Nederlands']"));
         
         public LanguagePage(IWebDriver driver)
         {
