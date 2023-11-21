@@ -1,11 +1,6 @@
 ﻿using Booking_Pages;
 using BookingPages;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Booking_Tests_Waits
 {
@@ -14,9 +9,8 @@ namespace Booking_Tests_Waits
     {
         private HomePage _homePage;
         private AttractionsPage _attractionsPage;
-        private const string expectedDestination = "Vilnius";
-        DateTime firstDay = new DateTime(2023, 11, 18);
-        DateTime lastDay = new DateTime(2023, 11, 20);
+        private const string expectedDestination = "Paris";
+        private DateTime attractionsDay = new DateTime(2023, 11, 26);
 
         [SetUp]
         public void Setup()
@@ -31,24 +25,24 @@ namespace Booking_Tests_Waits
         public void SearchingAttractions()
         {
             _attractionsPage.EnterDestination(expectedDestination);
-            // _attractionsPage.GetFirstRelevantValue(expectedDestination);
-            //var destination = _attractionsPage.GetDestination();
-            // Assert.That(destination, Is.EqualTo(expectedDestination));
+            _attractionsPage.SelectAutocompleteOption();
+            var destination = _attractionsPage.GetDestination();
+
+            Assert.That(destination, Is.EqualTo(expectedDestination));
 
             _attractionsPage.ClickDatesField();
-            _attractionsPage.SelectDate(firstDay);
-            _attractionsPage.SelectDate(lastDay);
+            _attractionsPage.SelectDate(attractionsDay);
+            var actualDay = _attractionsPage.GetAttractionsDate();
+            var expectedDay = attractionsDay.ToString("MMM dd");
+
+            Assert.That(actualDay, Is.EqualTo(expectedDay));
             _attractionsPage.ClickSearchButton();
 
-
-
+            Assert.That(Driver.Url.Contains($"attractions/searchresults"), Is.True, "Attractions searchresults are not displayed");
+            _attractionsPage.SelecFirstAvailability();
+            Assert.That(_attractionsPage.IsAttractionDetailsDisplayed(), Is.True, "The details page for the selected attraction is not displayed");
+            Assert.That(_attractionsPage.IsDatePickerDisplayed(), Is.True, "Available dates for the selected attraction are not displayed");
+            Assert.That(_attractionsPage.IsTimeSlotDisplayed(), Is.True, "Available times for the selected attraction are not displayed");
         }
-
-
-
     }
 }
-
-
-
-

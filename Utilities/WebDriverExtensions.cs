@@ -1,7 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
-using System;
+
 
 namespace Utilities
 {
@@ -9,6 +9,49 @@ namespace Utilities
     {
         private static IWebDriver _driver;
 
+        public static WebDriverWait GetWait(
+        this IWebDriver driver,
+        int timeOutSeconds = 20,
+        int pollingIntervalMilliseconds = 500,
+        Type[]? exceptionsToIgnore = null)
+        {
+            var timeOut = TimeSpan.FromSeconds(timeOutSeconds);
+            var pollingInterval = TimeSpan.FromMilliseconds(pollingIntervalMilliseconds);
+            var clock = new SystemClock();
+            var wait = new WebDriverWait(clock, driver, timeOut, pollingInterval);
+
+            var exceptionsToIgnoreByDefault = new[]
+{
+            typeof(StaleElementReferenceException),
+            typeof(NoSuchElementException),
+            typeof(ElementClickInterceptedException),
+            typeof(ElementNotInteractableException),
+            typeof(WebDriverException),
+            typeof(InvalidOperationException),
+
+        };
+            var exceptions = exceptionsToIgnore ?? exceptionsToIgnoreByDefault;
+            wait.IgnoreExceptionTypes(exceptions);
+            return wait;
+        }
+
+        public static IList<IWebElement> GETWaitForElementsVisible(this IWebDriver driver, By locator)
+        {
+            var wait = driver.GetWait();
+            return wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(locator));
+        }
+
+        public static IWebElement GETWaitForElementVisible(this IWebDriver driver, By locator)
+        {
+            var wait = driver.GetWait();
+            return wait.Until(ExpectedConditions.ElementIsVisible(locator));
+        }
+
+        public static IWebElement GETWaitForElementClicable(this IWebDriver driver, By locator)
+        {
+            var wait = driver.GetWait();
+            return wait.Until(ExpectedConditions.ElementToBeClickable(locator));
+        }
 
         public static IWebElement WaitForElementVisible(this IWebDriver driver, By locator, int timeoutInSeconds = 20)
         {
@@ -16,7 +59,7 @@ namespace Utilities
             return wait.Until(ExpectedConditions.ElementIsVisible(locator));
         }
 
-        public static IList<IWebElement> WaitForElementsVisible(this IWebDriver driver, By locator, int timeoutInSeconds = 20)
+        public static IList<IWebElement> WaitForElementsVisible(this IWebDriver driver, By locator, int timeoutInSeconds = 30)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
             return wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(locator));
@@ -27,26 +70,6 @@ namespace Utilities
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
             return wait.Until(ExpectedConditions.ElementToBeClickable(locator));
         }
-
-        public static IWebElement NoSuchElementExceptionWait(this IWebDriver driver, By locator, int timeoutInSeconds, int miliSeconds)
-        {
-            var fluentWait = new DefaultWait<IWebDriver>(driver);
-            fluentWait.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
-            fluentWait.PollingInterval = TimeSpan.FromMilliseconds(miliSeconds);
-            fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException));
-            return fluentWait.Until(driver => driver.FindElement(locator));
-
-        }
-        public static IWebElement StaleElementExceptionWait(this IWebDriver driver, By locator, int timeoutInSeconds = 20, int miliSeconds = 500)
-        {
-            var fluentWait = new DefaultWait<IWebDriver>(driver);
-            fluentWait.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
-            fluentWait.PollingInterval = TimeSpan.FromMilliseconds(miliSeconds);
-            fluentWait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
-            return fluentWait.Until(driver => driver.FindElement(locator));
-
-        }
-
     }
 }
 

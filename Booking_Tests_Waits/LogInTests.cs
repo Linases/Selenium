@@ -1,11 +1,5 @@
-﻿using Booking_Pages;
-using BookingPages;
+﻿using BookingPages;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Booking_Tests_Waits
 {

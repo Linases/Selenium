@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Apache.NMS;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
@@ -13,36 +14,47 @@ namespace BookingPages
     public class AirportTaxiPage
     {
         private readonly IWebDriver _driver;
-        private IWebElement PickUpLocation => _driver.WaitForElementVisible(By.Id("pickupLocation"));
-        private IWebElement Destination => _driver.WaitForElementVisible(By.Id("dropoffLocation"));
-        private IWebElement PickUpDate => _driver.WaitForElementVisible(By.XPath("//button[@data-test='rw-date-field__link--pickup']/span"));
-        private IWebElement PickUpTime => _driver.WaitForElementVisible(By.XPath("//button[@data-test='rw-time-field--pickup']/span"));
-        private IWebElement SearchButton => _driver.WaitForElementVisible(By.XPath("//*[@id='booking-taxi-searchbar__container']/div/div/div/form/div[2]/div[1]/div[2]/div/div/div[3]/div/button"));
+        private IWebElement PickUpLocation => _driver.FindElement(By.Id("pickupLocation"));
+        private IWebElement Destination => _driver.FindElement(By.Id("dropoffLocation"));
+        private IWebElement PickUpDate => _driver.FindElement(By.XPath("//button[@data-test='rw-date-field__link--pickup']/span"));
+        private IWebElement PickUpTime => _driver.FindElement(By.XPath("//button[@data-test='rw-time-field--pickup']/span"));
+        private IWebElement SearchButton => _driver.FindElement(By.XPath("//*[@id='booking-taxi-searchbar__container']/div/div/div/form/div[2]/div[1]/div[2]/div/div/div[3]/div/button"));
 
-        private IWebElement Calendar => _driver.WaitForElementVisible(By.XPath("//*[@data-test='rw-calendar']"));
+        private IWebElement Calendar => _driver.FindElement(By.XPath("//*[@data-test='rw-calendar']"));
         private IWebElement CurrentMonth => Calendar.FindElement(By.CssSelector(".rw-c-date-picker__calendar-caption"));
         private IWebElement NextMonthArrow => Calendar.FindElement(By.XPath("//*[@data-test='rw-date-picker__btn--next']"));
-        private IWebElement Auto_CompleteListFirstItem => _driver.WaitForElementClicable(By.XPath("//*[@data-test='rw-autocomplete-item__title-0']"));
+        //  By Auto_CompleteListPickUp => (By.CssSelector("#pickupLocation-items"));
+        // By Auto_CompleteListPickUp => (By.CssSelector("#dropoffLocation-items"));
         private IList<IWebElement> CurrentDays => Calendar.FindElements(By.XPath("//*[@data-test='rw-calendar']//td"));
-        private IList<IWebElement> SearchResultsList => _driver.WaitForElementsVisible(By.CssSelector(".SRM_527ba3f0"));
+        private IList<IWebElement> SearchResultsList => _driver.FindElements(By.CssSelector(".SRM_527ba3f0"));
 
-        private SelectElement SelectHour => new SelectElement(_driver.WaitForElementVisible(By.CssSelector("#pickupHour")));
-        private SelectElement SelectMinutes => new SelectElement(_driver.WaitForElementClicable(By.CssSelector("#pickupMinute")));
-        private IWebElement ConfirmTimeButton => _driver.WaitForElementClicable(By.XPath("//*[@data-test='rw-time-picker__confirm-button']"));
-        private IWebElement ContinueButton => _driver.WaitForElementClicable(By.XPath("//button[@data-test='continue-action-bar__continue-button']"));
-        private IWebElement ItinerarySummary => _driver.WaitForElementVisible(By.XPath("//*[@data-testid='route-summary-wrapper']"));
+        private SelectElement SelectHour => new SelectElement(_driver.FindElement(By.CssSelector("#pickupHour")));
+        private SelectElement SelectMinutes => new SelectElement(_driver.FindElement(By.CssSelector("#pickupMinute")));
+        private IWebElement ConfirmTimeButton => _driver.FindElement(By.XPath("//*[@data-test='rw-time-picker__confirm-button']"));
+        private IWebElement ContinueButton => _driver.FindElement(By.XPath("//button[@data-test='continue-action-bar__continue-button']"));
+        private IWebElement ItinerarySummary => _driver.FindElement(By.XPath("//*[@data-testid='route-summary-wrapper']"));
+
         public AirportTaxiPage(IWebDriver driver)
         {
             _driver = driver;
         }
 
-        public void EnterPickUpLocation(string pickUpLocation) => PickUpLocation.SendKeys(pickUpLocation);
-        public void EnterDestinationLocation(string destination) => Destination.SendKeys(destination);
+        public void EnterPickUpLocation(string pickUpLocation)
+        {
+            PickUpLocation.SendKeys(pickUpLocation);
+            PickUpLocation.SendKeys(Keys.Enter);
+        }
 
-        public void ChooseFirstItem() => Auto_CompleteListFirstItem.Click();
+        public void EnterDestinationLocation(string destination)
+        {
+            Destination.SendKeys(destination);
+            Destination.SendKeys(Keys.Enter);
+        }
 
-        public string GetPickUpLocation() => PickUpLocation.Text;
-        public string GetDestination() => Destination.Text;
+        public string GetPickUpLocation() => PickUpLocation.Text; //no string in element
+
+        public string GetDestination() => Destination.Text; //no string in element
+
         public void ClickDateField() => PickUpDate.Click();
 
         public void SelectDate(DateTime taxiDate)
@@ -60,12 +72,15 @@ namespace BookingPages
         }
 
         public string GetSelectedDate() => PickUpDate.Text;
+
         public void ClickTimeField() => PickUpTime.Click();
+
         public void ConfirmTime() => ConfirmTimeButton.Click();
 
         public void SelectHourValue(string hour) => SelectHour.SelectByValue(hour);
 
         public void SelectMinutesValue(string minutes) => SelectMinutes.SelectByValue(minutes);
+
         public string GetPickUpTime() => PickUpTime.Text;
 
         public void ClickSearch() => SearchButton.Click();
@@ -79,7 +94,6 @@ namespace BookingPages
         public void ClickContinueButton() => ContinueButton.Click();
 
         public bool SummaryDisplayed() => ItinerarySummary.Displayed;
-
 
         public bool isDisplayedList()
         {

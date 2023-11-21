@@ -11,7 +11,7 @@ namespace Booking_Tests_Waits
         protected static IWebDriver Driver;
         protected readonly string MainUrl;
         private HomePage _homePage;
-
+    
         public BaseTest()
         {
             MainUrl = "https://www.booking.com";
@@ -25,7 +25,6 @@ namespace Booking_Tests_Waits
             Assert.That(Driver.Url, Is.EqualTo($"{MainUrl}/"), "Homepage is not displayed");
             _homePage = new HomePage(Driver);
             _homePage.DeclineCookies();
-            //_homePage.DissmissAlert();
         }
 
         [OneTimeTearDown]

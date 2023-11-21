@@ -1,9 +1,4 @@
 ﻿using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utilities;
 
 namespace BookingPages
@@ -12,12 +7,13 @@ namespace BookingPages
     {
         private readonly IWebDriver _driver;
 
-        private IWebElement SearchField => _driver.WaitForElementClicable(By.XPath("//input[@placeholder='Where are you going?']"));
-        private IList<IWebElement> AutocompleteList => _driver.WaitForElementsVisible(By.CssSelector(".css-9dv5ti"));
+        private IWebElement SearchField => _driver.FindElement(By.XPath("//input[@placeholder='Where are you going?']"));
+        By AutocompleteList => (By.CssSelector(".css-9dv5ti"));
+      
+        private IWebElement SelectDaysField => _driver.FindElement(By.XPath("//*[text()='Select your dates']"));
+        private IWebElement SelectedDayField => _driver.FindElement(By.CssSelector(".css-tbiur0"));
 
-        private IWebElement SelectDaysField => _driver.WaitForElementClicable(By.XPath("//*[text()='Select your dates']"));
-
-        private IWebElement Calendar => _driver.WaitForElementClicable(By.CssSelector(".a10b0e2d13"));
+        private IWebElement Calendar => _driver.FindElement(By.CssSelector(".a10b0e2d13"));
 
         private IWebElement NextMonthArrow => Calendar.FindElement(By.XPath(".a10b0e2d13 button"));
 
@@ -25,9 +21,13 @@ namespace BookingPages
 
         private IList<IWebElement> CurrentDays => Calendar.FindElements(By.CssSelector(".a10b0e2d13 td"));
 
-        private IWebElement SearchButton => _driver.WaitForElementVisible(By.XPath("//*[@type = 'submit']"));
+        private IWebElement SearchButton => _driver.FindElement(By.XPath("//*[@type = 'submit']"));
 
-        private IWebElement AttractionsResultsNumber => _driver.WaitForElementVisible(By.CssSelector(".css-kyr0ak h2"));
+        By FirstAttraction => (By.XPath("(//*[@data-testid='sr-list']//a)[1]"));
+        By AttractionsDetails => (By.XPath("//*[@data-testid='inline-ticket-config']"));
+        private IWebElement Timeslot => _driver.FindElement(By.XPath("//*[@data-testid='timeslot-selector']"));
+        private IWebElement DatePicker => _driver.FindElement(By.XPath("//*[@data-testid='datepicker']"));
+
         public AttractionsPage(IWebDriver driver)
         {
             _driver = driver;
@@ -37,9 +37,12 @@ namespace BookingPages
 
         public string GetDestination() => SearchField.GetAttribute("value");
 
-        public void GetFirstRelevantValue(string destination)
+        public void SelectAutocompleteOption()
         {
-            AutocompleteList.FirstOrDefault(x => x.GetAttribute("city") == $"{destination}").Click();
+            var destination = GetDestination();
+            IList<IWebElement> autocomplete = _driver.WaitForElementsVisible(AutocompleteList);
+            var firstMatchingOptionText = autocomplete.FirstOrDefault(option => option.Text.Contains(destination));
+            firstMatchingOptionText.Click();
         }
 
         public void ClickDatesField() => SelectDaysField.Click();
@@ -53,11 +56,40 @@ namespace BookingPages
             {
                 NextMonthArrow.Click();
             }
-
             CurrentDays.FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}")).Click();
         }
+
+        public string GetAttractionsDate() => SelectedDayField.Text;
+
         public void ClickSearchButton() => SearchButton.Click();
 
-        public string GetNumbetOfAttractions() => AttractionsResultsNumber.Text;
+        public void SelecFirstAvailability()
+        {
+            var firstAttraction = _driver.WaitForElementClicable(FirstAttraction);
+            firstAttraction.Click();
+        }
+
+        public bool IsAttractionDetailsDisplayed()
+        {
+            var details = _driver.WaitForElementVisible(AttractionsDetails);
+            return details.Displayed;
+        }
+
+        public bool IsDatePickerDisplayed() => DatePicker.Displayed;
+
+        public bool IsTimeSlotDisplayed()
+        {
+            var times = Timeslot;
+            if (times == null)
+            {
+                Console.WriteLine("No times available right now");
+                return true;
+            }
+            else
+            {
+                var dispalyed = Timeslot.Displayed;
+                return true;
+            }
+        }
     }
 }

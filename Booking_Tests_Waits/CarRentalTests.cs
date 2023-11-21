@@ -1,14 +1,6 @@
 ﻿using Booking_Pages;
 using BookingPages;
 using NUnit.Framework;
-using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Booking_Tests_Waits
 {
@@ -17,10 +9,10 @@ namespace Booking_Tests_Waits
     {
         private HomePage _homePage;
         private CarRentalsPage _carRentalsPage;
-      
-        private const string invalidLocation = "hjfkhf";
-        DateTime pickUpDate = new DateTime(2023, 11, 18);
-        DateTime dropOffDate = new DateTime(2023, 11, 20);
+        private Random random = new Random();
+        private static DateTime pickUpDate = new DateTime(2023, 11, 25);
+        private static DateTime dropOffDate = new DateTime(2023, 11, 19);
+        private static DateTime expectedPickUpDate = dropOffDate;
 
         [SetUp]
         public void Setup()
@@ -32,21 +24,31 @@ namespace Booking_Tests_Waits
         }
 
         [Test]
-        public void CarRentalsPageOpened()
+        public void CarRentalsNegativeCheck()
         {
             _carRentalsPage.ClickSearchButton();
             Assert.That(_carRentalsPage.GetErrorMessage(), Is.EqualTo("Please provide a pick-up location"));
+            string invalidLocation = RandomGenerate(10);
+
             _carRentalsPage.InputLocation(invalidLocation);
             var location = _carRentalsPage.GetLocation();
             Assert.That(location, Is.EqualTo(invalidLocation), $"Entered location is not {invalidLocation}");
             _carRentalsPage.ClickSearchButton();
             Assert.That(_carRentalsPage.GetErrorMessage, Is.EqualTo("Please provide a pick-up location"));
-            _carRentalsPage.ClickPickUpDateField();
 
+            _carRentalsPage.ClickPickUpDateField();
             _carRentalsPage.SelectDate(pickUpDate);
             _carRentalsPage.SelectDate(dropOffDate);
+            var PickUpDate = _carRentalsPage.GetPickUpDate();
+            DateTime parsedDate = DateTime.ParseExact(PickUpDate, "ddd, MMM dd", System.Globalization.CultureInfo.InvariantCulture);
+            Assert.That(parsedDate, Is.EqualTo(expectedPickUpDate), "Pick up day is not eaqual Drop Of day");
+        }
 
-
+        private string RandomGenerate(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrsqtuvwxyz";
+            return new string(Enumerable.Repeat(chars, length)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

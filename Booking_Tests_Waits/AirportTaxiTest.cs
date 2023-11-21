@@ -1,11 +1,6 @@
 ﻿using Booking_Pages;
 using BookingPages;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Booking_Tests_Waits
 {
@@ -15,12 +10,11 @@ namespace Booking_Tests_Waits
         private HomePage _homePage;
         private AirportTaxiPage _airportTaxiPage;
         private const string expectedPickUpLocation = "Vilnius";
-        private const string expectedDestination = "Palanga";
+        private const string expectedDestination = "Paris";
         DateTime expectedTaxiDate = new DateTime(2023, 11, 18);
         private const string expectedHour = "13";
         private const string expectedMinutes = "30";
         private const string expectedTime = $"{expectedHour}:{expectedMinutes}";
-
 
         [SetUp]
         public void Setup()
@@ -41,17 +35,10 @@ namespace Booking_Tests_Waits
             SelectTaxi();
         }
 
-
         private void ChoosePickUpPlaceAndDestination()
         {
             _airportTaxiPage.EnterPickUpLocation(expectedPickUpLocation);
-            _airportTaxiPage.ChooseFirstItem();
             _airportTaxiPage.EnterDestinationLocation(expectedDestination);
-            _airportTaxiPage.ChooseFirstItem();
-            // var pickUpLocation = _airportTaxiPage.GetPickUpLocation();
-            // var destination = _airportTaxiPage.GetDestination();
-            // Assert.That(pickUpLocation.Contains(expectedPickUpLocation), Is.True);// not working
-            //Assert.That(destination.Contains(expectedDestination), Is.True);//not working
         }
 
         private void SelectTaxiDate()
@@ -59,8 +46,7 @@ namespace Booking_Tests_Waits
             _airportTaxiPage.ClickDateField();
             _airportTaxiPage.SelectDate(expectedTaxiDate);
             var taxiDate = _airportTaxiPage.GetSelectedDate();
-            //expectedTaxiDate.ToString("dd-MM-yyyy"); need to fix formats
-            //Assert.That(taxiDate, Is.EqualTo($"{expectedTaxiDate}"), $"Selected airport taxi date is not {expectedTaxiDate}");
+            Assert.That(taxiDate, Is.EqualTo($"{expectedTaxiDate}"), $"Selected airport taxi date is not {expectedTaxiDate}");
         }
 
         private void SelectTaxiTime()

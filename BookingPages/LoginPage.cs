@@ -1,10 +1,4 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.DevTools.V117.Audits;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utilities;
 
 namespace BookingPages
@@ -12,12 +6,10 @@ namespace BookingPages
     public class LoginPage
     {
         private readonly IWebDriver _driver;
-        private IWebElement LoginButton => _driver.WaitForElementClicable(By.XPath("//*[@data-testID='header-sign-in-button']"));
-        private IWebElement EmailField => _driver.WaitForElementVisible(By.Id("username"));
-        private IWebElement ContinueWithEmailButton => _driver.WaitForElementClicable(By.XPath("//*[text()='Continue with email']"));
-
-        private IWebElement PasswordField => _driver.WaitForElementVisible(By.XPath("//*[@placeholder='Enter a password']"));
-        private IWebElement ConfirmPasswordField => _driver.WaitForElementVisible(By.XPath("//*[@placeholder='Confirm your password']"));
+        private IWebElement LoginButton => _driver.FindElement(By.XPath("//*[@data-testID='header-sign-in-button']"));
+        private IWebElement EmailField => _driver.FindElement(By.Id("username"));
+        private IWebElement ContinueWithEmailButton => _driver.FindElement(By.XPath("//*[text()='Continue with email']"));
+        private IWebElement ConfirmPasswordField => _driver.FindElement(By.XPath("//*[@placeholder='Confirm your password']"));
 
         public LoginPage(IWebDriver driver)
         {
@@ -32,9 +24,12 @@ namespace BookingPages
 
         public void ClickContinueButton() => ContinueWithEmailButton.Click();
 
-        public bool IsPasswordFieldVisible () => PasswordField.Displayed;
+        public bool IsPasswordFieldVisible()
+        {
+            var Password = _driver.WaitForElementVisible(By.XPath("//*[@placeholder='Enter a password']"));
+            return Password.Displayed;
+        }
 
         public bool IsConfirmPasswordFieldVisible() => ConfirmPasswordField.Displayed;
-
     }
 }
