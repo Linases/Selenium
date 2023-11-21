@@ -18,7 +18,7 @@ namespace BookingPages
         private IWebElement Destination => _driver.FindElement(By.Id("dropoffLocation"));
         private IWebElement PickUpDate => _driver.FindElement(By.XPath("//button[@data-test='rw-date-field__link--pickup']/span"));
         private IWebElement PickUpTime => _driver.FindElement(By.XPath("//button[@data-test='rw-time-field--pickup']/span"));
-        private IWebElement SearchButton => _driver.FindElement(By.XPath("//*[@id='booking-taxi-searchbar__container']/div/div/div/form/div[2]/div[1]/div[2]/div/div/div[3]/div/button"));
+        private IWebElement SearchButton => _driver.FindElement(By.XPath("(//span[@data-test='button-content'])[1]"));
 
         private IWebElement Calendar => _driver.FindElement(By.XPath("//*[@data-test='rw-calendar']"));
         private IWebElement CurrentMonth => Calendar.FindElement(By.CssSelector(".rw-c-date-picker__calendar-caption"));
