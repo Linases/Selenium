@@ -22,6 +22,7 @@ namespace Booking_Tests_Waits
         {
             Driver = BrowserFactory.GetDriver(BrowserType.Chrome);
             Driver.Navigate().GoToUrl(MainUrl);
+            Driver.Manage().Window.Maximize();
             Assert.That(Driver.Url, Is.EqualTo($"{MainUrl}/"), "Homepage is not displayed");
             _homePage = new HomePage(Driver);
             _homePage.DeclineCookies();

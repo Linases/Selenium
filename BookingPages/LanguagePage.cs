@@ -6,8 +6,8 @@ namespace BookingPages
     public class LanguagePage
     {
         private readonly IWebDriver _driver;
-        private IWebElement LanguagePictureButton => _driver.FindElement(By.XPath("//*[@data-testid='header-language-picker-trigger']"));
         private By LanguageElement => By.XPath("//*[text()='Nederlands']");
+        private IWebElement LanguagePictureButton => _driver.FindElement(By.XPath("//*[@data-testid='header-language-picker-trigger']"));
 
         public LanguagePage(IWebDriver driver)
         {
@@ -19,10 +19,7 @@ namespace BookingPages
         public string GetButtonLanguageName(string language)
         {
             var buttonLanguage = LanguagePictureButton.GetAttribute("aria-label");
-            if (buttonLanguage.Contains(language))
-            {
-            }
-            return language;
+            return buttonLanguage;
         }
 
         public void SelectLanguge()

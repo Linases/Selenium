@@ -6,7 +6,7 @@ namespace BookingPages
     public class LoginPage
     {
         private readonly IWebDriver _driver;
-        private IWebElement LoginButton => _driver.FindElement(By.XPath("//*[@data-testID='header-sign-in-button']"));
+        private IWebElement LoginButton => _driver.FindElement(By.XPath("//*[@data-testid='header-sign-in-button']"));
         private IWebElement EmailField => _driver.FindElement(By.Id("username"));
         private IWebElement ContinueWithEmailButton => _driver.FindElement(By.XPath("//*[text()='Continue with email']"));
         private IWebElement ConfirmPasswordField => _driver.FindElement(By.XPath("//*[@placeholder='Confirm your password']"));

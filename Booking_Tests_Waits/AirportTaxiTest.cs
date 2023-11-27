@@ -1,6 +1,7 @@
 ﻿using Booking_Pages;
 using BookingPages;
 using NUnit.Framework;
+using System.Globalization;
 
 namespace Booking_Tests_Waits
 {
@@ -9,12 +10,12 @@ namespace Booking_Tests_Waits
     {
         private HomePage _homePage;
         private AirportTaxiPage _airportTaxiPage;
-        private const string expectedPickUpLocation = "Vilnius";
-        private const string expectedDestination = "Paris";
-        DateTime expectedTaxiDate = new DateTime(2023, 11, 18);
-        private const string expectedHour = "13";
-        private const string expectedMinutes = "30";
-        private const string expectedTime = $"{expectedHour}:{expectedMinutes}";
+        private const string _expectedPickUpLocation = "Vilnius";
+        private const string _expectedDestination = "Kaunas";
+        private DateTime _expectedTaxiDate = new DateTime(2023, 11, 30);
+        private const string _expectedHour = "13";
+        private const string _expectedMinutes = "30";
+        private const string _expectedTime = $"{_expectedHour}:{_expectedMinutes}";
 
         [SetUp]
         public void Setup()
@@ -28,44 +29,37 @@ namespace Booking_Tests_Waits
         [Test]
         public void BookAirportTaxi()
         {
-            ChoosePickUpPlaceAndDestination();
-            SelectTaxiDate();
-            SelectTaxiTime();
-            _airportTaxiPage.ClickSearch();
-            SelectTaxi();
-        }
+            _airportTaxiPage.EnterPickUpLocation(_expectedPickUpLocation);
+            _airportTaxiPage.EnterDestinationLocation(_expectedDestination);
+            var actualPickUpLocation = _airportTaxiPage.GetPickUpLocation();
+            var actualDropOffLocation = _airportTaxiPage.GetDropOffLocation();
+            Assert.That(actualPickUpLocation.Contains(_expectedPickUpLocation), Is.True, "Pick-up is not selected");
+            Assert.That(actualDropOffLocation.Contains(_expectedDestination), Is.True, "Drop-Off is not selected");
 
-        private void ChoosePickUpPlaceAndDestination()
-        {
-            _airportTaxiPage.EnterPickUpLocation(expectedPickUpLocation);
-            _airportTaxiPage.EnterDestinationLocation(expectedDestination);
-        }
-
-        private void SelectTaxiDate()
-        {
             _airportTaxiPage.ClickDateField();
-            _airportTaxiPage.SelectDate(expectedTaxiDate);
+            _airportTaxiPage.SelectDate(_expectedTaxiDate);
             var taxiDate = _airportTaxiPage.GetSelectedDate();
-            Assert.That(taxiDate, Is.EqualTo($"{expectedTaxiDate}"), $"Selected airport taxi date is not {expectedTaxiDate}");
-        }
+            DateTime parsedDate = DateTime.ParseExact(taxiDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            string expectedFormattedDate = _expectedTaxiDate.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+            string actualFormattedDate = parsedDate.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+            Assert.That(actualFormattedDate, Is.EqualTo($"{expectedFormattedDate}"), $"Selected airport taxi date is not {_expectedTaxiDate}");
 
-        private void SelectTaxiTime()
-        {
             _airportTaxiPage.ClickTimeField();
-            _airportTaxiPage.SelectHourValue(expectedHour);
-            _airportTaxiPage.SelectMinutesValue(expectedMinutes);
+            _airportTaxiPage.SelectHourValue(_expectedHour);
+            _airportTaxiPage.SelectMinutesValue(_expectedMinutes);
             _airportTaxiPage.ConfirmTime();
             var taxiTime = _airportTaxiPage.GetPickUpTime();
-            Assert.That(taxiTime, Is.EqualTo($"{expectedTime}"), $" Selected taxi time is not {expectedTime}");
-        }
+            Assert.That(taxiTime, Is.EqualTo($"{_expectedTime}"), $" Selected taxi time is not {_expectedTime}");
 
-        private void SelectTaxi()
-        {
+            _airportTaxiPage.ClickSearch();
+            _homePage.DeclineCookies();
+
             Assert.That(_airportTaxiPage.isDisplayedList(), Is.True, "Taxis list is not displayed");
             _airportTaxiPage.SelectTaxi();
             _airportTaxiPage.ClickContinueButton();
-            Assert.That(_airportTaxiPage.SummaryDisplayed(), Is.True, "Taxi travel itinerary is not dispalyed");
-            Assert.That(Driver.Url.Contains("checkout"), Is.True, "Taxi travel itinerary is not dispalyed ");
+            //Bot awareness, can not check lasts assertions.
+            Assert.That(_airportTaxiPage.SummaryDisplayed(), Is.True, "Taxi travel itinerary is not displayed");
+            Assert.That(Driver.Url.Contains("checkout"), Is.True, "Taxi travel itinerary is not displayed ");
         }
     }
 }

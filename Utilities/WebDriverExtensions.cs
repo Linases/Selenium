@@ -12,7 +12,7 @@ namespace Utilities
         public static WebDriverWait GetWait(
         this IWebDriver driver,
         int timeOutSeconds = 20,
-        int pollingIntervalMilliseconds = 500,
+        int pollingIntervalMilliseconds = 300,
         Type[]? exceptionsToIgnore = null)
         {
             var timeOut = TimeSpan.FromSeconds(timeOutSeconds);
@@ -35,19 +35,19 @@ namespace Utilities
             return wait;
         }
 
-        public static IList<IWebElement> GETWaitForElementsVisible(this IWebDriver driver, By locator)
+        public static IList<IWebElement> GetWaitForElementsVisible(this IWebDriver driver, By locator)
         {
             var wait = driver.GetWait();
-            return wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(locator));
+            return wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(locator));
         }
 
-        public static IWebElement GETWaitForElementVisible(this IWebDriver driver, By locator)
+        public static IWebElement GetWaitForElementVisible(this IWebDriver driver, By locator)
         {
             var wait = driver.GetWait();
             return wait.Until(ExpectedConditions.ElementIsVisible(locator));
         }
 
-        public static IWebElement GETWaitForElementClicable(this IWebDriver driver, By locator)
+        public static IWebElement GetWaitForElementClicable(this IWebDriver driver, By locator)
         {
             var wait = driver.GetWait();
             return wait.Until(ExpectedConditions.ElementToBeClickable(locator));

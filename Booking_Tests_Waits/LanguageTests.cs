@@ -7,8 +7,8 @@ namespace Booking_Tests_Waits
     internal class LanguageTests : BaseTest
     {
         private LanguagePage _languagePage;
-        private string existingLanguage = "English";
-        private string changedLanguage = "Nederlands";
+        private string _existingLanguage = "English";
+        private string _changedLanguage = "Nederlands";
 
         [SetUp]
         public void Setup()
@@ -19,12 +19,12 @@ namespace Booking_Tests_Waits
         [Test]
         public void LanguageChange()
         {
-            var languageNow = _languagePage.GetButtonLanguageName(existingLanguage);
-            Assert.That(languageNow, Is.EqualTo(existingLanguage), $"Language now is not {existingLanguage}");
+            var languageNow = _languagePage.GetButtonLanguageName(_existingLanguage);
+            Assert.That(languageNow.Contains($"{_existingLanguage}"), $"Language now is not {_existingLanguage}");
             _languagePage.ClickLanguageButton();
             _languagePage.SelectLanguge();
-            var languageNew = _languagePage.GetButtonLanguageName(changedLanguage);
-            Assert.That(languageNew, Is.EqualTo(changedLanguage), $" Changed language is not {changedLanguage}");
+            var languageNew = _languagePage.GetButtonLanguageName(_changedLanguage);
+            Assert.That(languageNew.Contains($"{_changedLanguage}"), $" Changed language is not {_changedLanguage}");
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using OpenQA.Selenium;
-using Utilities;
-
 
 namespace BookingPages
 {
@@ -11,7 +9,7 @@ namespace BookingPages
         private IWebElement SelectedCheckInDay => _driver.FindElement(By.XPath("//*[@data-testid='date-display-field-start']"));
         private IWebElement SelectedCheckOutDay => _driver.FindElement(By.XPath("//*[@data-testid='date-display-field-end']"));
         private IWebElement Calendar => _driver.FindElement(By.CssSelector("#calendar-searchboxdatepicker"));
-        private IWebElement NextMonthArrow => Calendar.FindElement(By.XPath("//*div/div[1]/button"));
+        private IWebElement NextMonthArrow => _driver.FindElement(By.XPath("//*[@data-testid='searchbox-datepicker-calendar']/button"));
         private IList<IWebElement> CurrentMonths => Calendar.FindElements(By.TagName("h3"));
         private IList<IWebElement> CurrentDays => Calendar.FindElements(By.TagName("td"));
 
@@ -25,13 +23,11 @@ namespace BookingPages
         public void SelectDate(DateTime dateToSelect)
         {
             var currentMonthYearText = CurrentMonths.Select(x => x.Text).ToList();
-
             var desiredMonthYearText = dateToSelect.ToString("MMMM yyyy");
             while (!currentMonthYearText.Contains(desiredMonthYearText))
             {
                 NextMonthArrow.Click();
             }
-
             var desiredDayElement = CurrentDays.FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}"));
             desiredDayElement.Click();
         }

@@ -1,4 +1,6 @@
 ﻿using OpenQA.Selenium;
+using SeleniumExtras.WaitHelpers;
+using System.Globalization;
 using Utilities;
 
 namespace BookingPages
@@ -6,26 +8,18 @@ namespace BookingPages
     public class AttractionsPage
     {
         private readonly IWebDriver _driver;
-
+        private By AutocompleteList => (By.CssSelector(".css-9dv5ti"));
+        private By SelectedDayField => (By.CssSelector(".css-tbiur0"));
+        private By AttractionList => (By.XPath("//*[@data-testid='sr-list']//a"));
+        private By AttractionsDetails => (By.XPath("//*[@data-testid='inline-ticket-config']"));
+        private By Timeslot => (By.XPath("//*[@data-testid='timeslot-selector']"));
         private IWebElement SearchField => _driver.FindElement(By.XPath("//input[@placeholder='Where are you going?']"));
-        By AutocompleteList => (By.CssSelector(".css-9dv5ti"));
-      
         private IWebElement SelectDaysField => _driver.FindElement(By.XPath("//*[text()='Select your dates']"));
-        private IWebElement SelectedDayField => _driver.FindElement(By.CssSelector(".css-tbiur0"));
-
         private IWebElement Calendar => _driver.FindElement(By.CssSelector(".a10b0e2d13"));
-
         private IWebElement NextMonthArrow => Calendar.FindElement(By.XPath(".a10b0e2d13 button"));
-
         private IList<IWebElement> CurrentMonths => Calendar.FindElements(By.CssSelector(".a10b0e2d13 h3"));
-
-        private IList<IWebElement> CurrentDays => Calendar.FindElements(By.CssSelector(".a10b0e2d13 td"));
-
+        private IList<IWebElement> CurrentDays => _driver.FindElements(By.CssSelector(".a10b0e2d13 td"));
         private IWebElement SearchButton => _driver.FindElement(By.XPath("//*[@type = 'submit']"));
-
-        By FirstAttraction => (By.XPath("(//*[@data-testid='sr-list']//a)[1]"));
-        By AttractionsDetails => (By.XPath("//*[@data-testid='inline-ticket-config']"));
-        private IWebElement Timeslot => _driver.FindElement(By.XPath("//*[@data-testid='timeslot-selector']"));
         private IWebElement DatePicker => _driver.FindElement(By.XPath("//*[@data-testid='datepicker']"));
 
         public AttractionsPage(IWebDriver driver)
@@ -59,36 +53,59 @@ namespace BookingPages
             CurrentDays.FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}")).Click();
         }
 
-        public string GetAttractionsDate() => SelectedDayField.Text;
+        public string GetAttractionsDate() => _driver.GetWait().Until(ExpectedConditions.ElementIsVisible(SelectedDayField)).Text;
 
         public void ClickSearchButton() => SearchButton.Click();
 
         public void SelecFirstAvailability()
         {
-            var firstAttraction = _driver.WaitForElementClicable(FirstAttraction);
+            var attractionsList = _driver.GetWait().Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(AttractionList));
+            var firstAttraction = attractionsList.FirstOrDefault(x => x.Displayed);
             firstAttraction.Click();
         }
 
-        public bool IsAttractionDetailsDisplayed()
-        {
-            var details = _driver.WaitForElementVisible(AttractionsDetails);
-            return details.Displayed;
-        }
+        public bool IsAttractionDetailsDisplayed() => _driver.WaitForElementVisible(AttractionsDetails).Displayed;
 
-        public bool IsDatePickerDisplayed() => DatePicker.Displayed;
+        public bool IsDatePickerDisplayed()
+        {
+            try
+            {
+                if (DatePicker == null)
+                {
+                    Console.WriteLine("No times available right now");
+                    return true;
+                }
+                else
+                {
+                    return DatePicker.Displayed;
+                }
+            }
+            catch (NoSuchElementException)
+            {
+                Console.WriteLine("Element not found. Time slot not displayed.");
+                return false;
+            }
+        }
 
         public bool IsTimeSlotDisplayed()
         {
-            var times = Timeslot;
-            if (times == null)
+            try
             {
-                Console.WriteLine("No times available right now");
-                return true;
+                if (Timeslot == null)
+                {
+                    Console.WriteLine("No times available right now");
+                    return true;
+                }
+                else
+                {
+                    var isdisplayed = _driver.GetWait().Until(ExpectedConditions.ElementIsVisible(Timeslot));
+                    return isdisplayed.Displayed;
+                }
             }
-            else
+            catch (NoSuchElementException)
             {
-                var dispalyed = Timeslot.Displayed;
-                return true;
+                Console.WriteLine("Element not found. Time slot not displayed.");
+                return false;
             }
         }
     }
