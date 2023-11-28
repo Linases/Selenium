@@ -27,8 +27,8 @@ namespace BookingPages
 
         public bool IsPasswordFieldVisible()
         {
-            var Password = _driver.WaitForElementIsVisible(EnterPasswordField, 20);
-            var isVisible = Password.Displayed;
+            var password = _driver.WaitForElementIsVisible(EnterPasswordField, 20);
+            var isVisible = password.Displayed;
             return isVisible;
         }
 

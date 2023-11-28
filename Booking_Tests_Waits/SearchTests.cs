@@ -135,7 +135,7 @@ namespace Booking_Tests_Waits
             var parsedCheckout = DateTime.ParseExact(checkOut, "ddd, MMM dd", System.Globalization.CultureInfo.InvariantCulture);
             Assert.That(parsedCheckout, Is.EqualTo(_checkOutDate), $"Check Out day is not eaqual {_checkOutDate}");
         }
-
+   
         private void SelecGuestsRoomsNumber()
         {
             _searchPage.ClickGuestInput();
@@ -145,9 +145,8 @@ namespace Booking_Tests_Waits
             _searchPage.PressDone();
 
             var actualGuestsNr = _searchPage.GetGuestsNrValue();
-            var expectedGuestsNr = $"{_expectedRoomsNr}{_expectedAdultNr}{_expectedChildrenNr}";
-            var containsAllNumbers = expectedGuestsNr.All(c => actualGuestsNr.Contains(c));
-            Assert.That(containsAllNumbers, Is.True, "The selected numbers of adults, children and rooms are not filled in");
+            var expectedGuestsNr = $"{_expectedAdultNr} adults · {_expectedChildrenNr} children · {_expectedRoomsNr} rooms";
+            Assert.That(actualGuestsNr, Is.EqualTo(expectedGuestsNr), "The selected numbers of adults, children and rooms are not filled in");
         }
     }
 }
