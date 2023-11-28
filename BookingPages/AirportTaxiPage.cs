@@ -97,17 +97,17 @@ namespace BookingPages
 
         public void ClickContinueButton() => ContinueButton.Click();
 
-        public bool SummaryDisplayed() => ItinerarySummary.Displayed;
+        public bool IsSummaryDisplayed()
+        {
+            var isDisplayed = ItinerarySummary.Displayed;
+            return isDisplayed;
+        }
 
-        public bool isDisplayedList()
+        public bool IsDisplayedList()
         {
             var expensivePrice = _driver.GetWaitForElementsVisible(SearchResultsList);
             var list = expensivePrice.Where(x => x.Displayed).ToList();
-            if (list.Count >= 0)
-            {
-                return true;
-            }
-            return false;
+            return list.Any();
         }
     }
 }

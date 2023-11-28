@@ -1,5 +1,6 @@
 ﻿using BookingPages;
 using NUnit.Framework;
+using Utilities;
 
 namespace Booking_Tests_Waits
 {
@@ -7,7 +8,7 @@ namespace Booking_Tests_Waits
     public class LogInTests : BaseTest
     {
         private LoginPage _loginPage;
-        private const string _expectedEmail = "dsafkjf@gmail.com";
+        private string _expectedEmail = $"{RandomHelper.RandomGenerate(8)}@gmail.com";
 
         [SetUp]
         public void Setup()
@@ -24,8 +25,10 @@ namespace Booking_Tests_Waits
             var email = _loginPage.GetEmail();
             Assert.That(email, Is.EqualTo(_expectedEmail), $"Entered email is not: {_expectedEmail} ");
             _loginPage.ClickContinueButton();
-            Assert.That(_loginPage.IsPasswordFieldVisible(), Is.True, "Password field is not visible");
-            Assert.That(_loginPage.IsConfirmPasswordFieldVisible(), Is.True, " Confirm password field is not visible");
+            var passwordField = _loginPage.IsPasswordFieldVisible();
+            Assert.That(passwordField, Is.True, "Password field is not visible");
+            var confirmPasswordField = _loginPage.IsConfirmPasswordFieldVisible();
+            Assert.That(confirmPasswordField, Is.True, " Confirm password field is not visible");
         }
     }
 }

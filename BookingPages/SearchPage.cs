@@ -71,7 +71,11 @@ namespace Booking_Pages
             firstMatchingOption?.Click();
         }
 
-        public bool IsListofHotelsDisplayed() => HotelsListBlock.Displayed;
+        public bool IsListofHotelsDisplayed()
+        {
+            var isDisplayed = HotelsListBlock.Displayed;
+            return isDisplayed;
+        }
 
         public void PressSearchButton() => SearchButton.Click();
 
@@ -171,7 +175,7 @@ namespace Booking_Pages
 
         public void DissmissAlert()
         {
-            var alert = _driver.WaitForElementClicable(DissmissGeniusAlert);
+            var alert = _driver.WaitForElementIsClicable(DissmissGeniusAlert);
             if (alert.Displayed)
             {
                 alert.Click();
@@ -186,12 +190,12 @@ namespace Booking_Pages
             lowestPrice.Click();
         }
 
-        public bool FilteredByLowestPrice()
+        public bool IsFilteredByLowestPrice()
         {
-            IList<IWebElement> list = _driver.GetWaitForElementsVisible(ListByPrices);
+            var list = _driver.GetWaitForElementsVisible(ListByPrices);
             var prices = list.Select(n => n.Text).ToList();
 
-            List<string> sortedNames = new List<string>(prices);
+            var sortedNames = new List<string>(prices);
             sortedNames.Sort();
 
             var areSorted = Enumerable.SequenceEqual(prices, sortedNames);
@@ -222,7 +226,7 @@ namespace Booking_Pages
 
                 if (roomDropdowns.Count > 0)
                 {
-                    List<SelectElement> roomNumbers = roomDropdowns.Select(element => new SelectElement(element)).ToList();
+                    var roomNumbers = roomDropdowns.Select(element => new SelectElement(element)).ToList();
                     roomNumbers[0].SelectByValue(number);
                 }
             }
@@ -303,7 +307,7 @@ namespace Booking_Pages
                 Console.WriteLine("Pop up dismissal element did not appear within the specified time.");
             }
         }
-     
+
         public void CloseFinishBooking()
         {
             try

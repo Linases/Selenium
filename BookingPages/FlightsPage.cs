@@ -17,22 +17,10 @@ namespace BookingPages
         private IWebElement FlightMode => _driver.FindElement(By.XPath("//*[text()='Round-trip']"));
         private IWebElement Milticity => _driver.FindElement(By.CssSelector("#multicity"));
         private IList<IWebElement> MultipleSearchForms => _driver.FindElements(By.XPath("//*[contains(@class, 'multicityContainer')]/div"));
-        private IWebElement DepartureInputFieldOne => _driver.FindElement(By.XPath("(//*[@class='lNCO-inner'])[1]"));
-        private IWebElement DepartureInputFieldTwo => _driver.FindElement(By.XPath("(//*[@class='lNCO-inner'])[3]"));
-        private IWebElement DepartureInputFieldThree => _driver.FindElement(By.XPath("(//*[@class='lNCO-inner'])[5]"));
-        private IWebElement DepartureInputFieldFour => _driver.FindElement(By.XPath("(//*[@class='lNCO-inner'])[7]"));
-        private IWebElement DestinationInputFieldOne => _driver.FindElement(By.XPath("(//*[@class='lNCO-inner'])[2]"));
-        private IWebElement DestinationInputFieldTwo => _driver.FindElement(By.XPath("(//*[@class='lNCO-inner'])[4]"));
-        private IWebElement DestinationInputFieldThree => _driver.FindElement(By.XPath("(//*[@class='lNCO-inner'])[6]"));
-        private IWebElement DestinationInputFieldFour => _driver.FindElement(By.XPath("(//*[@class='lNCO-inner'])[8]"));
-        private IWebElement DateInputFieldOne => _driver.FindElement(By.XPath("(//*[@class='zEiP-formField zEiP-date'])[1]"));
-        private IWebElement DateInputFieldTwo => _driver.FindElement(By.XPath("(//*[@class='zEiP-formField zEiP-date'])[2]"));
-        private IWebElement DateInputFieldThree => _driver.FindElement(By.XPath("(//*[@class='zEiP-formField zEiP-date'])[3]"));
-        private IWebElement DateInputFieldFour => _driver.FindElement(By.XPath("(//*[@class='zEiP-formField zEiP-date'])[4]"));
-        private IWebElement DateOneValue => _driver.FindElement(By.XPath("(//*[@class='cQtq-value'])[1]"));
-        private IWebElement DateTwoValue => _driver.FindElement(By.XPath("(//*[@class='cQtq-value'])[2]"));
-        private IWebElement DateThreeValue => _driver.FindElement(By.XPath("(//*[@class='cQtq-value'])[3]"));
-        private IWebElement DateFourValue => _driver.FindElement(By.XPath("(//*[@class='cQtq-value'])[4]"));
+        private IList<IWebElement> DepartureInputFields => _driver.FindElements(By.XPath("//*[@class= 'zEiP-formField zEiP-origin']"));
+        private IList<IWebElement> DestinationInputFields => _driver.FindElements(By.XPath("//*[@class= 'zEiP-formField zEiP-destination']"));
+        private IList<IWebElement> DateInputFields => _driver.FindElements(By.XPath("//*[@class='zEiP-formField zEiP-date']"));
+        private IList<IWebElement> DateValues => _driver.FindElements(By.XPath("//*[@class='cQtq-value']"));
         private IList<IWebElement> CurrentMonths => _driver.FindElements(By.XPath("//*[@data-month]"));
         private IList<IWebElement> DaysCalendar => _driver.FindElements(By.XPath("//*[@class='onx_-days']/div"));
         private IWebElement AddButton => _driver.FindElement(By.XPath("//*[text()='Add another flight']"));
@@ -50,59 +38,61 @@ namespace BookingPages
 
         public int CountMultipleSearchForms() => MultipleSearchForms.Count();
 
-        public void EnterDepartureOneText(string text) => SendKeysTo(DepartureInputFieldOne, text, DepartureInputValue);
+        public void EnterDepartureOneText(string text) => SendKeysTo(GetFieldLine(DepartureInputFields, 0), text, DepartureInputValue);
 
-        public void EnterDepartureTwoText(string text) => SendKeysTo(DepartureInputFieldTwo, text, DepartureInputValue);
+        public void EnterDepartureTwoText(string text) => SendKeysTo(GetFieldLine(DepartureInputFields, 1), text, DepartureInputValue);
 
-        public void EnterDepartureThreeText(string text) => SendKeysTo(DepartureInputFieldThree, text, DepartureInputValue);
-       
-        public void EnterDepartureFourText(string text) => SendKeysTo(DepartureInputFieldFour, text, DepartureInputValue);
-        
-        public void EnterDestinationOneText(string text) => SendKeysTo(DestinationInputFieldOne, text, DestinationInputValue);
-        
-        public void EnterDestinationTwoText(string text) => SendKeysTo(DestinationInputFieldTwo, text, DestinationInputValue);
-        
-        public void EnterDestinationThreeText(string text) => SendKeysTo(DestinationInputFieldThree, text, DestinationInputValue);
-        
-        public void EnterDestinationFourText(string text) => SendKeysTo(DestinationInputFieldFour, text, DestinationInputValue);
+        public void EnterDepartureThreeText(string text) => SendKeysTo(GetFieldLine(DepartureInputFields, 2), text, DepartureInputValue);
 
-        public string GetDepartureOne() => DepartureInputFieldOne.Text;
-        
-        public string GetDepartureTwo() => DepartureInputFieldTwo.Text;
-        
-        public string GetDepartureThree() => DepartureInputFieldThree.Text;
-        
-        public string GetDepartureFour() => DepartureInputFieldFour.Text;
-        
-        public string GetDestinationOne() => DestinationInputFieldOne.Text;
-        
-        public string GetDestinationTwo() => DestinationInputFieldTwo.Text;
-        
-        public string GetDestinationThree() => DestinationInputFieldThree.Text;
-        
-        public string GetDestinationFour() => DestinationInputFieldFour.Text;
-        
-        public string GetDateOne() => DateOneValue.Text;
-        
-        public string GetDateTwo() => DateTwoValue.Text;
-        
-        public string GetDateThree() => DateThreeValue.Text;
-        
-        public string GetDateFour() => DateFourValue.Text;
+        public void EnterDepartureFourText(string text) => SendKeysTo(GetFieldLine(DepartureInputFields, 3), text, DepartureInputValue);
 
-        public void SelectDepartureOneDate(DateTime date) => SelectDateNew(DateInputFieldOne, date);
-        
-        public void SelectDepartureTwoDate(DateTime date) => SelectDateNew(DateInputFieldTwo, date);
-        
-        public void SelectDepartureThreeDate(DateTime date) => SelectDateNew(DateInputFieldThree, date);
-        
-        public void SelectDepartureFourDate(DateTime date) => SelectDateNew(DateInputFieldFour, date);
+        public void EnterDestinationOneText(string text) => SendKeysTo(GetFieldLine(DestinationInputFields, 0), text, DestinationInputValue);
+
+        public void EnterDestinationTwoText(string text) => SendKeysTo(GetFieldLine(DestinationInputFields, 1), text, DestinationInputValue);
+
+        public void EnterDestinationThreeText(string text) => SendKeysTo(GetFieldLine(DestinationInputFields, 2), text, DestinationInputValue);
+
+        public void EnterDestinationFourText(string text) => SendKeysTo(GetFieldLine(DestinationInputFields, 3), text, DestinationInputValue);
+
+        public string GetDepartureOne() => GetFieldLine(DepartureInputFields, 0).Text;
+
+        public string GetDepartureTwo() => GetFieldLine(DepartureInputFields, 1).Text;
+
+        public string GetDepartureThree() => GetFieldLine(DepartureInputFields, 2).Text;
+
+        public string GetDepartureFour() => GetFieldLine(DepartureInputFields, 3).Text;
+
+        public string GetDestinationOne() => GetFieldLine(DestinationInputFields, 0).Text;
+
+        public string GetDestinationTwo() => GetFieldLine(DestinationInputFields, 1).Text;
+
+        public string GetDestinationThree() => GetFieldLine(DestinationInputFields, 2).Text;
+
+        public string GetDestinationFour() => GetFieldLine(DestinationInputFields, 3).Text;
+
+        public string GetDateOne() => GetFieldLine(DateValues,0).Text;
+
+        public string GetDateTwo() => GetFieldLine(DateValues, 1).Text;
+
+        public string GetDateThree() => GetFieldLine(DateValues, 2).Text;
+
+        public string GetDateFour() => GetFieldLine(DateValues, 3).Text;
+
+        public void SelectDepartureOneDate(DateTime date) => SelectDateNew(GetFieldLine(DateInputFields,0), date);
+
+        public void SelectDepartureTwoDate(DateTime date) => SelectDateNew(GetFieldLine(DateInputFields, 1), date);
+
+        public void SelectDepartureThreeDate(DateTime date) => SelectDateNew(GetFieldLine(DateInputFields, 2), date);
+
+        public void SelectDepartureFourDate(DateTime date) => SelectDateNew(GetFieldLine(DateInputFields, 3), date);
 
         public void ClickAdButton() => AddButton.Click();
 
         public void RemoveLastLeg() => RemoveLastButton.Click();
 
         public void ClickSearch() => SearchButton.Click();
+
+        private IWebElement GetFieldLine(IList<IWebElement> elements, int numberOfLine) => elements[numberOfLine];
 
         private void SendKeysTo(IWebElement element, string text, By locator)
         {
@@ -135,12 +125,12 @@ namespace BookingPages
             {
                 if (dateToSelect.Month > item.Month)
                 {
-                    var next = _driver.WaitForElementClicable(NextMonthArrow);
+                    var next = _driver.WaitForElementIsClicable(NextMonthArrow);
                     next.Click();
                 }
                 if (dateToSelect.Month < item.Month)
                 {
-                    var back = _driver.WaitForElementClicable(PreviousMonthArrow);
+                    var back = _driver.WaitForElementIsClicable(PreviousMonthArrow);
                     back.Click();
                 }
 

@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using SeleniumExtras.WaitHelpers;
-using System.Globalization;
 using Utilities;
 
 namespace BookingPages
@@ -34,7 +33,7 @@ namespace BookingPages
         public void SelectAutocompleteOption()
         {
             var destination = GetDestination();
-            IList<IWebElement> autocomplete = _driver.WaitForElementsVisible(AutocompleteList);
+            var autocomplete = _driver.WaitForElementsVisible(AutocompleteList);
             var firstMatchingOptionText = autocomplete.FirstOrDefault(option => option.Text.Contains(destination));
             firstMatchingOptionText.Click();
         }
@@ -64,7 +63,11 @@ namespace BookingPages
             firstAttraction.Click();
         }
 
-        public bool IsAttractionDetailsDisplayed() => _driver.WaitForElementVisible(AttractionsDetails).Displayed;
+        public bool IsAttractionDetailsDisplayed()
+        {
+            var isDisplayed = _driver.WaitForElementIsVisible(AttractionsDetails).Displayed;
+            return isDisplayed;
+        }
 
         public bool IsDatePickerDisplayed()
         {
@@ -77,7 +80,8 @@ namespace BookingPages
                 }
                 else
                 {
-                    return DatePicker.Displayed;
+                    var isDisplayed = DatePicker.Displayed;
+                    return isDisplayed;
                 }
             }
             catch (NoSuchElementException)
@@ -98,8 +102,8 @@ namespace BookingPages
                 }
                 else
                 {
-                    var isdisplayed = _driver.GetWait().Until(ExpectedConditions.ElementIsVisible(Timeslot));
-                    return isdisplayed.Displayed;
+                    var isDisplayed = _driver.GetWait().Until(ExpectedConditions.ElementIsVisible(Timeslot)).Displayed;
+                    return isDisplayed;
                 }
             }
             catch (NoSuchElementException)

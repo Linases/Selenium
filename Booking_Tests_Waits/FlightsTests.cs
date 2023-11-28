@@ -2,7 +2,6 @@
 using BookingPages;
 using NUnit.Framework;
 using SeleniumExtras.WaitHelpers;
-using System.Collections.Generic;
 using System.Globalization;
 using Utilities;
 

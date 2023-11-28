@@ -39,9 +39,9 @@ namespace Booking_Tests_Waits
             _airportTaxiPage.ClickDateField();
             _airportTaxiPage.SelectDate(_expectedTaxiDate);
             var taxiDate = _airportTaxiPage.GetSelectedDate();
-            DateTime parsedDate = DateTime.ParseExact(taxiDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            string expectedFormattedDate = _expectedTaxiDate.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
-            string actualFormattedDate = parsedDate.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+            var parsedDate = DateTime.ParseExact(taxiDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            var expectedFormattedDate = _expectedTaxiDate.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+            var actualFormattedDate = parsedDate.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
             Assert.That(actualFormattedDate, Is.EqualTo($"{expectedFormattedDate}"), $"Selected airport taxi date is not {_expectedTaxiDate}");
 
             _airportTaxiPage.ClickTimeField();
@@ -54,11 +54,11 @@ namespace Booking_Tests_Waits
             _airportTaxiPage.ClickSearch();
             _homePage.DeclineCookies();
 
-            Assert.That(_airportTaxiPage.isDisplayedList(), Is.True, "Taxis list is not displayed");
+            Assert.That(_airportTaxiPage.IsDisplayedList(), Is.True, "Taxis list is not displayed");
             _airportTaxiPage.SelectTaxi();
             _airportTaxiPage.ClickContinueButton();
             //Bot awareness, can not check lasts assertions.
-            Assert.That(_airportTaxiPage.SummaryDisplayed(), Is.True, "Taxi travel itinerary is not displayed");
+            Assert.That(_airportTaxiPage.IsSummaryDisplayed(), Is.True, "Taxi travel itinerary is not displayed");
             Assert.That(Driver.Url.Contains("checkout"), Is.True, "Taxi travel itinerary is not displayed ");
         }
     }

@@ -59,7 +59,7 @@ namespace Booking_Tests_Waits
             Assert.That(foundFiveStarPropertiesNr.Contains(expectedFiveStarPropertiesNr), Is.True, "The list did not updated display only 5-star hotels");
             _searchPage.ClickSortButton();
             _searchPage.SelectPriceFilter();
-            Assert.That(_searchPage.FilteredByLowestPrice(), Is.True, "The list did not updated display hotels sorted by lowest price first");
+            Assert.That(_searchPage.IsFilteredByLowestPrice(), Is.True, "The list did not updated display hotels sorted by lowest price first");
 
             _searchPage.ChooseFitnessCenter();
             var expectedFitnessCenterPropertiesNr = _searchPage.GetFitnessCenterCheckboxValue();
@@ -129,10 +129,10 @@ namespace Booking_Tests_Waits
             _datePickerPage.SelectDate(_checkInDate);
             _datePickerPage.SelectDate(_checkOutDate);
             var checkIn = _datePickerPage.GetSelectedCheckInDay();
-            DateTime parsedDate = DateTime.ParseExact(checkIn, "ddd, MMM dd", System.Globalization.CultureInfo.InvariantCulture);
+            var parsedDate = DateTime.ParseExact(checkIn, "ddd, MMM dd", System.Globalization.CultureInfo.InvariantCulture);
             Assert.That(parsedDate, Is.EqualTo(_checkInDate), $"Check In day is not eaqual {_checkInDate}");
             var checkOut = _datePickerPage.GetSelectedCheckOutDay();
-            DateTime parsedCheckout = DateTime.ParseExact(checkOut, "ddd, MMM dd", System.Globalization.CultureInfo.InvariantCulture);
+            var parsedCheckout = DateTime.ParseExact(checkOut, "ddd, MMM dd", System.Globalization.CultureInfo.InvariantCulture);
             Assert.That(parsedCheckout, Is.EqualTo(_checkOutDate), $"Check Out day is not eaqual {_checkOutDate}");
         }
 
@@ -145,10 +145,9 @@ namespace Booking_Tests_Waits
             _searchPage.PressDone();
 
             var actualGuestsNr = _searchPage.GetGuestsNrValue();
-            var expectedGuestsNr = $"{_expectedAdultNr}{_expectedChildrenNr}{_expectedRoomsNr}";
-            bool containsAllNumbers = expectedGuestsNr.All(c => actualGuestsNr.Contains(c));
+            var expectedGuestsNr = $"{_expectedRoomsNr}{_expectedAdultNr}{_expectedChildrenNr}";
+            var containsAllNumbers = expectedGuestsNr.All(c => actualGuestsNr.Contains(c));
             Assert.That(containsAllNumbers, Is.True, "The selected numbers of adults, children and rooms are not filled in");
         }
     }
 }
-

@@ -1,6 +1,7 @@
 ﻿using Booking_Pages;
 using BookingPages;
 using NUnit.Framework;
+using Utilities;
 
 namespace Booking_Tests_Waits
 {
@@ -9,10 +10,9 @@ namespace Booking_Tests_Waits
     {
         private HomePage _homePage;
         private CarRentalsPage _carRentalsPage;
-        private Random _random = new Random();
-        private static DateTime _pickUpDate = new DateTime(2023, 11, 30);
-        private static DateTime _dropOffDate = new DateTime(2023, 11, 29);
-       
+        private DateTime _pickUpDate = new DateTime(2023, 12, 29);
+        private DateTime _dropOffDate = new DateTime(2023, 12, 30);
+
         [SetUp]
         public void Setup()
         {
@@ -27,7 +27,7 @@ namespace Booking_Tests_Waits
         {
             _carRentalsPage.ClickSearchButton();
             Assert.That(_carRentalsPage.GetErrorMessage(), Is.EqualTo("Please provide a pick-up location"));
-            string invalidLocation = RandomGenerate(10);
+            var invalidLocation = RandomHelper.RandomGenerate(10);
 
             _carRentalsPage.InputLocation(invalidLocation);
             var location = _carRentalsPage.GetLocation();
@@ -41,16 +41,9 @@ namespace Booking_Tests_Waits
             _carRentalsPage.SelectDate(_dropOffDate);
             var pickUpDate = _carRentalsPage.GetPickUpDate();
             var dropOfDate = _carRentalsPage.GetDropOffDate();
-            DateTime parsedPickUpDate = DateTime.ParseExact(pickUpDate, "ddd, MMM dd", System.Globalization.CultureInfo.InvariantCulture);
-            DateTime parsedDropOffDate = DateTime.ParseExact(dropOfDate, "ddd, MMM dd", System.Globalization.CultureInfo.InvariantCulture);
+            var parsedPickUpDate = DateTime.ParseExact(pickUpDate, "ddd, MMM dd", System.Globalization.CultureInfo.InvariantCulture);
+            var parsedDropOffDate = DateTime.ParseExact(dropOfDate, "ddd, MMM dd", System.Globalization.CultureInfo.InvariantCulture);
             Assert.That(parsedPickUpDate, Is.EqualTo(parsedDropOffDate.AddDays(-1)), "Pick up day is not eaqual Drop Of day-1");
-        }
-
-        private string RandomGenerate(int length)
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrsqtuvwxyz";
-            return new string(Enumerable.Repeat(chars, length)
-            .Select(s => s[_random.Next(s.Length)]).ToArray());
         }
     }
 }

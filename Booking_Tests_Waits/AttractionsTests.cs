@@ -30,7 +30,7 @@ namespace Booking_Tests_Waits
             var destination = _attractionsPage.GetDestination();
             Assert.That(destination, Is.EqualTo(_expectedDestination));
 
-          _attractionsPage.ClickDatesField();
+            _attractionsPage.ClickDatesField();
             _attractionsPage.SelectDate(_attractionsDay);
             var actualDay = _attractionsPage.GetAttractionsDate();
             var expectedDay = _attractionsDay.ToString("MMM dd");

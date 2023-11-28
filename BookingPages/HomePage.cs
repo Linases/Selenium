@@ -51,7 +51,7 @@ namespace Booking_Pages
 
         public void DeclineCookies()
         {
-            var declineButton = _driver.GetWaitForElementClicable(By.XPath("//button[text()='Decline']"));
+            var declineButton = _driver.GetWaitForElementIsClicable(By.XPath("//button[text()='Decline']"));
             declineButton.Click();
         }
 

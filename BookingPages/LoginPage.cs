@@ -6,6 +6,7 @@ namespace BookingPages
     public class LoginPage
     {
         private readonly IWebDriver _driver;
+        By EnterPasswordField => (By.XPath("//*[@placeholder='Enter a password']"));
         private IWebElement LoginButton => _driver.FindElement(By.XPath("//*[@data-testid='header-sign-in-button']"));
         private IWebElement EmailField => _driver.FindElement(By.Id("username"));
         private IWebElement ContinueWithEmailButton => _driver.FindElement(By.XPath("//*[text()='Continue with email']"));
@@ -26,10 +27,15 @@ namespace BookingPages
 
         public bool IsPasswordFieldVisible()
         {
-            var Password = _driver.WaitForElementVisible(By.XPath("//*[@placeholder='Enter a password']"));
-            return Password.Displayed;
+            var Password = _driver.WaitForElementIsVisible(EnterPasswordField, 20);
+            var isVisible = Password.Displayed;
+            return isVisible;
         }
 
-        public bool IsConfirmPasswordFieldVisible() => ConfirmPasswordField.Displayed;
+        public bool IsConfirmPasswordFieldVisible()
+        {
+            var isVisible = ConfirmPasswordField.Displayed; 
+            return isVisible;
+        }
     }
 }
