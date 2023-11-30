@@ -1,6 +1,8 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
+using System;
 using Utilities;
 using WebDriverExtensions = Utilities.WebDriverExtensions;
 
@@ -105,6 +107,34 @@ namespace Booking_Pages
             }
         }
 
+        public void SelectAdultsNrWithKeys(string number)
+        {
+            var actions = new Actions(_driver);
+            actions.SendKeys(Keys.Tab).Build().Perform();
+            actions.SendKeys(Keys.Enter).Build().Perform();
+            actions.SendKeys(Keys.Tab).Build().Perform();
+
+            var digitNumber = int.Parse(number);
+            var existingNumber = 2;
+
+            for (int i = 0; i < digitNumber - existingNumber; i++)
+            {
+                if (digitNumber == existingNumber)
+                {
+                    actions.SendKeys(Keys.Tab).Build().Perform();
+                }
+                if (existingNumber < digitNumber)
+                {
+                    actions.SendKeys(Keys.ArrowRight).Build().Perform();
+                    existingNumber++;
+                }
+                else if (existingNumber > digitNumber)
+                {
+                    actions.SendKeys(Keys.ArrowLeft).Build().Perform();
+                    existingNumber--;
+                }
+            }
+        }
         public void SelectChildrenNr(string number)
         {
             var digitNumber = int.Parse(number);
@@ -124,6 +154,53 @@ namespace Booking_Pages
                     ChildrenNrPlus.Click();
                 }
             }
+        }
+        public void SelectChildrenNrKeys(string number)
+        {
+            var actions = new Actions(_driver);
+            var digitNumber = int.Parse(number);
+            var existingNumber = 0;
+            for (int i = 0; i < digitNumber; i++)
+            {
+                if (digitNumber == existingNumber)
+                {
+                    actions.SendKeys(Keys.Tab).Build().Perform();
+                }
+                if (digitNumber < existingNumber)
+                {
+                    actions.SendKeys(Keys.ArrowRight).Build().Perform();
+                }
+                if (digitNumber > existingNumber)
+                {
+                    actions.SendKeys(Keys.ArrowLeft).Build().Perform();
+                }
+            }
+        }
+
+        public void SelectRoomsNrWithKeys(string number)
+        {
+            var actions = new Actions(_driver);
+            var digitNumber = int.Parse(number);
+            var existingNumber = 1;
+            for (int i = 1; i < digitNumber; i++)
+            {
+                if (digitNumber == existingNumber)
+                {
+                    actions.SendKeys(Keys.Tab).Build().Perform();
+                }
+                if (digitNumber < existingNumber)
+                {
+                    actions.SendKeys(Keys.ArrowRight).Build().Perform();
+                }
+                if (digitNumber > existingNumber)
+                {
+                    actions.SendKeys(Keys.ArrowLeft).Build().Perform();
+                }
+            }
+            actions.SendKeys(Keys.Tab).Build().Perform();
+            actions.SendKeys(Keys.Enter).Build().Perform();
+            actions.SendKeys(Keys.Tab).Build().Perform();
+            actions.SendKeys(Keys.Enter).Build().Perform();
         }
 
         public void SelectRoomsNr(string number)

@@ -135,7 +135,7 @@ namespace Booking_Tests_Waits
             var parsedCheckout = DateTime.ParseExact(checkOut, "ddd, MMM dd", System.Globalization.CultureInfo.InvariantCulture);
             Assert.That(parsedCheckout, Is.EqualTo(_checkOutDate), $"Check Out day is not eaqual {_checkOutDate}");
         }
-   
+
         private void SelecGuestsRoomsNumber()
         {
             _searchPage.ClickGuestInput();
