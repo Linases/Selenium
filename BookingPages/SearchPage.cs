@@ -111,8 +111,6 @@ namespace Booking_Pages
         {
             var actions = new Actions(_driver);
             actions.SendKeys(Keys.Tab).Build().Perform();
-            actions.SendKeys(Keys.Enter).Build().Perform();
-            actions.SendKeys(Keys.Tab).Build().Perform();
 
             var digitNumber = int.Parse(number);
             var existingNumber = 2;
@@ -134,7 +132,9 @@ namespace Booking_Pages
                     existingNumber--;
                 }
             }
+            actions.SendKeys(Keys.Tab).Build().Perform();
         }
+
         public void SelectChildrenNr(string number)
         {
             var digitNumber = int.Parse(number);
@@ -155,6 +155,7 @@ namespace Booking_Pages
                 }
             }
         }
+
         public void SelectChildrenNrKeys(string number)
         {
             var actions = new Actions(_driver);
@@ -175,6 +176,7 @@ namespace Booking_Pages
                     actions.SendKeys(Keys.ArrowLeft).Build().Perform();
                 }
             }
+            actions.SendKeys(Keys.Tab).Build().Perform();
         }
 
         public void SelectRoomsNrWithKeys(string number)
@@ -190,17 +192,16 @@ namespace Booking_Pages
                 }
                 if (digitNumber < existingNumber)
                 {
-                    actions.SendKeys(Keys.ArrowRight).Build().Perform();
+                    actions.SendKeys(Keys.ArrowLeft).Build().Perform();
                 }
                 if (digitNumber > existingNumber)
                 {
-                    actions.SendKeys(Keys.ArrowLeft).Build().Perform();
+                    actions.SendKeys(Keys.ArrowRight).Build().Perform();
                 }
             }
             actions.SendKeys(Keys.Tab).Build().Perform();
             actions.SendKeys(Keys.Enter).Build().Perform();
             actions.SendKeys(Keys.Tab).Build().Perform();
-            actions.SendKeys(Keys.Enter).Build().Perform();
         }
 
         public void SelectRoomsNr(string number)
