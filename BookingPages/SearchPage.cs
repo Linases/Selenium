@@ -1,8 +1,7 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Interactions;
+﻿using BookingPages;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
-using System;
 using Utilities;
 using WebDriverExtensions = Utilities.WebDriverExtensions;
 
@@ -46,6 +45,8 @@ namespace Booking_Pages
         private IWebElement Email => _driver.FindElement(By.Id("email"));
         private IWebElement PhoneNr => _driver.FindElement(By.Id("phone"));
         private IWebElement NextDetailsButton => _driver.FindElement(By.XPath("//*[contains(@class, 'bui-button--primary')]"));
+
+        private TabsKeyPage _tabsKeyPage;
 
         public SearchPage(IWebDriver driver)
         {
@@ -109,9 +110,7 @@ namespace Booking_Pages
 
         public void SelectAdultsNrWithKeys(string number)
         {
-            var actions = new Actions(_driver);
-            actions.SendKeys(Keys.Tab).Build().Perform();
-
+            _tabsKeyPage.ClickTab();
             var digitNumber = int.Parse(number);
             var existingNumber = 2;
 
@@ -119,20 +118,20 @@ namespace Booking_Pages
             {
                 if (digitNumber == existingNumber)
                 {
-                    actions.SendKeys(Keys.Tab).Build().Perform();
+                    _tabsKeyPage.ClickTab();
                 }
                 if (existingNumber < digitNumber)
                 {
-                    actions.SendKeys(Keys.ArrowRight).Build().Perform();
+                    _tabsKeyPage.ClickArrowRight();
                     existingNumber++;
                 }
                 else if (existingNumber > digitNumber)
                 {
-                    actions.SendKeys(Keys.ArrowLeft).Build().Perform();
+                    _tabsKeyPage.ClickArrowLeft();
                     existingNumber--;
                 }
             }
-            actions.SendKeys(Keys.Tab).Build().Perform();
+            _tabsKeyPage.ClickTab();
         }
 
         public void SelectChildrenNr(string number)
@@ -158,50 +157,48 @@ namespace Booking_Pages
 
         public void SelectChildrenNrKeys(string number)
         {
-            var actions = new Actions(_driver);
             var digitNumber = int.Parse(number);
             var existingNumber = 0;
             for (int i = 0; i < digitNumber; i++)
             {
                 if (digitNumber == existingNumber)
                 {
-                    actions.SendKeys(Keys.Tab).Build().Perform();
+                    _tabsKeyPage.ClickTab();
                 }
                 if (digitNumber < existingNumber)
                 {
-                    actions.SendKeys(Keys.ArrowRight).Build().Perform();
+                    _tabsKeyPage.ClickArrowRight();
                 }
                 if (digitNumber > existingNumber)
                 {
-                    actions.SendKeys(Keys.ArrowLeft).Build().Perform();
+                    _tabsKeyPage.ClickArrowLeft();
                 }
             }
-            actions.SendKeys(Keys.Tab).Build().Perform();
+            _tabsKeyPage.ClickTab();
         }
 
         public void SelectRoomsNrWithKeys(string number)
         {
-            var actions = new Actions(_driver);
             var digitNumber = int.Parse(number);
             var existingNumber = 1;
             for (int i = 1; i < digitNumber; i++)
             {
                 if (digitNumber == existingNumber)
                 {
-                    actions.SendKeys(Keys.Tab).Build().Perform();
+                    _tabsKeyPage.ClickTab();
                 }
                 if (digitNumber < existingNumber)
                 {
-                    actions.SendKeys(Keys.ArrowLeft).Build().Perform();
+                    _tabsKeyPage.ClickArrowLeft();
                 }
                 if (digitNumber > existingNumber)
                 {
-                    actions.SendKeys(Keys.ArrowRight).Build().Perform();
+                    _tabsKeyPage.ClickArrowRight();
                 }
             }
-            actions.SendKeys(Keys.Tab).Build().Perform();
-            actions.SendKeys(Keys.Enter).Build().Perform();
-            actions.SendKeys(Keys.Tab).Build().Perform();
+            _tabsKeyPage.ClickTab();
+            _tabsKeyPage.ClickEnter();
+            _tabsKeyPage.ClickTab();
         }
 
         public void SelectRoomsNr(string number)

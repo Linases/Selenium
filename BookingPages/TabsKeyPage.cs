@@ -7,11 +7,11 @@ namespace BookingPages
 {
     public class TabsKeyPage
     {
-        private IWebDriver _driver;
-        By SearchFieldLocator => (By.XPath("//input[@placeholder='Where are you going?']"));
-        By AutocompleteList => (By.XPath("//*[@id='autocomplete-results']//*[@class='a3332d346a']"));
-        By MonthsYearsList => (By.XPath("//select[@data-name='year-month']/option"));
-        By ListDays => (By.XPath("//*[@data-name='day']/option"));
+        private readonly IWebDriver _driver;
+        private By SearchFieldLocator => (By.XPath("//input[@placeholder='Where are you going?']"));
+        private By AutocompleteList => (By.XPath("//*[@id='autocomplete-results']//*[@class='a3332d346a']"));
+        private By MonthsYearsList => (By.XPath("//select[@data-name='year-month']/option"));
+        private By ListDays => (By.XPath("//*[@data-name='day']/option"));
         private IList<IWebElement> CurrencyChoices => _driver.FindElements(By.XPath("//*[@data-testid='selection-item']"));
         private IWebElement CurrencyButton => _driver.FindElement(By.XPath("//*[@data-testid='header-currency-picker-trigger']"));
         private IWebElement CurrencyTitle => _driver.FindElement(By.XPath("//*[@data-testid='header-currency-picker-trigger']/span"));
@@ -27,7 +27,6 @@ namespace BookingPages
 
         public void EnterLocation(string location)
         {
-            var actions = new Actions(_driver);
             TabKeytoElement(SearchField);
             SearchField.SendKeys(location);
         }
@@ -35,19 +34,18 @@ namespace BookingPages
         public void EnterLocationWithAutocomplete(string expctedLocation)
         {
             var list = _driver.GetWait().Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(AutocompleteList));
-            var actions = new Actions(_driver);
             foreach (var element in list)
             {
-                actions.SendKeys(Keys.ArrowDown).Build().Perform();
+                ClickArrowDown();
                 if (element.Text.Contains(expctedLocation))
                 {
-                    actions.SendKeys(Keys.Enter).Build().Perform();
+                    ClickEnter();
                     break;
                 }
             }
         }
-       
-        public bool IsDestination(string destination)
+
+        public bool IsDestinationEntered(string destination)
         {
             var isDestination = WebDriverExtensions.GetWait(_driver, 20, 500).Until(ExpectedConditions.TextToBePresentInElementValue(SearchFieldLocator, SearchField.GetAttribute("value")));
             return isDestination;
@@ -55,35 +53,8 @@ namespace BookingPages
 
         public void EnterDate(DateTime date)
         {
-            var actions = new Actions(_driver);
-            actions.SendKeys(Keys.Tab).Build().Perform();
-            actions.SendKeys(Keys.Enter).Build().Perform();
-            var listMonths = _driver.GetWait().Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(MonthsYearsList));
-            GoToTopListMonths();
-            foreach (var element in listMonths)
-            {
-                var monthYear = _driver.FindElement(GetMonthLocator(date));
-                if (element.Equals(monthYear))
-                {
-                    actions.SendKeys(Keys.Enter).Build().Perform();
-                    actions.SendKeys(Keys.Tab).Build().Perform();
-                    actions.SendKeys(Keys.Enter).Build().Perform();
-                    break;
-                }
-                actions.SendKeys(Keys.ArrowDown).Build().Perform();
-            }
-            var listDays = _driver.GetWait().Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(ListDays));
-            GoToTopListDays();
-            foreach (var element in listDays)
-            {
-                var day = _driver.FindElement(GetDayLocator(date));
-                if (element.Equals(day))
-                {
-                    actions.SendKeys(Keys.Enter).Build().Perform();
-                    break;
-                }
-                actions.SendKeys(Keys.ArrowDown).Build().Perform();
-            }
+            SelectFromList(MonthsYearsList, GetMonthLocator(date));
+            SelectFromList(ListDays, GetDayLocator(date));
         }
 
         public void TabKeyToRegister()
@@ -95,17 +66,16 @@ namespace BookingPages
 
         public void ChangeCurrencyWithKeyNavigation()
         {
-            var actions = new Actions(_driver);
             TabKeytoElement(CurrencyButton);
-            actions.SendKeys(Keys.Enter).Build().Perform();
+            ClickEnter();
             while (true)
             {
-                actions.SendKeys(Keys.ArrowDown).Build().Perform();
+                ClickArrowDown();
                 IWebElement currentElement = _driver.SwitchTo().ActiveElement();
                 var lastCurrency = CurrencyChoices.LastOrDefault(x => x.Displayed);
                 if (currentElement.Equals(lastCurrency))
                 {
-                    actions.SendKeys(Keys.Enter).Build().Perform();
+                    ClickEnter();
                     break;
                 }
             }
@@ -113,10 +83,7 @@ namespace BookingPages
 
         public string GetCurrencyName() => CurrencyTitle.Text;
 
-        public void TabKeySkipToMain()
-        {
-            TabKeytoElement(SkipToMain);
-        }
+        public void TabKeySkipToMain() => TabKeytoElement(SkipToMain);
 
         public void ClickWithJavaScript()
         {
@@ -137,12 +104,60 @@ namespace BookingPages
             return isDisplayed;
         }
 
-        public bool IsMenuDisplayed() => IsElementDisplayed(Menu);
+        public bool IsMenuDisplayed()
+        {
+            var isDisplayed = IsElementDisplayed(Menu);
+            return isDisplayed;
+        }
+
+        public void ClickTab()
+        {
+            var actions = new Actions(_driver);
+            actions.SendKeys(Keys.Tab).Build().Perform();
+        }
+
+        public void ClickEnter()
+        {
+            var actions = new Actions(_driver);
+            actions.SendKeys(Keys.Enter).Build().Perform();
+        }
+
+        public void ClickArrowRight()
+        {
+            var actions = new Actions(_driver);
+            actions.SendKeys(Keys.ArrowRight).Build().Perform();
+        }
+
+        public void ClickArrowLeft()
+        {
+            var actions = new Actions(_driver);
+            actions.SendKeys(Keys.ArrowLeft).Build().Perform();
+        }
+
+        public void ClickShiftTabKeys()
+        {
+            var actions = new Actions(_driver);
+            actions.KeyDown(Keys.Shift).Build().Perform();
+            ClickTab();
+            actions.KeyUp(Keys.Shift).Build().Perform();
+        }
+
+        private void ClickArrowDown()
+        {
+            var actions = new Actions(_driver);
+            actions.SendKeys(Keys.ArrowDown).Build().Perform();
+        }
+
+        private void ClickArrowUp()
+        {
+            var actions = new Actions(_driver);
+            actions.SendKeys(Keys.ArrowUp).Build().Perform();
+        }
 
         private bool IsElementDisplayed(IWebElement element)
         {
             var jsExecutor = (IJavaScriptExecutor)_driver;
-            bool isElementVisible = (bool)jsExecutor.ExecuteScript(@"
+            var isElementVisible = (bool)jsExecutor.ExecuteScript(@"
         var rect = arguments[0].getBoundingClientRect();
         return (
             rect.top >= 0 &&
@@ -153,75 +168,48 @@ namespace BookingPages
             return isElementVisible;
         }
 
-        public void ClickTab()
+        private void SelectFromList(By listLocator, By elementLocator)
         {
-            var actions = new Actions(_driver);
-            actions.KeyDown(Keys.Tab).Build().Perform();
-        }
-
-        public void ClickEnter()
-        {
-            var actions = new Actions(_driver);
-            actions.KeyDown(Keys.Enter).Build().Perform();
-        }
-
-        public void ClickShiftTabKeys()
-        {
-            var actions = new Actions(_driver);
-            actions.KeyDown(Keys.Shift).Build().Perform();
-            actions.SendKeys(Keys.Tab).Build().Perform();
-            actions.KeyUp(Keys.Shift).Build().Perform();
-        }
-
-        private By GetMonthLocator(DateTime date)
-        {
-            return (By.XPath($"//select[@data-name='year-month']/option[@value='{date.Year}-{date.Month}']"));
-        }
-        private By GetDayLocator(DateTime date)
-        {
-            return (By.XPath($"//select[@data-name='day']/option[@value='{date.Day}']"));
-        }
-
-        private void GoToTopListMonths()
-        {
-            var actions = new Actions(_driver);
-            var listMonths = _driver.GetWait().Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(MonthsYearsList));
-            var firstElement = listMonths.FirstOrDefault();
+            var list = _driver.GetWait().Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(listLocator));
+            GoToTopList(listLocator);
+            foreach (var element in list)
             {
-                foreach (var item in listMonths)
+                var expectedElement = _driver.FindElement(elementLocator);
+                if (element.Equals(expectedElement))
                 {
-                    actions.SendKeys(Keys.ArrowUp).Build().Perform();
-                    if (!item.Equals(firstElement))
-                    {
-                        break;
-                    }
-
+                    ClickEnter();
+                    ClickTab();
+                    ClickEnter();
+                    break;
                 }
+                ClickArrowDown();
             }
         }
 
-        private void GoToTopListDays()
+        private void GoToTopList(By locator)
         {
-            var actions = new Actions(_driver);
-            var listDays = _driver.GetWait().Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(ListDays));
-            foreach (var element in listDays)
+            var list = _driver.GetWait().Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(locator));
+            foreach (var element in list)
             {
-                actions.SendKeys(Keys.ArrowUp).Build().Perform();
-                var firstElement = listDays.FirstOrDefault();
+                ClickArrowUp();
+                var firstElement = list.FirstOrDefault();
                 if (!element.Equals(firstElement))
                 {
-                    actions.SendKeys(Keys.ArrowUp).Build().Perform();
+                    ClickArrowUp();
                     break;
                 }
             }
         }
 
+        private By GetMonthLocator(DateTime date) => By.XPath($"//select[@data-name='year-month']/option[@value='{date.Year}-{date.Month}']");
+
+        private By GetDayLocator(DateTime date) => By.XPath($"//select[@data-name='day']/option[@value='{date.Day}']");
+
         private void TabKeytoElement(IWebElement element)
         {
-            var actions = new Actions(_driver);
             while (true)
             {
-                actions.SendKeys(Keys.Tab).Build().Perform();
+                ClickTab();
                 IWebElement currentElement = _driver.SwitchTo().ActiveElement();
                 if (currentElement.Equals(element))
                 {

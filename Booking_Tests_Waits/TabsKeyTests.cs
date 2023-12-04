@@ -17,8 +17,8 @@ namespace Booking_Tests_Waits
         private string _location = "New York";
         private string _halfLocation = "New Yo";
         private string _expectedLocation = "Central New York City";
-        private DateTime _checkInDate = new DateTime(2023, 12, 02);
-        private DateTime _checkOutDate = new DateTime(2023, 12, 05);
+        private DateTime _checkInDate = new DateTime(2023, 12, 01);
+        private DateTime _checkOutDate = new DateTime(2024, 01, 02);
         private const string _expectedAdultNr = "3";
         private const string _expectedChildrenNr = "0";
         private const string _expectedRoomsNr = "2";
@@ -59,16 +59,16 @@ namespace Booking_Tests_Waits
             _tabsKeyPage.EnterLocation(_location);
             var destination = _searchPage.GetDestination();
             Assert.That(destination, Is.EqualTo(_location), $" {_location} is not entered destination");
+            _tabsKeyPage.ClickTab();
+            _tabsKeyPage.ClickEnter();
             _tabsKeyPage.EnterDate(_checkInDate);
             _tabsKeyPage.EnterDate(_checkOutDate);
-            _tabsKeyPage.ClickTab();
             var checkIn = _datePickerPage.GetSelectedCheckInDay();
             var _checkInDateString = _checkInDate.ToString("ddd, MMM d");
             Assert.That(checkIn, Is.EqualTo(_checkInDateString), $"Check In day is not eaqual {_checkInDate}");
             var checkOut = _datePickerPage.GetSelectedCheckOutDay();
             var _checkOutDateString = _checkOutDate.ToString("ddd, MMM d");
             Assert.That(checkOut, Is.EqualTo(_checkOutDateString), $"Check Out day is not eaqual {_checkOutDate}");
-            _tabsKeyPage.ClickEnter();
             _searchPage.SelectAdultsNrWithKeys(_expectedAdultNr);
             _searchPage.SelectChildrenNrKeys(_expectedChildrenNr);
             _searchPage.SelectRoomsNrWithKeys(_expectedRoomsNr);
@@ -84,10 +84,10 @@ namespace Booking_Tests_Waits
         {
             _homePage.DissmissAlert();
             _tabsKeyPage.EnterLocation(_halfLocation);
-            Assert.That(_tabsKeyPage.IsAutocompleteDisplayed(), Is.True);
+            Assert.That(_tabsKeyPage.IsAutocompleteDisplayed(), Is.True, "Autocomplete suggestions did not display.");
             _tabsKeyPage.EnterLocationWithAutocomplete(_expectedLocation);
             _tabsKeyPage.ClickTab();
-            Assert.That(_tabsKeyPage.IsDestination(_expectedLocation), Is.True, $" {_expectedLocation} is not entered destination from autocomplete");
+            Assert.That(_tabsKeyPage.IsDestinationEntered(_expectedLocation), Is.True, $" {_expectedLocation} is not entered destination from autocomplete");
         }
 
         [Test]
