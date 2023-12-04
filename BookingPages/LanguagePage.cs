@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Microsoft.Win32;
+using OpenQA.Selenium;
 using SeleniumExtras.WaitHelpers;
 using Utilities;
 
@@ -9,7 +10,6 @@ namespace BookingPages
         private readonly IWebDriver _driver;
         private By LanguageElements => By.XPath("//*[@class='cf67405157'and text()]");
         private IWebElement LanguagePictureButton => _driver.FindElement(By.XPath("//*[@data-testid='header-language-picker-trigger']"));
-
         public LanguagePage(IWebDriver driver)
         {
             _driver = driver;

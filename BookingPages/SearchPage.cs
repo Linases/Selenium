@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using BookingPages;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using Utilities;
@@ -44,6 +45,8 @@ namespace Booking_Pages
         private IWebElement Email => _driver.FindElement(By.Id("email"));
         private IWebElement PhoneNr => _driver.FindElement(By.Id("phone"));
         private IWebElement NextDetailsButton => _driver.FindElement(By.XPath("//*[contains(@class, 'bui-button--primary')]"));
+
+        private TabsKeyPage _tabsKeyPage;
 
         public SearchPage(IWebDriver driver)
         {
@@ -105,6 +108,32 @@ namespace Booking_Pages
             }
         }
 
+        public void SelectAdultsNrWithKeys(string number)
+        {
+            _tabsKeyPage.ClickTab();
+            var digitNumber = int.Parse(number);
+            var existingNumber = 2;
+
+            for (int i = 0; i < digitNumber - existingNumber; i++)
+            {
+                if (digitNumber == existingNumber)
+                {
+                    _tabsKeyPage.ClickTab();
+                }
+                if (existingNumber < digitNumber)
+                {
+                    _tabsKeyPage.ClickArrowRight();
+                    existingNumber++;
+                }
+                else if (existingNumber > digitNumber)
+                {
+                    _tabsKeyPage.ClickArrowLeft();
+                    existingNumber--;
+                }
+            }
+            _tabsKeyPage.ClickTab();
+        }
+
         public void SelectChildrenNr(string number)
         {
             var digitNumber = int.Parse(number);
@@ -124,6 +153,52 @@ namespace Booking_Pages
                     ChildrenNrPlus.Click();
                 }
             }
+        }
+
+        public void SelectChildrenNrKeys(string number)
+        {
+            var digitNumber = int.Parse(number);
+            var existingNumber = 0;
+            for (int i = 0; i < digitNumber; i++)
+            {
+                if (digitNumber == existingNumber)
+                {
+                    _tabsKeyPage.ClickTab();
+                }
+                if (digitNumber < existingNumber)
+                {
+                    _tabsKeyPage.ClickArrowRight();
+                }
+                if (digitNumber > existingNumber)
+                {
+                    _tabsKeyPage.ClickArrowLeft();
+                }
+            }
+            _tabsKeyPage.ClickTab();
+        }
+
+        public void SelectRoomsNrWithKeys(string number)
+        {
+            var digitNumber = int.Parse(number);
+            var existingNumber = 1;
+            for (int i = 1; i < digitNumber; i++)
+            {
+                if (digitNumber == existingNumber)
+                {
+                    _tabsKeyPage.ClickTab();
+                }
+                if (digitNumber < existingNumber)
+                {
+                    _tabsKeyPage.ClickArrowLeft();
+                }
+                if (digitNumber > existingNumber)
+                {
+                    _tabsKeyPage.ClickArrowRight();
+                }
+            }
+            _tabsKeyPage.ClickTab();
+            _tabsKeyPage.ClickEnter();
+            _tabsKeyPage.ClickTab();
         }
 
         public void SelectRoomsNr(string number)

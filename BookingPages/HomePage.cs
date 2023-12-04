@@ -13,7 +13,6 @@ namespace Booking_Pages
         private IWebElement CarRentalsLink => _driver.FindElement(By.Id("cars"));
         private IWebElement FlightsLink => _driver.FindElement(By.Id("flights"));
         private IWebElement AirportTaxi => _driver.FindElement(By.Id("airport_taxis"));
-        private IWebElement FlightsHeader => _driver.FindElement(By.CssSelector(".title-wrapper h1"));
 
         public HomePage(IWebDriver driver)
         {
@@ -54,7 +53,5 @@ namespace Booking_Pages
             var declineButton = _driver.GetWaitForElementIsClicable(By.XPath("//button[text()='Decline']"));
             declineButton.Click();
         }
-
-        public string GetFlightsHeader() => FlightsHeader.Text;
     }
 }
