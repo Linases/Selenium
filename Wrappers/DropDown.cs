@@ -1,5 +1,8 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using SeleniumExtras.WaitHelpers;
+using Utilities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Wrappers
 {
@@ -10,7 +13,7 @@ namespace Wrappers
         {
         }
 
-        public DropDown(IWebElement webElement): base(webElement) 
+        public DropDown(IWebElement webElement) : base(webElement)
         {
         }
 
@@ -38,5 +41,16 @@ namespace Wrappers
             var allElements = selectElement.Options;
             return allElements;
         }
+
+        public void SelectFromListByValue(IWebDriver driver, By locator, string value)
+        {
+            var list = WebDriverExtensions.GetWait(driver).Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(locator));
+            if (list.Count > 0)
+            {
+                var elementValue = list.Select(element => new SelectElement(element)).ToList();
+                elementValue[0].SelectByValue(value);
+            }
+        }
     }
 }
+

@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing;
 using Utilities;
 
@@ -125,6 +126,22 @@ namespace Wrappers
                 return true;
             }
             return false;
+        }
+
+        public bool IsListSortedAscending_StringToDecimal(IWebDriver driver, By locator)
+        {
+            var list = driver.GetWaitForElementsVisible(locator);
+            var names = list.Select(n => n.Text).ToList();
+            var numericValues = names.Select(p => decimal.TryParse(p, out decimal parsed) ? parsed : decimal.MinValue).ToList();
+
+            var areSorted = numericValues.SequenceEqual(numericValues.OrderBy(p => p));
+            return areSorted;
+        }
+
+        public string GetTextToBePresentInElement(IWebDriver driver, By locator, string text)
+        {
+            driver.GetWait().Until(ExpectedConditions.TextToBePresentInElementLocated(locator, text));
+            return driver.FindElement(locator).Text;
         }
     }
 }

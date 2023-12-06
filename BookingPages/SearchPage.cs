@@ -14,6 +14,7 @@ namespace Booking_Pages
         private TabsKeyPage _tabsKeyPage;
         private Button _button = new Button();
         private TextBox _textBox = new TextBox();
+        private DropDown _dropDown = new DropDown();
         private By AutocompleteResultsOptions => (By.XPath("//*[@data-testid = 'autocomplete-results-options']//li"));
         private By HotelsList => (By.XPath("(//*[@data-testid='property-card-container'])"));
         private By CloseMapButton => (By.Id("b2hotelPage"));
@@ -227,17 +228,9 @@ namespace Booking_Pages
 
         public void Select5Stars() => _button.ClickWhenReady(_driver, Checkbox5stars);
 
-        public string GetSearchResults()
-        {
-            _driver.GetWait().Until(ExpectedConditions.TextToBePresentInElementLocated(SearchResults, GetFiveStartsHotelsCeckboxValue()));
-            return _driver.FindElement(SearchResults).Text;
-        }
-
-        public string GetSearchResultsFitnessCenter()
-        {
-            _driver.GetWait().Until(ExpectedConditions.TextToBePresentInElementLocated(SearchResults, GetFitnessCenterCheckboxValue()));
-            return _driver.FindElement(SearchResults).Text;
-        }
+        public string GetSearchResults() =>_button.GetTextToBePresentInElement(_driver, SearchResults, GetFiveStartsHotelsCeckboxValue());
+    
+        public string GetSearchResultsFitnessCenter() => _button.GetTextToBePresentInElement(_driver, SearchResults, GetFitnessCenterCheckboxValue());
 
         public string GetFiveStartsHotelsCeckboxValue() => FivestarsHotelsNumber.Text;
 
@@ -247,45 +240,19 @@ namespace Booking_Pages
 
         public void SelectPriceFilter() => _button.ClickWhenReady(_driver, PriceLowest);
 
-        public bool IsFilteredByLowestPrice()
-        {
-            var list = _driver.GetWaitForElementsVisible(ListByPrices);
-            var prices = list.Select(n => n.Text).ToList();
-
-            var sortedNames = new List<string>(prices);
-            sortedNames.Sort();
-
-            var areSorted = Enumerable.SequenceEqual(prices, sortedNames);
-            return areSorted;
-        }
+        public bool IsFilteredByLowestPrice() => _button.IsListSortedAscending_StringToDecimal(_driver, ListByPrices);
+  
 
         public void ChooseFitnessCenter()
         {
             ClickMoreFacilities();
             _button.ClickWhenReady(_driver, FitnessCenter);
-           
         }
 
         public void SelectHotel() => _button.ClickFirstFromListWithElementIncluded(_driver, HotelsList, SeeAvailabilityButton);
 
-        public void SelectNumberOfRooms(string number)
-        {
-            try
-            {
-                var roomDropdowns = WebDriverExtensions.GetWait(_driver).Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(RoomsChoices));
-
-                if (roomDropdowns.Count > 0)
-                {
-                    var roomNumbers = roomDropdowns.Select(element => new SelectElement(element)).ToList();
-                    roomNumbers[0].SelectByValue(number);
-                }
-            }
-            catch (WebDriverTimeoutException)
-            {
-                Console.WriteLine("Alert dismissal element did not appear within the specified time.");
-            }
-        }
-
+        public void SelectNumberOfRooms(string number) => _dropDown.SelectFromListByValue(_driver, RoomsChoices, number);
+      
         public void ClickReserve() => ReserveButton.Click();
 
         public void EnterFirstName(string firstName) => FirstName.SendKeys(firstName);
