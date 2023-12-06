@@ -1,31 +1,35 @@
 ﻿using OpenQA.Selenium;
 using SeleniumExtras.WaitHelpers;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using Utilities;
+using Wrappers;
 
 namespace BookingPages
 {
     public class FlightsPage
     {
         private readonly IWebDriver _driver;
+        private Button _button = new Button();
+        private TextBox _textBox = new TextBox();
         private By DepartureInputValue => By.XPath("//*[@placeholder ='From?']");
         private By DestinationInputValue => By.XPath("//*[@placeholder ='To?']");
         private By Calendar => (By.CssSelector(".c8GSD-content"));
         private By NextMonthArrow => (By.XPath("//*[@aria-label='Next Month']"));
         private By PreviousMonthArrow => (By.XPath("//*[@aria-label='Previous Month']"));
         private By LocationDropdown => By.XPath("(//*[@class='c8GSD-overlay-dropdown']//li)[1]");
-        private IWebElement FlightMode => _driver.FindElement(By.XPath("//*[text()='Round-trip']"));
-        private IWebElement Milticity => _driver.FindElement(By.CssSelector("#multicity"));
-        private IList<IWebElement> MultipleSearchForms => _driver.FindElements(By.XPath("//*[contains(@class, 'multicityContainer')]/div"));
-        private IList<IWebElement> DepartureInputFields => _driver.FindElements(By.XPath("//*[@class= 'zEiP-formField zEiP-origin']"));
-        private IList<IWebElement> DestinationInputFields => _driver.FindElements(By.XPath("//*[@class= 'zEiP-formField zEiP-destination']"));
-        private IList<IWebElement> DateInputFields => _driver.FindElements(By.XPath("//*[@class='zEiP-formField zEiP-date']"));
-        private IList<IWebElement> DateValues => _driver.FindElements(By.XPath("//*[@class='cQtq-value']"));
-        private IList<IWebElement> CurrentMonths => _driver.FindElements(By.XPath("//*[@data-month]"));
-        private IList<IWebElement> DaysCalendar => _driver.FindElements(By.XPath("//*[@class='onx_-days']/div"));
-        private IWebElement AddButton => _driver.FindElement(By.XPath("//*[text()='Add another flight']"));
-        private IWebElement RemoveLastButton => _driver.FindElement(By.XPath("(//*[@aria-label='Remove leg number 4 from your search'])[1]"));
-        private IWebElement SearchButton => _driver.FindElement(By.CssSelector(".Iqt3-button-container"));
+        private Button FlightMode => new Button(_driver.FindElement(By.XPath("//*[text()='Round-trip']")));
+        private Button Milticity => new Button(_driver.FindElement(By.CssSelector("#multicity")));
+        private ReadOnlyCollection<IWebElement> MultipleSearchForms => _driver.FindElements(By.XPath("//*[contains(@class, 'multicityContainer')]/div"));
+        private ReadOnlyCollection<IWebElement> DepartureInputFields => _driver.FindElements(By.XPath("//*[@class= 'zEiP-formField zEiP-origin']"));
+        private ReadOnlyCollection<IWebElement> DestinationInputFields => _driver.FindElements(By.XPath("//*[@class= 'zEiP-formField zEiP-destination']"));
+        private ReadOnlyCollection<IWebElement> DateInputFields => _driver.FindElements(By.XPath("//*[@class='zEiP-formField zEiP-date']"));
+        private ReadOnlyCollection<IWebElement> DateValues => _driver.FindElements(By.XPath("//*[@class='cQtq-value']"));
+        private ReadOnlyCollection<IWebElement> CurrentMonths => _driver.FindElements(By.XPath("//*[@data-month]"));
+        private ReadOnlyCollection<IWebElement> DaysCalendar => _driver.FindElements(By.XPath("//*[@class='onx_-days']/div"));
+        private Button AddButton => new Button(_driver.FindElement(By.XPath("//*[text()='Add another flight']")));
+        private Button RemoveLastButton => new Button(_driver.FindElement(By.XPath("(//*[@aria-label='Remove leg number 4 from your search'])[1]")));
+        private Button SearchButton => new Button(_driver.FindElement(By.CssSelector(".Iqt3-button-container")));
 
         public FlightsPage(IWebDriver driver)
         {
@@ -70,7 +74,7 @@ namespace BookingPages
 
         public string GetDestinationFour() => GetFieldLine(DestinationInputFields, 3).Text;
 
-        public string GetDateOne() => GetFieldLine(DateValues,0).Text;
+        public string GetDateOne() => GetFieldLine(DateValues, 0).Text;
 
         public string GetDateTwo() => GetFieldLine(DateValues, 1).Text;
 
@@ -78,7 +82,7 @@ namespace BookingPages
 
         public string GetDateFour() => GetFieldLine(DateValues, 3).Text;
 
-        public void SelectDepartureOneDate(DateTime date) => SelectDateNew(GetFieldLine(DateInputFields,0), date);
+        public void SelectDepartureOneDate(DateTime date) => SelectDateNew(GetFieldLine(DateInputFields, 0), date);
 
         public void SelectDepartureTwoDate(DateTime date) => SelectDateNew(GetFieldLine(DateInputFields, 1), date);
 
@@ -92,60 +96,51 @@ namespace BookingPages
 
         public void ClickSearch() => SearchButton.Click();
 
-        private IWebElement GetFieldLine(IList<IWebElement> elements, int numberOfLine) => elements[numberOfLine];
+        private IWebElement GetFieldLine(ReadOnlyCollection<IWebElement> elements, int numberOfLine) => elements[numberOfLine];
 
         private void SendKeysTo(IWebElement element, string text, By locator)
         {
-            _driver.GetWait().Until(ExpectedConditions.ElementToBeClickable(element));
-            element.Click();
+            _button.ClickWhenReady(_driver, element);
             var findInputElement = WebDriverExtensions.GetWait(_driver).Until(ExpectedConditions.ElementToBeClickable(locator));
             if (findInputElement.GetAttribute("value").Length > 0)
             {
-                findInputElement.SendKeys(Keys.Control + "a");
-                findInputElement.SendKeys(Keys.Backspace);
+                _textBox.DeleteAllTextWithKey(findInputElement);
             }
             if (findInputElement.Enabled)
             {
                 findInputElement.SendKeys(text);
-                var dropdown = _driver.GetWait().Until(ExpectedConditions.ElementToBeClickable(LocationDropdown));
-                dropdown.Click();
+                _button.ClickWhenReady(_driver, LocationDropdown);
             }
         }
 
         private void SelectDateNew(IWebElement element, DateTime dateToSelect)
         {
-            _driver.GetWait().Until(ExpectedConditions.ElementToBeClickable(element));
-            element.Click();
+            _button.ClickWhenReady(_driver, element);
             var findDateElement = WebDriverExtensions.GetWait(_driver).Until(ExpectedConditions.ElementToBeClickable(Calendar));
             var currentMonthYearText = CurrentMonths.Select(x => x.GetAttribute("data-month").ToString()).ToList();
-            IList<DateTime> ParsedMonthYear = currentMonthYearText.Select(dateString => DateTime.ParseExact(dateString, "yyyy-MM", CultureInfo.InvariantCulture)).ToList();
-
+            var ParsedMonthYear = currentMonthYearText.Select(dateString => DateTime.ParseExact(dateString, "yyyy-MM", CultureInfo.InvariantCulture)).ToList();
             int totalDays = DaysCalendar.Count;
             foreach (var item in ParsedMonthYear)
             {
                 if (dateToSelect.Month > item.Month)
                 {
-                    var next = _driver.WaitForElementIsClicable(NextMonthArrow);
-                    next.Click();
+                    _button.ClickWhenReady(_driver, NextMonthArrow);
                 }
                 if (dateToSelect.Month < item.Month)
                 {
-                    var back = _driver.WaitForElementIsClicable(PreviousMonthArrow);
-                    back.Click();
+                    _button.ClickWhenReady(_driver, PreviousMonthArrow);
                 }
 
                 int daysInMonth = DateTime.DaysInMonth(item.Year, item.Month);
                 for (int startIndex = 0; startIndex < totalDays - daysInMonth + 1; startIndex++)
                 {
                     var daysForCurrentMonth = DaysCalendar.Skip(startIndex).Take(daysInMonth).ToList();
-                    var dayToSelect = daysForCurrentMonth.FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}"));
-                    if (dayToSelect != null)
-                    {
-                        dayToSelect.Click();
-                        return;
-                    }
+                    _button.ClickFirstThatContainsText(daysForCurrentMonth, $"{dateToSelect.Day}");
+                    return;
                 }
+
             }
         }
     }
 }
+

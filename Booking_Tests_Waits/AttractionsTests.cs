@@ -11,7 +11,7 @@ namespace Booking_Tests_Waits
         private HomePage _homePage;
         private AttractionsPage _attractionsPage;
         private const string _expectedDestination = "Nice";
-        private DateTime _attractionsDay = new DateTime(2023, 11, 30);
+        private DateTime _attractionsDay = new DateTime(2023, 12, 10);
 
         [SetUp]
         public void Setup()

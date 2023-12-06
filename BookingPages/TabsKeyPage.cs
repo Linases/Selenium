@@ -1,24 +1,28 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using SeleniumExtras.WaitHelpers;
+using System.Collections.ObjectModel;
 using Utilities;
+using Wrappers;
 
 namespace BookingPages
 {
     public class TabsKeyPage
     {
         private readonly IWebDriver _driver;
+        private Button _button = new Button();
         private By SearchFieldLocator => (By.XPath("//input[@placeholder='Where are you going?']"));
         private By AutocompleteList => (By.XPath("//*[@id='autocomplete-results']//*[@class='a3332d346a']"));
         private By MonthsYearsList => (By.XPath("//select[@data-name='year-month']/option"));
         private By ListDays => (By.XPath("//*[@data-name='day']/option"));
-        private IList<IWebElement> CurrencyChoices => _driver.FindElements(By.XPath("//*[@data-testid='selection-item']"));
-        private IWebElement CurrencyButton => _driver.FindElement(By.XPath("//*[@data-testid='header-currency-picker-trigger']"));
-        private IWebElement CurrencyTitle => _driver.FindElement(By.XPath("//*[@data-testid='header-currency-picker-trigger']/span"));
-        private IWebElement SkipToMain => _driver.FindElement(By.XPath("//*[@class='bui-list-item']"));
-        private IWebElement Register => _driver.FindElement(By.XPath("//*[@data-testid='header-sign-up-button']"));
-        private IWebElement SearchField => _driver.FindElement(By.XPath("//input[@placeholder='Where are you going?']"));
-        private IWebElement Menu => _driver.FindElement(By.XPath("//*[@data-testid='web-shell-header-mfe']"));
+        private ReadOnlyCollection<IWebElement> CurrencyChoices => _driver.FindElements(By.XPath("//*[@data-testid='selection-item']"));
+        private Button CurrencyButton => new Button(_driver.FindElement(By.XPath("//*[@data-testid='header-currency-picker-trigger']")));
+        private Button CurrencyTitle => new Button(_driver.FindElement(By.XPath("//*[@data-testid='header-currency-picker-trigger']/span")));
+        private By SkipToMain => (By.XPath("//*[@class='bui-list-item']"));
+        private Button SkipToMainButton => new Button(_driver.FindElement(By.XPath("//*[@class='bui-list-item']")));
+        private Button Register => new Button(_driver.FindElement(By.XPath("//*[@data-testid='header-sign-up-button']")));
+        private TextBox SearchField => new TextBox(_driver.FindElement(By.XPath("//input[@placeholder='Where are you going?']")));
+        private IWebElement Menu => (_driver.FindElement(By.XPath("//*[@data-testid='web-shell-header-mfe']")));
 
         public TabsKeyPage(IWebDriver driver)
         {
@@ -83,7 +87,7 @@ namespace BookingPages
 
         public string GetCurrencyName() => CurrencyTitle.Text;
 
-        public void TabKeySkipToMain() => TabKeytoElement(SkipToMain);
+        public void TabKeySkipToMain() => TabKeytoElement(SkipToMainButton);
 
         public void ClickWithJavaScript()
         {
@@ -91,24 +95,12 @@ namespace BookingPages
             js.ExecuteScript("document.getElementsByClassName('bui-list-item')[0].click()");
         }
 
-        public bool IsSkipToMainDisplayed()
-        {
-            var isDisplayed = SkipToMain.Displayed;
-            return isDisplayed;
-        }
+        public bool IsSkipToMainDisplayed() => _button.IsElementDisplayed(_driver, SkipToMain);
 
-        public bool IsAutocompleteDisplayed()
-        {
-            var cityList = _driver.GetWait().Until(wd => wd.WaitForElementsVisible(AutocompleteList));
-            var isDisplayed = cityList.All(x => x.Displayed);
-            return isDisplayed;
-        }
+        public bool IsAutocompleteDisplayed() => _button.IsListDisplayed(_driver, AutocompleteList);
 
-        public bool IsMenuDisplayed()
-        {
-            var isDisplayed = IsElementDisplayed(Menu);
-            return isDisplayed;
-        }
+        public bool IsMenuDisplayed() => _button.IsElementDisplayedJs(_driver, Menu);
+
 
         public void ClickTab()
         {
@@ -154,20 +146,6 @@ namespace BookingPages
             actions.SendKeys(Keys.ArrowUp).Build().Perform();
         }
 
-        private bool IsElementDisplayed(IWebElement element)
-        {
-            var jsExecutor = (IJavaScriptExecutor)_driver;
-            var isElementVisible = (bool)jsExecutor.ExecuteScript(@"
-        var rect = arguments[0].getBoundingClientRect();
-        return (
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-        );", element);
-            return isElementVisible;
-        }
-
         private void SelectFromList(By listLocator, By elementLocator)
         {
             var list = _driver.GetWait().Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(listLocator));
@@ -211,7 +189,9 @@ namespace BookingPages
             {
                 ClickTab();
                 IWebElement currentElement = _driver.SwitchTo().ActiveElement();
-                if (currentElement.Equals(element))
+                var currentElementText = currentElement.Text;
+                var elementText = element.Text;
+                if (currentElementText.Equals(elementText))
                 {
                     break;
                 }

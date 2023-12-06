@@ -1,16 +1,17 @@
 ﻿using OpenQA.Selenium;
-using Utilities;
+using Wrappers;
 
 namespace BookingPages
 {
     public class LoginPage
     {
         private readonly IWebDriver _driver;
-        By EnterPasswordField => (By.XPath("//*[@placeholder='Enter a password']"));
-        private IWebElement LoginButton => _driver.FindElement(By.XPath("//*[@data-testid='header-sign-in-button']"));
-        private IWebElement EmailField => _driver.FindElement(By.Id("username"));
-        private IWebElement ContinueWithEmailButton => _driver.FindElement(By.XPath("//*[text()='Continue with email']"));
-        private IWebElement ConfirmPasswordField => _driver.FindElement(By.XPath("//*[@placeholder='Confirm your password']"));
+        private TextBox _textBox = new TextBox();
+        private By EnterPasswordField => (By.XPath("//*[@placeholder='Enter a password']"));
+        private By ConfirmPasswordField => (By.XPath("//*[@placeholder='Confirm your password']"));
+        private Button LoginButton => new Button(_driver.FindElement(By.XPath("//*[@data-testid='header-sign-in-button']")));
+        private TextBox EmailField => new TextBox(_driver.FindElement(By.Id("username")));
+        private Button ContinueWithEmailButton => new Button(_driver.FindElement(By.XPath("//*[text()='Continue with email']")));
 
         public LoginPage(IWebDriver driver)
         {
@@ -25,17 +26,8 @@ namespace BookingPages
 
         public void ClickContinueButton() => ContinueWithEmailButton.Click();
 
-        public bool IsPasswordFieldVisible()
-        {
-            var password = _driver.WaitForElementIsVisible(EnterPasswordField, 20);
-            var isVisible = password.Displayed;
-            return isVisible;
-        }
+        public bool IsPasswordFieldVisible() => _textBox.IsElementDisplayed(_driver, EnterPasswordField);
 
-        public bool IsConfirmPasswordFieldVisible()
-        {
-            var isVisible = ConfirmPasswordField.Displayed; 
-            return isVisible;
-        }
+        public bool IsConfirmPasswordFieldVisible() => _textBox.IsElementDisplayed(_driver, ConfirmPasswordField);
     }
 }

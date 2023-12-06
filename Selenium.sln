@@ -28,7 +28,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookingPages", "BookingPage
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Booking_Tests_Waits", "Booking_Tests_Waits\Booking_Tests_Waits.csproj", "{89B8F028-7830-4274-85D8-2D3DD5EFBE1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{57DB3CC4-D627-424B-B4CC-950BA241DCE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "Utilities\Utilities.csproj", "{57DB3CC4-D627-424B-B4CC-950BA241DCE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wrappers", "Wrappers\Wrappers.csproj", "{1F27013C-0E1D-4270-9792-2DD331AB0A82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +70,10 @@ Global
 		{57DB3CC4-D627-424B-B4CC-950BA241DCE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57DB3CC4-D627-424B-B4CC-950BA241DCE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57DB3CC4-D627-424B-B4CC-950BA241DCE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F27013C-0E1D-4270-9792-2DD331AB0A82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F27013C-0E1D-4270-9792-2DD331AB0A82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F27013C-0E1D-4270-9792-2DD331AB0A82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F27013C-0E1D-4270-9792-2DD331AB0A82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

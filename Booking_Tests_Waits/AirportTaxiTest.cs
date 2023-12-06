@@ -12,7 +12,7 @@ namespace Booking_Tests_Waits
         private AirportTaxiPage _airportTaxiPage;
         private const string _expectedPickUpLocation = "Vilnius";
         private const string _expectedDestination = "Kaunas";
-        private DateTime _expectedTaxiDate = new DateTime(2023, 11, 30);
+        private DateTime _expectedTaxiDate = new DateTime(2023, 12, 16);
         private const string _expectedHour = "13";
         private const string _expectedMinutes = "30";
         private const string _expectedTime = $"{_expectedHour}:{_expectedMinutes}";
@@ -57,7 +57,7 @@ namespace Booking_Tests_Waits
             Assert.That(_airportTaxiPage.IsDisplayedList(), Is.True, "Taxis list is not displayed");
             _airportTaxiPage.SelectTaxi();
             _airportTaxiPage.ClickContinueButton();
-            //Bot awareness, can not check lasts assertions.
+          
             Assert.That(_airportTaxiPage.IsSummaryDisplayed(), Is.True, "Taxi travel itinerary is not displayed");
             Assert.That(Driver.Url.Contains("checkout"), Is.True, "Taxi travel itinerary is not displayed ");
         }

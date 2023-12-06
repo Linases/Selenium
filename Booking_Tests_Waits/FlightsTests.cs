@@ -21,10 +21,10 @@ namespace Booking_Tests_Waits
         private const string _expectedDestinationThree = "Dallas";
         private const string _expectedDestinationFour = "Rome";
 
-        private DateTime _expectedDateOne = new DateTime(2023, 12, 28);
-        private DateTime _expectedDateTwo = new DateTime(2024, 01, 04);
-        private DateTime _expectedDateThree = new DateTime(2024, 01, 11);
-        private DateTime _expectedDateFour = new DateTime(2024, 01, 18);
+        private DateTime _expectedDateOne = new DateTime(2024, 1, 1);
+        private DateTime _expectedDateTwo = new DateTime(2024, 1, 4);
+        private DateTime _expectedDateThree = new DateTime(2024, 1, 11);
+        private DateTime _expectedDateFour = new DateTime(2024, 1, 18);
 
         [SetUp]
         public void Setup()
@@ -66,7 +66,7 @@ namespace Booking_Tests_Waits
 
             _flightsPage.SelectDepartureOneDate(_expectedDateOne);
             var actualDateOne = _flightsPage.GetDateOne();
-            var expecteddDateOne = _expectedDateOne.ToString("ddd MM/dd", CultureInfo.InvariantCulture);
+            var expecteddDateOne = _expectedDateOne.ToString("ddd M/d", CultureInfo.InvariantCulture);
             Assert.That(actualDateOne, Is.EqualTo(expecteddDateOne), "Entered and actual first dates are not equal");
             _flightsPage.SelectDepartureTwoDate(_expectedDateTwo);
             var actualDateTwo = _flightsPage.GetDateTwo();
