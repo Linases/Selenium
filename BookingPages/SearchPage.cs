@@ -2,6 +2,7 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
+using System.Collections.ObjectModel;
 using Utilities;
 using Wrappers;
 using WebDriverExtensions = Utilities.WebDriverExtensions;
@@ -12,9 +13,7 @@ namespace Booking_Pages
     {
         private readonly IWebDriver _driver;
         private TabsKeyPage _tabsKeyPage;
-        private Button _button = new Button();
-        private TextBox _textBox = new TextBox();
-        private DropDown _dropDown = new DropDown();
+
         private By AutocompleteResultsOptions => (By.XPath("//*[@data-testid = 'autocomplete-results-options']//li"));
         private By HotelsList => (By.XPath("(//*[@data-testid='property-card-container'])"));
         private By CloseMapButton => (By.Id("b2hotelPage"));
@@ -31,7 +30,7 @@ namespace Booking_Pages
         private By HotelsListBlock => (By.CssSelector(".d4924c9e74"));
         private Button EnteredGuestsNumber => new Button(_driver.FindElement(By.XPath("//*[@data-testid='occupancy-config']")));
         private Button AdultsNrMinus => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[1]")));
-        private Button AdultsNrPlus => new Button (_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[2]")));
+        private Button AdultsNrPlus => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[2]")));
         private Button ChildrenNrMinus => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[3]")));
         private Button ChildrenNrPlus => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[4]")));
         private Button RoomsNrMinus => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[5]")));
@@ -78,8 +77,14 @@ namespace Booking_Pages
             firstMatchingOption?.Click();
         }
 
-        public bool IsListofHotelsDisplayed() => _button.IsElementDisplayed(_driver, HotelsListBlock);
-      
+        public bool IsListofHotelsDisplayed()
+        {
+            var hotel = new WebPageElement(HotelsListBlock);
+            var isDisplayed = hotel.IsElementDisplayed(HotelsListBlock);
+            return isDisplayed;
+        }
+
+
         public void PressSearchButton() => SearchButton.Click();
 
         public void ClickGuestInput() => EnteredGuestsNumber.Click();
@@ -226,33 +231,61 @@ namespace Booking_Pages
 
         public string GetGuestsNrValue() => EnteredGuestsNumber.Text;
 
-        public void Select5Stars() => _button.ClickWhenReady(_driver, Checkbox5stars);
+        public void Select5Stars()
+        {
+            var button = new Button(Checkbox5stars);
+            button.Click();
+        }
 
-        public string GetSearchResults() =>_button.GetTextToBePresentInElement(_driver, SearchResults, GetFiveStartsHotelsCeckboxValue());
-    
-        public string GetSearchResultsFitnessCenter() => _button.GetTextToBePresentInElement(_driver, SearchResults, GetFitnessCenterCheckboxValue());
+        public string GetSearchResults()=> GetTextToBePresentInElement(SearchResults, GetFiveStartsHotelsCeckboxValue());
 
+        public string GetSearchResultsFitnessCenter() => GetTextToBePresentInElement(SearchResults, GetFitnessCenterCheckboxValue());
+        
         public string GetFiveStartsHotelsCeckboxValue() => FivestarsHotelsNumber.Text;
 
         public string GetFitnessCenterCheckboxValue() => FitnessCenterCheckboxValue.Text;
 
         public void ClickSortButton() => SortButton.Click();
 
-        public void SelectPriceFilter() => _button.ClickWhenReady(_driver, PriceLowest);
+        public void SelectPriceFilter()
+        {
+            var filter = new Button(PriceLowest);
+            filter.Click();
+        }
 
-        public bool IsFilteredByLowestPrice() => _button.IsListSortedAscending_StringToDecimal(_driver, ListByPrices);
-  
+        public bool IsFilteredByLowestPrice()
+        {
+            var list = _driver.GetWaitForElementsVisible(ListByPrices);
+            var names = list.Select(n => n.Text).ToList();
+            var numericValues = names.Select(p => decimal.TryParse(p, out decimal parsed) ? parsed : decimal.MinValue).ToList();
+            var areSorted = numericValues.SequenceEqual(numericValues.OrderBy(p => p));
+            return areSorted;
+        }
+       
 
         public void ChooseFitnessCenter()
         {
             ClickMoreFacilities();
-            _button.ClickWhenReady(_driver, FitnessCenter);
+            var fitness = new Button(FitnessCenter);
+            fitness.Click();
         }
 
-        public void SelectHotel() => _button.ClickFirstFromListWithElementIncluded(_driver, HotelsList, SeeAvailabilityButton);
+        public void SelectHotel()
+        {
+            var hotelslist = _driver.GetWait().Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(HotelsList));
+            var firstMatchingOption = hotelslist.FirstOrDefault(option => option.Displayed);
 
-        public void SelectNumberOfRooms(string number) => _dropDown.SelectFromListByValue(_driver, RoomsChoices, number);
-      
+            var seeAvailabilityButton = firstMatchingOption.FindElement(SeeAvailabilityButton);
+            seeAvailabilityButton.Click();
+        } 
+
+        public void SelectNumberOfRooms(string number)
+        {
+            var selectElement = new DropDown(RoomsChoices);
+            selectElement.SelectFromListByValue(RoomsChoices,number);
+        }
+
+
         public void ClickReserve() => ReserveButton.Click();
 
         public void EnterFirstName(string firstName) => FirstName.SendKeys(firstName);
@@ -263,28 +296,52 @@ namespace Booking_Pages
 
         public void EnterPhoneNr(string phoneNr) => PhoneNr.SendKeys(phoneNr);
 
-        public string GetLastName() => _textBox.GetTextWithJsById(_driver, $"{LastName.GetAttribute("Id")}");
-       
-        public string GetFirstName() => _textBox.GetTextWithJsById(_driver, $"{FirstName.GetAttribute("Id")}");
+        public string GetLastName() => GetTextWithJsById($"{LastName.GetAttribute("Id")}");
 
-        public string GetEmail() => _textBox.GetTextWithJsById(_driver, $"{Email.GetAttribute("Id")}");
-     
-        public string GetPhoneNr() => _textBox.GetTextWithJsById(_driver, $"{PhoneNr.GetAttribute("Id")}");
+        public string GetFirstName() => GetTextWithJsById($"{FirstName.GetAttribute("Id")}");
+
+        public string GetEmail() =>GetTextWithJsById($"{Email.GetAttribute("Id")}");
+
+        public string GetPhoneNr() => GetTextWithJsById($"{PhoneNr.GetAttribute("Id")}");
 
         public void PressNextDetailsButton() => NextDetailsButton.Click();
 
         public void ClickCheckYourBooking() => CheckBookingButton.Click();
 
-        public bool IsAvailableToClickButton() => _button.IsAvailableToClickButton(BookAndPayButton);
+        public bool IsAvailableToClickButton() => BookAndPayButton.IsAvailableToClickButton();
 
-        public void CloseMap() => _button.ClickWhenReady(_driver, CloseMapButton);
+        public void CloseMap()
+        {
+            var button = new Button(CloseMapButton);
+            button.ClickIfDisplayed(CloseMapButton);
+        }
 
-        public void ClosePopUpButton() => _button.ClickIfDisplayedTryCatch(_driver, CloseButton);
+        public void ClosePopUpButton()
+        {
+            var button = new Button(CloseButton);
+            button.ClickIfDisplayed(CloseButton);
+        }
 
-        public void CloseFinishBooking() => _button.ClickIfDisplayedTryCatch(_driver, CloseButtonFinishBooking);
+        public void CloseFinishBooking()
+        {
+            var button = new Button(CloseButtonFinishBooking);
+            button.ClickIfDisplayed(CloseButtonFinishBooking);
+        }
 
         public string GetDestination() => SearchField.GetAttribute("value");
 
         private void ClickMoreFacilities() => MoreFacilities.Click();
+
+        private string GetTextWithJsById(string attributeName)
+        {
+            var js = (IJavaScriptExecutor)_driver;
+            var stringValue = (string)js.ExecuteScript($"return document.getElementById('{attributeName}').value;");
+            return stringValue;
+        }
+        private string GetTextToBePresentInElement(By locator, string text)
+        {
+            _driver.GetWait().Until(ExpectedConditions.TextToBePresentInElementLocated(locator, text));
+            return _driver.FindElement(locator).Text;
+        }
     }
 }

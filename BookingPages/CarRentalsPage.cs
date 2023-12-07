@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using System.Collections.ObjectModel;
+using Utilities;
 using Wrappers;
 
 namespace BookingPages
@@ -7,7 +8,6 @@ namespace BookingPages
     public class CarRentalsPage
     {
         private readonly IWebDriver _driver;
-        private Button _button = new Button();
         private By CurrentDays => (By.XPath("//*[@data-testid='bui-calendar']//td"));
         private Button SearchButton => new Button(_driver.FindElement(By.CssSelector(".submit-button-container")));
         private WebPageElement ErrorMessage => new WebPageElement(_driver.FindElement(By.XPath("//*[text()='Please provide a pick-up location']")));
@@ -16,7 +16,7 @@ namespace BookingPages
         private WebPageElement DropOffDate => new WebPageElement(_driver.FindElement(By.XPath("//*[@data-testid ='searchbox-toolbox-date-picker-dropoff-date-value']")));
         private Button NextMonthArrow => new Button(_driver.FindElement(By.XPath("//*[@data-testid='bui-calendar']/ button")));
         private ReadOnlyCollection<IWebElement> CurrentMonths => _driver.FindElements(By.XPath("//*[@data-testid='bui-calendar']//h3"));
-        
+
         public CarRentalsPage(IWebDriver driver)
         {
             _driver = driver;
@@ -38,9 +38,16 @@ namespace BookingPages
 
         public void SelectDate(DateTime dateToSelect)
         {
+            var currentMonthYearText = CurrentMonths.Select(x => x.Text).ToList();
+
             var desiredMonthYearText = dateToSelect.ToString("MMMM yyyy");
-            _button.ClickWhenDoNotContainTextInList(CurrentMonths, desiredMonthYearText, NextMonthArrow);
-            _button.ClickFirstThatContainsText(_driver, CurrentDays, $"{dateToSelect.Day}");
+            while (!currentMonthYearText.Contains(desiredMonthYearText))
+            {
+                NextMonthArrow.Click();
+            }
+            var list = _driver.WaitForElementsVisible(CurrentDays);
+            var days = list.FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}"));
+            days.Click();
         }
     }
 }

@@ -7,9 +7,10 @@ namespace Booking_Pages
     public class HomePage
     {
         private readonly IWebDriver _driver;
-        private Button _button = new Button();
         private By DissmissCookies => By.XPath("//button[text()='Decline']");
         private By DissmissGeniusAlert => (By.CssSelector(".c0528ecc22 button"));
+        private Button DissmissGeniusAlertButton => new Button(DissmissGeniusAlert);
+        private Button DissmissCookiesAlertButton => new Button(DissmissCookies);
         private Button AttractionsLink => new Button(_driver.FindElement(By.Id("attractions")));
         private Button CarRentalsLink => new Button(_driver.FindElement(By.Id("cars")));
         private Button FlightsLink => new Button(_driver.FindElement(By.Id("flights")));
@@ -32,8 +33,8 @@ namespace Booking_Pages
 
         public void OpenAirportTaxiPage() => AirportTaxi.Click();
 
-        public void DissmissAlert() => _button.ClickIfDisplayedTryCatch(_driver, DissmissGeniusAlert);
+        public void DissmissAlert() => DissmissGeniusAlertButton.ClickIfDisplayed(DissmissGeniusAlert);
 
-        public void DeclineCookies() => _button.ClickWhenReady(_driver, DissmissCookies);
+        public void DeclineCookies() => DissmissCookiesAlertButton.ClickIfDisplayed(DissmissCookies);
     }
 }

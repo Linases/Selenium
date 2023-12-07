@@ -54,7 +54,7 @@ namespace Booking_Tests_Waits
             _airportTaxiPage.ClickSearch();
             _homePage.DeclineCookies();
 
-            Assert.That(_airportTaxiPage.IsDisplayedList(), Is.True, "Taxis list is not displayed");
+            Assert.That(_airportTaxiPage.IsAnyTaxiDisplayed(), Is.True, "Taxis list is not displayed");
             _airportTaxiPage.SelectTaxi();
             _airportTaxiPage.ClickContinueButton();
           

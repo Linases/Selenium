@@ -10,7 +10,7 @@ namespace Wrappers
         {
         }
 
-        public TextBox()
+        public TextBox(By locator) : base(locator)
         {
         }
 
@@ -20,17 +20,10 @@ namespace Wrappers
             Element.SendKeys(text);
         }
 
-      public void DeleteAllTextWithKey(IWebElement element)
+        public void DeleteAllTextWithKey()
         {
-            element.SendKeys(Keys.Control + "a");
-            element.SendKeys(Keys.Backspace);
-        }
-
-        public string GetTextWithJsById(IWebDriver driver, string attributeName)
-        {
-            var js = (IJavaScriptExecutor)driver;
-            var stringValue = (string)js.ExecuteScript($"return document.getElementById('{attributeName}').value;");
-            return stringValue;
+            Element.SendKeys(Keys.Control + "a");
+            Element.SendKeys(Keys.Backspace);
         }
     }
 }

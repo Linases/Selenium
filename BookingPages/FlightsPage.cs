@@ -10,8 +10,6 @@ namespace BookingPages
     public class FlightsPage
     {
         private readonly IWebDriver _driver;
-        private Button _button = new Button();
-        private TextBox _textBox = new TextBox();
         private By DepartureInputValue => By.XPath("//*[@placeholder ='From?']");
         private By DestinationInputValue => By.XPath("//*[@placeholder ='To?']");
         private By Calendar => (By.CssSelector(".c8GSD-content"));
@@ -100,22 +98,27 @@ namespace BookingPages
 
         private void SendKeysTo(IWebElement element, string text, By locator)
         {
-            _button.ClickWhenReady(_driver, element);
+            _driver.GetWait().Until(ExpectedConditions.ElementToBeClickable(element));
+            element.Click();
             var findInputElement = WebDriverExtensions.GetWait(_driver).Until(ExpectedConditions.ElementToBeClickable(locator));
             if (findInputElement.GetAttribute("value").Length > 0)
             {
-                _textBox.DeleteAllTextWithKey(findInputElement);
+                var deleteElement = new TextBox(findInputElement);
+                deleteElement.DeleteAllTextWithKey();
             }
             if (findInputElement.Enabled)
             {
                 findInputElement.SendKeys(text);
-                _button.ClickWhenReady(_driver, LocationDropdown);
+                var button = new Button(LocationDropdown);
+              //  var dropdown = _driver.GetWait().Until(ExpectedConditions.ElementToBeClickable(LocationDropdown));
+                button.Click();
             }
         }
 
         private void SelectDateNew(IWebElement element, DateTime dateToSelect)
         {
-            _button.ClickWhenReady(_driver, element);
+            _driver.GetWait().Until(ExpectedConditions.ElementToBeClickable(element));
+            element.Click();
             var findDateElement = WebDriverExtensions.GetWait(_driver).Until(ExpectedConditions.ElementToBeClickable(Calendar));
             var currentMonthYearText = CurrentMonths.Select(x => x.GetAttribute("data-month").ToString()).ToList();
             var ParsedMonthYear = currentMonthYearText.Select(dateString => DateTime.ParseExact(dateString, "yyyy-MM", CultureInfo.InvariantCulture)).ToList();
@@ -124,21 +127,26 @@ namespace BookingPages
             {
                 if (dateToSelect.Month > item.Month)
                 {
-                    _button.ClickWhenReady(_driver, NextMonthArrow);
+                    var arrow = new Button(NextMonthArrow);
+                    arrow.Click();
                 }
                 if (dateToSelect.Month < item.Month)
                 {
-                    _button.ClickWhenReady(_driver, PreviousMonthArrow);
+                    var arrow = new Button(PreviousMonthArrow);
+                    arrow.Click();
                 }
 
                 int daysInMonth = DateTime.DaysInMonth(item.Year, item.Month);
                 for (int startIndex = 0; startIndex < totalDays - daysInMonth + 1; startIndex++)
                 {
                     var daysForCurrentMonth = DaysCalendar.Skip(startIndex).Take(daysInMonth).ToList();
-                    _button.ClickFirstThatContainsText(daysForCurrentMonth, $"{dateToSelect.Day}");
-                    return;
+                    var dayToSelect = daysForCurrentMonth.FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}"));
+                    if (dayToSelect != null)
+                    {
+                        dayToSelect.Click();
+                        return;
+                    }
                 }
-
             }
         }
     }

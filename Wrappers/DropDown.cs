@@ -9,17 +9,17 @@ namespace Wrappers
     public class DropDown : WebPageElement
     {
 
-        public DropDown()
+        public DropDown(IWebElement webElement) : base(webElement)
         {
         }
 
-        public DropDown(IWebElement webElement) : base(webElement)
+        public DropDown(By locator) : base(locator)
         {
         }
 
         public void SelectByText(string text)
         {
-            var selectElement = new SelectElement(this.Element);
+            var selectElement = new SelectElement(Element);
             selectElement.SelectByText(text);
         }
 
@@ -42,15 +42,17 @@ namespace Wrappers
             return allElements;
         }
 
-        public void SelectFromListByValue(IWebDriver driver, By locator, string value)
+        public void SelectFromListByValue(By locator, string value)
         {
-            var list = WebDriverExtensions.GetWait(driver).Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(locator));
+            var list = WebDriverExtensions.GetWait(Driver).Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(locator));
             if (list.Count > 0)
             {
-                var elementValue = list.Select(element => new SelectElement(element)).ToList();
+                var elementValue = list.Select(element => new SelectElement(Element)).ToList();
                 elementValue[0].SelectByValue(value);
             }
         }
+
+      
     }
 }
 

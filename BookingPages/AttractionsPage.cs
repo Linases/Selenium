@@ -1,13 +1,15 @@
 ﻿using OpenQA.Selenium;
 using System.Collections.ObjectModel;
+using System.Xml.Linq;
+using Utilities;
 using Wrappers;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BookingPages
 {
     public class AttractionsPage
     {
         private readonly IWebDriver _driver;
-        private Button _button = new Button();
         private By AutocompleteList => (By.CssSelector(".css-9dv5ti"));
         private By SelectedDayField => (By.CssSelector(".css-tbiur0"));
         private By AttractionList => (By.XPath("//*[@data-testid='sr-list']//a"));
@@ -15,12 +17,16 @@ namespace BookingPages
         private By Timeslot => (By.XPath("//*[@data-testid='timeslot-selector']"));
         private By DatePicker => (By.XPath("//*[@data-testid='datepicker']"));
         private By SearchField => (By.XPath("//input[@placeholder='Where are you going?']"));
-        private By CurrentDays => (By.CssSelector(".a10b0e2d13 td"));
+        private ReadOnlyCollection<IWebElement> CurrentDays => _driver.FindElements(By.CssSelector(".a10b0e2d13 td"));
         private TextBox SearchFieldText => new TextBox(_driver.FindElement(SearchField));
         private Button DaysFieldButton => new Button(_driver.FindElement(By.XPath("//*[text()='Select your dates']")));
         private Button NextMonthArrow => new Button(_driver.FindElement(By.CssSelector(".a10b0e2d13 button")));
         private ReadOnlyCollection<IWebElement> CurrentMonths => _driver.FindElements(By.CssSelector(".a10b0e2d13 h3"));
         private Button SearchButton => new Button(_driver.FindElement(By.XPath("//*[@type = 'submit']")));
+        private WebPageElement AttractionsDetailsElement => new WebPageElement(AttractionsDetails);
+        private WebPageElement DatePickerElement => new WebPageElement(DatePicker);
+        private WebPageElement TimeslotElement => new WebPageElement(Timeslot);
+        private WebPageElement SelectedDayElement => new WebPageElement(SelectedDayField);
 
         public AttractionsPage(IWebDriver driver)
         {
@@ -34,7 +40,10 @@ namespace BookingPages
         public void SelectAutocompleteOption()
         {
             var destination = GetDestination();
-            _button.ClickFirstThatContainsText(_driver, AutocompleteList, destination);
+            var list = _driver.WaitForElementsVisible(AutocompleteList);
+            var element = list.FirstOrDefault(element => element.Text.Contains($"{destination}"));
+            element.Click();
+
         }
 
         public void ClickDatesField() => DaysFieldButton.Click();
@@ -42,20 +51,31 @@ namespace BookingPages
         public void SelectDate(DateTime dateToSelect)
         {
             var desiredMonthYearText = dateToSelect.ToString("MMMM yyyy");
-            _button.ClickWhenDoNotContainTextInList(CurrentMonths, desiredMonthYearText, NextMonthArrow);
-            _button.ClickFirstThatContainsText(_driver, CurrentDays, $"{dateToSelect.Day}");
+            var currentMonthYearText = CurrentMonths.Select(x => x.Text).ToList();
+
+            while (!currentMonthYearText.Contains(desiredMonthYearText))
+            {
+                NextMonthArrow.Click();
+            }
+
+            CurrentDays.FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}")).Click();
         }
 
-        public string GetAttractionsDate() => _button.WaitToGetText(_driver, SelectedDayField);
+        public string GetAttractionsDate() => SelectedDayElement.WaitToGetText(SelectedDayField);
 
         public void ClickSearchButton() => SearchButton.Click();
 
-        public void SelecFirstAvailability() => _button.ClickFirstFromList(_driver, AttractionList);
-
-        public bool IsAttractionDetailsDisplayed() => _button.IsElementDisplayed(_driver, AttractionsDetails);
-      
-        public bool IsDatePickerDisplayed() =>_button.IsElementDisplayedTryCatch(_driver, DatePicker);
-       
-        public bool IsTimeSlotDisplayed() =>_button.IsElementDisplayedTryCatch(_driver, Timeslot);
+        public void SelecFirstAvailability()
+        {
+            var list = _driver.WaitForElementsVisible(AttractionList);
+            var firstAttraction = list.FirstOrDefault(x => x.Displayed);
+            firstAttraction.Click();
         }
+
+        public bool IsAttractionDetailsDisplayed() => AttractionsDetailsElement.IsElementDisplayed(AttractionsDetails);
+
+        public bool IsDatePickerDisplayed() => DatePickerElement.IsElementDisplayed(DatePicker);
+
+        public bool IsTimeSlotDisplayed() => TimeslotElement.IsElementDisplayed(Timeslot);
     }
+}

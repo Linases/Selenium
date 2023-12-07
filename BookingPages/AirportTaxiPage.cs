@@ -8,8 +8,7 @@ namespace BookingPages
     public class AirportTaxiPage
     {
         private readonly IWebDriver _driver;
-        private Button _button = new Button();
-        private TextBox _textBox = new TextBox();
+     
         private By Auto_CompleteListPickUp => (By.CssSelector("#pickupLocation-items"));
         private By Auto_CompleteListDropOff => (By.CssSelector("#dropoffLocation-items"));
         private By SearchResultsList => (By.CssSelector(".SRM_527ba3f0"));
@@ -19,16 +18,16 @@ namespace BookingPages
         private By DropOffLocation => (By.Id("dropoffLocation"));
         private By CurrentDays => (By.XPath("//*[@data-test='rw-calendar']//td"));
         private By ItinerarySummary => (By.XPath("//*[@data-testid='route-summary-wrapper']"));
-        private TextBox PickUpLocationInput => new TextBox(_driver.FindElement(PickUpLocation));
-        private TextBox Destination => new TextBox(_driver.FindElement(DropOffLocation));
-        private Button PickUpDateButton => new Button(_driver.FindElement(PickUpDate));
-        private TextBox PickUpDateText => new TextBox(_driver.FindElement(PickUpDate));
-        private Button PickUpTimeButton => new Button(_driver.FindElement(PickUpTime));
-        private TextBox PickUpTimeText => new TextBox(_driver.FindElement(PickUpTime));
+        private TextBox PickUpLocationInput => new TextBox(PickUpLocation);
+        private TextBox Destination => new TextBox(DropOffLocation);
+        private Button PickUpDateButton => new Button(PickUpDate);
+        private TextBox PickUpDateText => new TextBox(PickUpDate);
+        private Button PickUpTimeButton => new Button(PickUpTime);
+        private TextBox PickUpTimeText => new TextBox(PickUpTime);
         private Button SearchButton => new Button(_driver.FindElement(By.XPath("(//span[@data-test='button-content'])[1]")));
-        private Button Calendar => new Button(_driver.FindElement(By.XPath("//*[@data-test='rw-calendar']")));
-        private TextBox CurrentMonth => new TextBox(Calendar.FindElement(By.CssSelector(".rw-c-date-picker__calendar-caption")));
-        private Button NextMonthArrow => new Button(Calendar.FindElement(By.XPath("//*[@data-test='rw-date-picker__btn--next']")));
+
+        private WebPageElement CurrentMonth => new WebPageElement(By.CssSelector(".rw-c-date-picker__calendar-caption"));
+        private Button NextMonthArrow => new Button(By.XPath("//*[@data-test='rw-date-picker__btn--next']"));
         private DropDown SelectHour => new DropDown(_driver.FindElement(By.CssSelector("#pickupHour")));
         private DropDown SelectMinutes => new DropDown(_driver.FindElement(By.CssSelector("#pickupMinute")));
         private Button ConfirmTimeButton => new Button(_driver.FindElement(By.XPath("//*[@data-test='rw-time-picker__confirm-button']")));
@@ -56,14 +55,14 @@ namespace BookingPages
         public string GetPickUpLocation()
         {
             var value = PickUpLocationInput.GetAttribute("Id");
-            var location = _textBox.GetTextWithJsById(_driver, value);
+            var location = GetTextWithJsById(value);
             return location;
         }
 
         public string GetDropOffLocation()
         {
             var value = Destination.GetAttribute("Id");
-            var destination = _textBox.GetTextWithJsById(_driver, value);
+            var destination = GetTextWithJsById(value);
             return destination;
         }
 
@@ -72,8 +71,16 @@ namespace BookingPages
         public void SelectDate(DateTime taxiDate)
         {
             var desiredMonthYearText = taxiDate.ToString("MMMM yyyy");
-            _button.ClickWhenDoNotContainText(CurrentMonth, desiredMonthYearText, NextMonthArrow);
-            _button.ClickFirstThatContainsText(_driver, CurrentDays, $"{taxiDate.Day}");
+
+            var currentMonthYearText = CurrentMonth.Text;
+
+            while (!currentMonthYearText.Contains(desiredMonthYearText))
+            {
+                NextMonthArrow.Click();
+            }
+            var list = _driver.WaitForElementsVisible(CurrentDays);
+            var desiredDayElement = list.FirstOrDefault(element => element.Text.Contains($"{taxiDate.Day}"));
+            desiredDayElement.Click();
         }
 
         public string GetSelectedDate() => PickUpDateText.Text;
@@ -90,12 +97,40 @@ namespace BookingPages
 
         public void ClickSearch() => SearchButton.Click();
 
-        public void SelectTaxi() => _button.ClickLastFromList(_driver, SearchResultsList);
+        public void SelectTaxi()
+        {
+            var expensivePrice = _driver.GetWaitForElementsVisible(SearchResultsList);
+            var lastTaxi = expensivePrice.LastOrDefault(x => x.Displayed);
+            lastTaxi.Click();
+        } 
 
         public void ClickContinueButton() => ContinueButton.Click();
 
-        public bool IsSummaryDisplayed() => _button.IsElementDisplayed(_driver, ItinerarySummary);
+        public bool IsSummaryDisplayed()
+        {
+            var summary = new WebPageElement(ItinerarySummary);
+            var isDisplayed = summary.IsElementDisplayed(ItinerarySummary);
+            return isDisplayed;
+        }
+    
+        public bool IsAnyTaxiDisplayed()
+        {
+            var expensivePrice = _driver.GetWaitForElementsVisible(SearchResultsList);
+            var list = expensivePrice.Where(x => x.Displayed).ToList();
+            if (list.Count > 0)
+            {
+                return true;
+            }
+            else
+            { return false; 
+            }
+        }
 
-        public bool IsDisplayedList() => _button.IsListDisplayed(_driver, SearchResultsList);
+        private string GetTextWithJsById(string attributeName)
+        {
+            var js = (IJavaScriptExecutor)_driver;
+            var stringValue = (string)js.ExecuteScript($"return document.getElementById('{attributeName}').value;");
+            return stringValue;
+        }
     }
 }
