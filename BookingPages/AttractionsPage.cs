@@ -1,9 +1,8 @@
 ﻿using OpenQA.Selenium;
 using System.Collections.ObjectModel;
-using System.Xml.Linq;
 using Utilities;
 using Wrappers;
-using static System.Net.Mime.MediaTypeNames;
+
 
 namespace BookingPages
 {
@@ -17,7 +16,7 @@ namespace BookingPages
         private By Timeslot => (By.XPath("//*[@data-testid='timeslot-selector']"));
         private By DatePicker => (By.XPath("//*[@data-testid='datepicker']"));
         private By SearchField => (By.XPath("//input[@placeholder='Where are you going?']"));
-        private ReadOnlyCollection<IWebElement> CurrentDays => _driver.FindElements(By.CssSelector(".a10b0e2d13 td"));
+        private By CurrentDaysLocator => (By.CssSelector(".a10b0e2d13 td"));
         private TextBox SearchFieldText => new TextBox(_driver.FindElement(SearchField));
         private Button DaysFieldButton => new Button(_driver.FindElement(By.XPath("//*[text()='Select your dates']")));
         private Button NextMonthArrow => new Button(_driver.FindElement(By.CssSelector(".a10b0e2d13 button")));
@@ -40,10 +39,9 @@ namespace BookingPages
         public void SelectAutocompleteOption()
         {
             var destination = GetDestination();
-            var list = _driver.WaitForElementsVisible(AutocompleteList);
-            var element = list.FirstOrDefault(element => element.Text.Contains($"{destination}"));
+            var firstElement = _driver.WaitForElementsVisible(AutocompleteList).FirstOrDefault(element => element.Text.Contains($"{destination}"));
+            var element = new Button(firstElement);
             element.Click();
-
         }
 
         public void ClickDatesField() => DaysFieldButton.Click();
@@ -58,7 +56,9 @@ namespace BookingPages
                 NextMonthArrow.Click();
             }
 
-            CurrentDays.FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}")).Click();
+            var day = _driver.WaitForElementsVisible(CurrentDaysLocator).FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}"));
+            var relevatDay = new Button(day);
+            relevatDay.Click();
         }
 
         public string GetAttractionsDate() => SelectedDayElement.WaitToGetText(SelectedDayField);
@@ -67,8 +67,8 @@ namespace BookingPages
 
         public void SelecFirstAvailability()
         {
-            var list = _driver.WaitForElementsVisible(AttractionList);
-            var firstAttraction = list.FirstOrDefault(x => x.Displayed);
+            var availability = _driver.WaitForElementsVisible(AttractionList).FirstOrDefault(x => x.Displayed);
+            var firstAttraction = new Button(availability);
             firstAttraction.Click();
         }
 

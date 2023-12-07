@@ -8,7 +8,7 @@ namespace BookingPages
     public class AirportTaxiPage
     {
         private readonly IWebDriver _driver;
-     
+
         private By Auto_CompleteListPickUp => (By.CssSelector("#pickupLocation-items"));
         private By Auto_CompleteListDropOff => (By.CssSelector("#dropoffLocation-items"));
         private By SearchResultsList => (By.CssSelector(".SRM_527ba3f0"));
@@ -25,7 +25,6 @@ namespace BookingPages
         private Button PickUpTimeButton => new Button(PickUpTime);
         private TextBox PickUpTimeText => new TextBox(PickUpTime);
         private Button SearchButton => new Button(_driver.FindElement(By.XPath("(//span[@data-test='button-content'])[1]")));
-
         private WebPageElement CurrentMonth => new WebPageElement(By.CssSelector(".rw-c-date-picker__calendar-caption"));
         private Button NextMonthArrow => new Button(By.XPath("//*[@data-test='rw-date-picker__btn--next']"));
         private DropDown SelectHour => new DropDown(_driver.FindElement(By.CssSelector("#pickupHour")));
@@ -80,7 +79,8 @@ namespace BookingPages
             }
             var list = _driver.WaitForElementsVisible(CurrentDays);
             var desiredDayElement = list.FirstOrDefault(element => element.Text.Contains($"{taxiDate.Day}"));
-            desiredDayElement.Click();
+            var dayElement = new Button(desiredDayElement);
+            dayElement.Click();
         }
 
         public string GetSelectedDate() => PickUpDateText.Text;
@@ -99,10 +99,10 @@ namespace BookingPages
 
         public void SelectTaxi()
         {
-            var expensivePrice = _driver.GetWaitForElementsVisible(SearchResultsList);
-            var lastTaxi = expensivePrice.LastOrDefault(x => x.Displayed);
-            lastTaxi.Click();
-        } 
+            var expensivePrice = _driver.GetWaitForElementsVisible(SearchResultsList).LastOrDefault(x => x.Displayed);
+            var taxiElement = new Button(expensivePrice);
+            taxiElement.Click();
+        }
 
         public void ClickContinueButton() => ContinueButton.Click();
 
@@ -112,17 +112,17 @@ namespace BookingPages
             var isDisplayed = summary.IsElementDisplayed(ItinerarySummary);
             return isDisplayed;
         }
-    
+
         public bool IsAnyTaxiDisplayed()
         {
-            var expensivePrice = _driver.GetWaitForElementsVisible(SearchResultsList);
-            var list = expensivePrice.Where(x => x.Displayed).ToList();
-            if (list.Count > 0)
+            var taxiList = _driver.GetWaitForElementsVisible(SearchResultsList).Where(x => x.Displayed).ToList();
+            if (taxiList.Count > 0)
             {
                 return true;
             }
             else
-            { return false; 
+            {
+                return false;
             }
         }
 

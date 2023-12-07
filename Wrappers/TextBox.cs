@@ -1,6 +1,4 @@
 ﻿using OpenQA.Selenium;
-using SeleniumExtras.WaitHelpers;
-using Utilities;
 
 namespace Wrappers
 {

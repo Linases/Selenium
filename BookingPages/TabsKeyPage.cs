@@ -22,7 +22,7 @@ namespace BookingPages
         private Button Register => new Button(_driver.FindElement(By.XPath("//*[@data-testid='header-sign-up-button']")));
         private TextBox SearchField => new TextBox(_driver.FindElement(By.XPath("//input[@placeholder='Where are you going?']")));
         private WebPageElement Menu => new WebPageElement(_driver.FindElement(By.XPath("//*[@data-testid='web-shell-header-mfe']")));
-        private ReadOnlyCollection<IWebElement> AutocompleteListElement => _driver.FindElements(AutocompleteList);
+
         public TabsKeyPage(IWebDriver driver)
         {
             _driver = driver;
@@ -36,14 +36,19 @@ namespace BookingPages
 
         public void EnterLocationWithAutocomplete(string expctedLocation)
         {
-            var list = _driver.GetWait().Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(AutocompleteList));
+            var list = _driver.GetWait().Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(AutocompleteList));
             foreach (var element in list)
             {
                 ClickArrowDown();
-                if (element.Text.Contains(expctedLocation))
+                try
                 {
+                    element.Text.Contains(expctedLocation);
                     ClickEnter();
                     break;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    throw new Exception();
                 }
             }
         }
@@ -51,7 +56,7 @@ namespace BookingPages
         public bool IsDestinationEntered(string destination)
         {
             destination = SearchField.GetAttribute("value");
-           
+
             var isDestination = WebDriverExtensions.GetWait(_driver).Until(ExpectedConditions.TextToBePresentInElementValue(SearchFieldLocator, destination));
             return isDestination;
         }
@@ -100,10 +105,11 @@ namespace BookingPages
 
         public bool IsAutocompleteDisplayed()
         {
-            var list = _driver.GetWaitForElementsVisible(AutocompleteList);
-            return list.All(x => x.Displayed);
+            var element = new WebPageElement(AutocompleteList);
+            var areDisplayed = element.AllElementsAreDisplayed(AutocompleteList);
+            return areDisplayed;
         }
-       
+
         public bool IsMenuDisplayed() => Menu.IsElementDisplayedJs();
 
 

@@ -2,13 +2,11 @@
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using Utilities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Wrappers
 {
     public class DropDown : WebPageElement
     {
-
         public DropDown(IWebElement webElement) : base(webElement)
         {
         }
@@ -51,8 +49,5 @@ namespace Wrappers
                 elementValue[0].SelectByValue(value);
             }
         }
-
-      
     }
 }
-

@@ -39,15 +39,14 @@ namespace BookingPages
         public void SelectDate(DateTime dateToSelect)
         {
             var currentMonthYearText = CurrentMonths.Select(x => x.Text).ToList();
-
             var desiredMonthYearText = dateToSelect.ToString("MMMM yyyy");
             while (!currentMonthYearText.Contains(desiredMonthYearText))
             {
                 NextMonthArrow.Click();
             }
-            var list = _driver.WaitForElementsVisible(CurrentDays);
-            var days = list.FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}"));
-            days.Click();
+            var day = _driver.WaitForElementsVisible(CurrentDays).FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}"));
+            var expectedDay = new Button(day);
+            expectedDay.Click();
         }
     }
 }

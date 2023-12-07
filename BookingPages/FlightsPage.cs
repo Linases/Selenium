@@ -15,7 +15,7 @@ namespace BookingPages
         private By Calendar => (By.CssSelector(".c8GSD-content"));
         private By NextMonthArrow => (By.XPath("//*[@aria-label='Next Month']"));
         private By PreviousMonthArrow => (By.XPath("//*[@aria-label='Previous Month']"));
-        private By LocationDropdown => By.XPath("(//*[@class='c8GSD-overlay-dropdown']//li)[1]");
+        private By LocationDropdown => By.XPath("//*[@class='c8GSD-overlay-dropdown']//li");
         private Button FlightMode => new Button(_driver.FindElement(By.XPath("//*[text()='Round-trip']")));
         private Button Milticity => new Button(_driver.FindElement(By.CssSelector("#multicity")));
         private ReadOnlyCollection<IWebElement> MultipleSearchForms => _driver.FindElements(By.XPath("//*[contains(@class, 'multicityContainer')]/div"));
@@ -109,16 +109,17 @@ namespace BookingPages
             if (findInputElement.Enabled)
             {
                 findInputElement.SendKeys(text);
-                var button = new Button(LocationDropdown);
-              //  var dropdown = _driver.GetWait().Until(ExpectedConditions.ElementToBeClickable(LocationDropdown));
-                button.Click();
+                var input = _driver.GetWait().Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(LocationDropdown)).FirstOrDefault();
+                var firstCorrectInput = new WebPageElement(input);
+                firstCorrectInput.Click();
             }
         }
 
         private void SelectDateNew(IWebElement element, DateTime dateToSelect)
         {
-            _driver.GetWait().Until(ExpectedConditions.ElementToBeClickable(element));
-            element.Click();
+            var clickElement= _driver.GetWait().Until(ExpectedConditions.ElementToBeClickable(element));
+            var newElement = new Button(clickElement);
+            newElement.Click();
             var findDateElement = WebDriverExtensions.GetWait(_driver).Until(ExpectedConditions.ElementToBeClickable(Calendar));
             var currentMonthYearText = CurrentMonths.Select(x => x.GetAttribute("data-month").ToString()).ToList();
             var ParsedMonthYear = currentMonthYearText.Select(dateString => DateTime.ParseExact(dateString, "yyyy-MM", CultureInfo.InvariantCulture)).ToList();
@@ -141,9 +142,10 @@ namespace BookingPages
                 {
                     var daysForCurrentMonth = DaysCalendar.Skip(startIndex).Take(daysInMonth).ToList();
                     var dayToSelect = daysForCurrentMonth.FirstOrDefault(element => element.Text.Contains($"{dateToSelect.Day}"));
-                    if (dayToSelect != null)
+                    var dayToSelectNew = new Button(dayToSelect);
+                    if (dayToSelectNew != null)
                     {
-                        dayToSelect.Click();
+                        dayToSelectNew.Click();
                         return;
                     }
                 }

@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using SeleniumExtras.WaitHelpers;
-using System.Collections.ObjectModel;
 using Utilities;
 
 namespace Wrappers
@@ -19,11 +18,11 @@ namespace Wrappers
         {
             try
             {
-                var element = WebDriverExtensions.GetWait(Driver, 5, 200).Until(ExpectedConditions.ElementIsVisible(locator));
+                Element = WebDriverExtensions.GetWait(Driver, 10, 200).Until(ExpectedConditions.ElementIsVisible(locator));
 
-                if (element.Displayed)
+                if (Element.Displayed)
                 {
-                    element.Click();
+                    Click();
                 }
             }
             catch (WebDriverTimeoutException)

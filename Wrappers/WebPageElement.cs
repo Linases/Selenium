@@ -9,10 +9,9 @@ using Utilities;
 namespace Wrappers
 {
     public class WebPageElement : IWebElement
-
     {
-        protected static IWebDriver Driver = BrowserFactory.GetDriver(BrowserType.Chrome);
-        protected static IWebElement Element;
+        protected IWebDriver Driver = BrowserFactory.GetDriver(BrowserType.Chrome);
+        protected IWebElement Element;
 
         public WebPageElement(IWebElement element)
         {
@@ -71,7 +70,7 @@ namespace Wrappers
             var seleniumWebElements = Element.FindElements(by);
             var myWebElements = seleniumWebElements
                 .Select(element => (IWebElement)new WebPageElement(element))
-                .ToList(); 
+                .ToList();
             return myWebElements.AsReadOnly();
         }
 
@@ -96,10 +95,22 @@ namespace Wrappers
             }
         }
 
+        public bool AllElementsAreDisplayed(By locator)
+        {
+            var list = Driver.GetWaitForElementsVisible(locator);
+            return list.All(x => x.Displayed);
+        }
+
         public string WaitToGetText(By locator)
         {
             var element = WebDriverExtensions.GetWait(Driver).Until(ExpectedConditions.ElementIsVisible(locator)).Text;
             return element;
+        }
+
+        public string GetTextToBePresentInElement(By locator, string text)
+        {
+            Driver.GetWait().Until(ExpectedConditions.TextToBePresentInElementLocated(locator, text));
+            return Driver.FindElement(locator).Text;
         }
 
         public bool IsElementDisplayedJs()
@@ -116,8 +127,9 @@ namespace Wrappers
             return isElementVisible;
         }
 
-        public bool IsAvailableToClickButton()
+        public bool IsAvailableToClickButton(By locator)
         {
+            Driver.WaitForElementIsVisible(locator);
             if (Element.Enabled && Element.Displayed)
             {
                 return true;

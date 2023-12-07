@@ -1,11 +1,8 @@
 ﻿using BookingPages;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
-using System.Collections.ObjectModel;
 using Utilities;
 using Wrappers;
-using WebDriverExtensions = Utilities.WebDriverExtensions;
 
 namespace Booking_Pages
 {
@@ -13,7 +10,6 @@ namespace Booking_Pages
     {
         private readonly IWebDriver _driver;
         private TabsKeyPage _tabsKeyPage;
-
         private By AutocompleteResultsOptions => (By.XPath("//*[@data-testid = 'autocomplete-results-options']//li"));
         private By HotelsList => (By.XPath("(//*[@data-testid='property-card-container'])"));
         private By CloseMapButton => (By.Id("b2hotelPage"));
@@ -25,9 +21,11 @@ namespace Booking_Pages
         private By PriceLowest => (By.XPath("//*[@data-id='price']"));
         private By ListByPrices => (By.XPath("//*[@data-testid='price-and-discounted-price']"));
         private By RoomsChoices => (By.XPath("//select[@data-testid='select-room-trigger']"));
+        private By BookAndPayButtonLocator => (By.CssSelector(".bui-modal__footer button"));
+        private By SeeAvailabilityButton => By.XPath("//*[text()='See availability']");
+        private By HotelsListBlock => (By.CssSelector(".d4924c9e74"));
         private TextBox SearchField => new TextBox(_driver.FindElement(By.XPath("//input[@placeholder='Where are you going?']")));
         private Button SearchButton => new Button(_driver.FindElement(By.XPath("//*[@type = 'submit']")));
-        private By HotelsListBlock => (By.CssSelector(".d4924c9e74"));
         private Button EnteredGuestsNumber => new Button(_driver.FindElement(By.XPath("//*[@data-testid='occupancy-config']")));
         private Button AdultsNrMinus => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[1]")));
         private Button AdultsNrPlus => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[2]")));
@@ -49,8 +47,7 @@ namespace Booking_Pages
         private TextBox Email => new TextBox(_driver.FindElement(By.Id("email")));
         private TextBox PhoneNr => new TextBox(_driver.FindElement(By.Id("phone")));
         private Button NextDetailsButton => new Button(_driver.FindElement(By.XPath("//*[contains(@class, 'bui-button--primary')]")));
-        private By SeeAvailabilityButton => By.XPath("//*[text()='See availability']");
-
+       
         public SearchPage(IWebDriver driver)
         {
             _driver = driver;
@@ -60,6 +57,12 @@ namespace Booking_Pages
 
         public void SelectAutocompleteOption()
         {
+
+            //var destination = GetDestination();
+            //var firstElement = _driver.WaitForElementsVisible(AutocompleteResultsOptions).FirstOrDefault(element => element.Text.Contains($"{destination}"));
+            //var element = new Button(firstElement);
+            //element.Click();
+
             var destination = GetDestination();
             var autocomplete = _driver.GetWaitForElementsVisible(AutocompleteResultsOptions);
             var firstMatchingOption = autocomplete.FirstOrDefault(option =>
@@ -73,8 +76,8 @@ namespace Booking_Pages
                     return false;
                 }
             });
-
-            firstMatchingOption?.Click();
+            var matchingOption = new WebPageElement(firstMatchingOption);
+            matchingOption.Click();
         }
 
         public bool IsListofHotelsDisplayed()
@@ -83,7 +86,6 @@ namespace Booking_Pages
             var isDisplayed = hotel.IsElementDisplayed(HotelsListBlock);
             return isDisplayed;
         }
-
 
         public void PressSearchButton() => SearchButton.Click();
 
@@ -115,6 +117,7 @@ namespace Booking_Pages
 
         public void SelectAdultsNrWithKeys(string number)
         {
+            _tabsKeyPage = new TabsKeyPage(_driver);
             _tabsKeyPage.ClickTab();
             var digitNumber = int.Parse(number);
             var existingNumber = 2;
@@ -237,9 +240,17 @@ namespace Booking_Pages
             button.Click();
         }
 
-        public string GetSearchResults()=> GetTextToBePresentInElement(SearchResults, GetFiveStartsHotelsCeckboxValue());
+        public string GetSearchResults()
+        {
+            var searchfField = new WebPageElement(SearchResults);
+            return searchfField.GetTextToBePresentInElement(SearchResults, GetFiveStartsHotelsCeckboxValue());
+        }
 
-        public string GetSearchResultsFitnessCenter() => GetTextToBePresentInElement(SearchResults, GetFitnessCenterCheckboxValue());
+        public string GetSearchResultsFitnessCenter()
+        {
+            var searchfField = new WebPageElement(SearchResults);
+            return searchfField.GetTextToBePresentInElement(SearchResults, GetFitnessCenterCheckboxValue());
+        }
         
         public string GetFiveStartsHotelsCeckboxValue() => FivestarsHotelsNumber.Text;
 
@@ -261,7 +272,6 @@ namespace Booking_Pages
             var areSorted = numericValues.SequenceEqual(numericValues.OrderBy(p => p));
             return areSorted;
         }
-       
 
         public void ChooseFitnessCenter()
         {
@@ -285,7 +295,6 @@ namespace Booking_Pages
             selectElement.SelectFromListByValue(RoomsChoices,number);
         }
 
-
         public void ClickReserve() => ReserveButton.Click();
 
         public void EnterFirstName(string firstName) => FirstName.SendKeys(firstName);
@@ -308,7 +317,7 @@ namespace Booking_Pages
 
         public void ClickCheckYourBooking() => CheckBookingButton.Click();
 
-        public bool IsAvailableToClickButton() => BookAndPayButton.IsAvailableToClickButton();
+        public bool IsAvailableToClickButton() => BookAndPayButton.IsAvailableToClickButton(BookAndPayButtonLocator);
 
         public void CloseMap()
         {
@@ -337,11 +346,6 @@ namespace Booking_Pages
             var js = (IJavaScriptExecutor)_driver;
             var stringValue = (string)js.ExecuteScript($"return document.getElementById('{attributeName}').value;");
             return stringValue;
-        }
-        private string GetTextToBePresentInElement(By locator, string text)
-        {
-            _driver.GetWait().Until(ExpectedConditions.TextToBePresentInElementLocated(locator, text));
-            return _driver.FindElement(locator).Text;
         }
     }
 }
