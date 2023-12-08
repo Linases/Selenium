@@ -56,12 +56,6 @@ namespace Booking_Pages
 
         public void SelectAutocompleteOption()
         {
-
-            //var destination = GetDestination();
-            //var firstElement = _driver.WaitForElementsVisible(AutocompleteResultsOptions).FirstOrDefault(element => element.Text.Contains($"{destination}"));
-            //var element = new Button(firstElement);
-            //element.Click();
-
             var destination = GetDestination();
             var autocomplete = _driver.GetWaitForElementsVisible(AutocompleteResultsOptions);
             var firstMatchingOption = autocomplete.FirstOrDefault(option =>

@@ -16,8 +16,8 @@ namespace BookingPages
         private By NextMonthArrow => (By.XPath("//*[@aria-label='Next Month']"));
         private By PreviousMonthArrow => (By.XPath("//*[@aria-label='Previous Month']"));
         private By LocationDropdown => By.XPath("//*[@class='c8GSD-overlay-dropdown']//li");
-        private Button FlightMode => new Button(_driver.FindElement(By.XPath("//*[text()='Round-trip']")));
-        private Button Milticity => new Button(_driver.FindElement(By.CssSelector("#multicity")));
+        private Button FlightMode => new Button(By.XPath("//*[text()='Round-trip']"));
+        private Button Milticity => new Button(By.CssSelector("#multicity"));
         private ReadOnlyCollection<IWebElement> MultipleSearchForms => _driver.FindElements(By.XPath("//*[contains(@class, 'multicityContainer')]/div"));
         private ReadOnlyCollection<IWebElement> DepartureInputFields => _driver.FindElements(By.XPath("//*[@class= 'zEiP-formField zEiP-origin']"));
         private ReadOnlyCollection<IWebElement> DestinationInputFields => _driver.FindElements(By.XPath("//*[@class= 'zEiP-formField zEiP-destination']"));
@@ -25,9 +25,9 @@ namespace BookingPages
         private ReadOnlyCollection<IWebElement> DateValues => _driver.FindElements(By.XPath("//*[@class='cQtq-value']"));
         private ReadOnlyCollection<IWebElement> CurrentMonths => _driver.FindElements(By.XPath("//*[@data-month]"));
         private ReadOnlyCollection<IWebElement> DaysCalendar => _driver.FindElements(By.XPath("//*[@class='onx_-days']/div"));
-        private Button AddButton => new Button(_driver.FindElement(By.XPath("//*[text()='Add another flight']")));
-        private Button RemoveLastButton => new Button(_driver.FindElement(By.XPath("(//*[@aria-label='Remove leg number 4 from your search'])[1]")));
-        private Button SearchButton => new Button(_driver.FindElement(By.CssSelector(".Iqt3-button-container")));
+        private Button AddButton => new Button(By.XPath("//*[text()='Add another flight']"));
+        private Button RemoveLastButton => new Button(By.XPath("(//*[@aria-label='Remove leg number 4 from your search'])[1]"));
+        private Button SearchButton => new Button(By.CssSelector(".Iqt3-button-container"));
 
         public FlightsPage(IWebDriver driver)
         {
@@ -98,8 +98,9 @@ namespace BookingPages
 
         private void SendKeysTo(IWebElement element, string text, By locator)
         {
-            _driver.GetWait().Until(ExpectedConditions.ElementToBeClickable(element));
-            element.Click();
+            var clickElement = _driver.GetWait().Until(ExpectedConditions.ElementToBeClickable(element));
+            var newElement = new Button(clickElement);
+            newElement.Click();
             var findInputElement = WebDriverExtensions.GetWait(_driver).Until(ExpectedConditions.ElementToBeClickable(locator));
             if (findInputElement.GetAttribute("value").Length > 0)
             {

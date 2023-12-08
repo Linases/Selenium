@@ -10,8 +10,8 @@ namespace BookingPages
     public class LanguagePage
     {
         private readonly IWebDriver _driver;
-        private By LanguageElementsList => (By.XPath("//*[@class='cf67405157'and text()]"));
-        private Button LanguagePictureButton => new Button(_driver.FindElement(By.XPath("//*[@data-testid='header-language-picker-trigger']")));
+        private By LanguageElementsList => By.XPath("//*[@class='cf67405157'and text()]");
+        private Button LanguagePictureButton => new Button(By.XPath("//*[@data-testid='header-language-picker-trigger']"));
 
         public LanguagePage(IWebDriver driver)
         {

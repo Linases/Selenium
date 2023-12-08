@@ -8,23 +8,22 @@ namespace BookingPages
     public class AirportTaxiPage
     {
         private readonly IWebDriver _driver;
-
         private By Auto_CompleteListPickUp => (By.CssSelector("#pickupLocation-items"));
         private By Auto_CompleteListDropOff => (By.CssSelector("#dropoffLocation-items"));
         private By SearchResultsList => (By.CssSelector(".SRM_527ba3f0"));
         private By CurrentDays => (By.XPath("//*[@data-test='rw-calendar']//td"));
         private By ItinerarySummary => (By.XPath("//*[@data-testid='route-summary-wrapper']"));
-        private TextBox PickUpLocationInput => new TextBox(_driver.FindElement(By.Id("pickupLocation")));
-        private TextBox Destination => new TextBox(_driver.FindElement(By.Id("dropoffLocation")));
-        private Button PickUpDateButton => new Button(_driver.FindElement(By.XPath("//button[@data-test='rw-date-field__link--pickup']/span")));
-        private Button PickUpTimeButton => new Button(_driver.FindElement(By.XPath("//button[@data-test='rw-time-field--pickup']/span")));
-        private Button SearchButton => new Button(_driver.FindElement(By.XPath("(//span[@data-test='button-content'])[1]")));
+        private TextBox PickUpLocationInput => new TextBox(By.Id("pickupLocation"));
+        private TextBox Destination => new TextBox(By.Id("dropoffLocation"));
+        private Button PickUpDateButton => new Button(By.XPath("//button[@data-test='rw-date-field__link--pickup']/span"));
+        private Button PickUpTimeButton => new Button(By.XPath("//button[@data-test='rw-time-field--pickup']/span"));
+        private Button SearchButton => new Button(By.XPath("(//span[@data-test='button-content'])[1]"));
         private Button CurrentMonth => new Button(By.CssSelector(".rw-c-date-picker__calendar-caption"));
         private Button NextMonthArrow => new Button(By.XPath("//*[@data-test='rw-date-picker__btn--next']"));
-        private DropDown SelectHour => new DropDown(_driver.FindElement(By.CssSelector("#pickupHour")));
-        private DropDown SelectMinutes => new DropDown(_driver.FindElement(By.CssSelector("#pickupMinute")));
-        private Button ConfirmTimeButton => new Button(_driver.FindElement(By.XPath("//*[@data-test='rw-time-picker__confirm-button']")));
-        private Button ContinueButton => new Button(_driver.FindElement(By.XPath("//button[@data-test='continue-action-bar__continue-button']")));
+        private DropDown SelectHour => new DropDown(By.CssSelector("#pickupHour"));
+        private DropDown SelectMinutes => new DropDown(By.CssSelector("#pickupMinute"));
+        private Button ConfirmTimeButton => new Button(By.XPath("//*[@data-test='rw-time-picker__confirm-button']"));
+        private Button ContinueButton => new Button(By.XPath("//button[@data-test='continue-action-bar__continue-button']"));
 
         public AirportTaxiPage(IWebDriver driver)
         {
@@ -64,9 +63,7 @@ namespace BookingPages
         public void SelectDate(DateTime taxiDate)
         {
             var desiredMonthYearText = taxiDate.ToString("MMMM yyyy");
-
             var currentMonthYearText = CurrentMonth.Text;
-
             while (!currentMonthYearText.Contains(desiredMonthYearText))
             {
                 NextMonthArrow.Click();

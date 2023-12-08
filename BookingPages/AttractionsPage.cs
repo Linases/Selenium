@@ -21,10 +21,10 @@ namespace BookingPages
         private Button NextMonthArrow => new Button(By.CssSelector(".a10b0e2d13 button"));
         private ReadOnlyCollection<IWebElement> CurrentMonths => _driver.FindElements(By.CssSelector(".a10b0e2d13 h3"));
         private Button SearchButton => new Button(By.XPath("//*[@type = 'submit']"));
-        private WebPageElement AttractionsDetailsElement => new Button(AttractionsDetails);
-        private WebPageElement DatePickerElement => new Button(DatePicker);
-        private WebPageElement TimeslotElement => new Button(Timeslot);
-        private WebPageElement SelectedDayElement => new Button(SelectedDayField);
+        private Button AttractionsDetailsElement => new Button(AttractionsDetails);
+        private Button DatePickerElement => new Button(DatePicker);
+        private Button TimeslotElement => new Button(Timeslot);
+        private Button SelectedDayElement => new Button(SelectedDayField);
 
         public AttractionsPage(IWebDriver driver)
         {
@@ -49,7 +49,6 @@ namespace BookingPages
         {
             var desiredMonthYearText = dateToSelect.ToString("MMMM yyyy");
             var currentMonthYearText = CurrentMonths.Select(x => x.Text).ToList();
-
             while (!currentMonthYearText.Contains(desiredMonthYearText))
             {
                 NextMonthArrow.Click();

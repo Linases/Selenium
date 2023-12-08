@@ -16,7 +16,7 @@ namespace Booking_Tests_Waits
         private const string _expectedDepartureTwo = "Malta";
         private const string _expectedDepartureThree = "Madrid";
         private const string _expectedDepartureFour = "Lisbon";
-        private const string _expectedDestinationOne = "Paris";
+        private const string _expectedDestinationOne = "Vilnius";
         private const string _expectedDestinationTwo = "London";
         private const string _expectedDestinationThree = "Dallas";
         private const string _expectedDestinationFour = "Rome";

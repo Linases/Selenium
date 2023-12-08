@@ -10,8 +10,8 @@ namespace Wrappers
 {
     public class WebPageElement : IWebElement
     {
-        protected IWebDriver Driver = BrowserFactory.GetDriver(BrowserType.Chrome);
-        protected readonly IWebElement Element;
+        protected readonly IWebDriver Driver = BrowserFactory.GetDriver(BrowserType.Chrome);
+        protected readonly IWebElement Element; 
 
         protected WebPageElement(IWebElement element)
         {
