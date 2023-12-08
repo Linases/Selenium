@@ -7,8 +7,6 @@ namespace Utilities
 {
     public static class WebDriverExtensions
     {
-        private static IWebDriver _driver;
-
         public static WebDriverWait GetWait(
         this IWebDriver driver,
         int timeOutSeconds = 20,
@@ -28,6 +26,7 @@ namespace Utilities
             typeof(ElementNotInteractableException),
             typeof(WebDriverException),
             typeof(InvalidOperationException),
+            typeof(ArgumentNullException),
 
         };
             var exceptions = exceptionsToIgnore ?? exceptionsToIgnoreByDefault;

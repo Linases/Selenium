@@ -13,8 +13,8 @@ namespace Booking_Tests_Waits
         private SearchPage _searchPage;
         private DatePickerPage _datePickerPage;
         private const string _expectedDestination = "Rome";
-        private DateTime _checkInDate = new DateTime(2023, 11, 29);
-        private DateTime _checkOutDate = new DateTime(2023, 11, 30);
+        private DateTime _checkInDate = new DateTime(2023, 12, 29);
+        private DateTime _checkOutDate = new DateTime(2023, 12, 30);
         private const string _expectedAdultNr = "3";
         private const string _expectedChildrenNr = "0";
         private const string _expectedRoomsNr = "2";
@@ -22,7 +22,7 @@ namespace Booking_Tests_Waits
         private const string _expectedFirstName = "John";
         private const string _expectedLastName = "Doe";
         private const string _expectedEmail = "john.doe@email.com";
-        private const string _expectedPhoneNr = "555-555-5555";
+        private const string _expectedPhoneNr = "5555555555";
 
         [SetUp]
         public void Setup()
@@ -101,6 +101,14 @@ namespace Booking_Tests_Waits
             _searchPage.EnterLastName(_expectedLastName);
             _searchPage.EnterEmail(_expectedEmail);
             _searchPage.EnterPhoneNr(_expectedPhoneNr);
+            var firstName = _searchPage.GetFirstName();
+            var lastName = _searchPage.GetLastName();
+            var email = _searchPage.GetEmail();
+            var phone = _searchPage.GetPhoneNr();
+            Assert.That(firstName, Is.EqualTo(_expectedFirstName));
+            Assert.That(lastName, Is.EqualTo(_expectedLastName));
+            Assert.That(email, Is.EqualTo(_expectedEmail));
+            Assert.That(phone, Is.EqualTo($"+370{_expectedPhoneNr}"));
             _searchPage.PressNextDetailsButton();
             WebDriverExtensions.GetWait(Driver).Until(ExpectedConditions.TitleContains("Final Details"));
             Assert.That(Driver.Title.Contains("Final Details"), "Payments details page is not displayed");

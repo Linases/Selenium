@@ -23,7 +23,7 @@ namespace Booking_Tests_Waits
         {
             _loginPage.EnterEmail(_expectedEmail);
             var email = _loginPage.GetEmail();
-            Assert.That(email, Is.EqualTo(_expectedEmail), $"Entered email is not: {_expectedEmail} ");
+            Assert.That(email, Is.EqualTo(_expectedEmail), $"Entered email is not: {_expectedEmail}");
             _loginPage.ClickContinueButton();
             var passwordField = _loginPage.IsPasswordFieldVisible();
             Assert.That(passwordField, Is.True, "Password field is not visible");

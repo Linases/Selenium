@@ -1,6 +1,6 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Utilities;
+using Wrappers;
 using WebDriverExtensions = Utilities.WebDriverExtensions;
 
 namespace BookingPages
@@ -8,75 +8,75 @@ namespace BookingPages
     public class AirportTaxiPage
     {
         private readonly IWebDriver _driver;
-        By Auto_CompleteListPickUp => (By.CssSelector("#pickupLocation-items"));
-        By Auto_CompleteListDropOff => (By.CssSelector("#dropoffLocation-items"));
-        By SearchResultsList => (By.CssSelector(".SRM_527ba3f0"));
-        private IWebElement PickUpLocation => _driver.FindElement(By.Id("pickupLocation"));
-        private IWebElement Destination => _driver.FindElement(By.Id("dropoffLocation"));
-        private IWebElement PickUpDate => _driver.FindElement(By.XPath("//button[@data-test='rw-date-field__link--pickup']/span"));
-        private IWebElement PickUpTime => _driver.FindElement(By.XPath("//button[@data-test='rw-time-field--pickup']/span"));
-        private IWebElement SearchButton => _driver.FindElement(By.XPath("(//span[@data-test='button-content'])[1]"));
-        private IWebElement Calendar => _driver.FindElement(By.XPath("//*[@data-test='rw-calendar']"));
-        private IWebElement CurrentMonth => Calendar.FindElement(By.CssSelector(".rw-c-date-picker__calendar-caption"));
-        private IWebElement NextMonthArrow => Calendar.FindElement(By.XPath("//*[@data-test='rw-date-picker__btn--next']"));
-        private IList<IWebElement> CurrentDays => Calendar.FindElements(By.XPath("//*[@data-test='rw-calendar']//td"));
-        private SelectElement SelectHour => new SelectElement(_driver.FindElement(By.CssSelector("#pickupHour")));
-        private SelectElement SelectMinutes => new SelectElement(_driver.FindElement(By.CssSelector("#pickupMinute")));
-        private IWebElement ConfirmTimeButton => _driver.FindElement(By.XPath("//*[@data-test='rw-time-picker__confirm-button']"));
-        private IWebElement ContinueButton => _driver.FindElement(By.XPath("//button[@data-test='continue-action-bar__continue-button']"));
-        private IWebElement ItinerarySummary => _driver.FindElement(By.XPath("//*[@data-testid='route-summary-wrapper']"));
+        private By Auto_CompleteListPickUp => (By.CssSelector("#pickupLocation-items"));
+        private By Auto_CompleteListDropOff => (By.CssSelector("#dropoffLocation-items"));
+        private By SearchResultsList => (By.CssSelector(".SRM_527ba3f0"));
+        private By CurrentDays => (By.XPath("//*[@data-test='rw-calendar']//td"));
+        private By ItinerarySummary => (By.XPath("//*[@data-testid='route-summary-wrapper']"));
+        private TextBox PickUpLocationInput => new TextBox(By.Id("pickupLocation"));
+        private TextBox Destination => new TextBox(By.Id("dropoffLocation"));
+        private Button PickUpDateButton => new Button(By.XPath("//button[@data-test='rw-date-field__link--pickup']/span"));
+        private Button PickUpTimeButton => new Button(By.XPath("//button[@data-test='rw-time-field--pickup']/span"));
+        private Button SearchButton => new Button(By.XPath("(//span[@data-test='button-content'])[1]"));
+        private Button CurrentMonth => new Button(By.CssSelector(".rw-c-date-picker__calendar-caption"));
+        private Button NextMonthArrow => new Button(By.XPath("//*[@data-test='rw-date-picker__btn--next']"));
+        private DropDown SelectHour => new DropDown(By.CssSelector("#pickupHour"));
+        private DropDown SelectMinutes => new DropDown(By.CssSelector("#pickupMinute"));
+        private Button ConfirmTimeButton => new Button(By.XPath("//*[@data-test='rw-time-picker__confirm-button']"));
+        private Button ContinueButton => new Button(By.XPath("//button[@data-test='continue-action-bar__continue-button']"));
 
         public AirportTaxiPage(IWebDriver driver)
         {
             _driver = driver;
         }
 
-        public void EnterPickUpLocation(string pickUpLocation)
+        public void EnterPickUpLocation(string pickUp)
         {
-            PickUpLocation.SendKeys(pickUpLocation);
+            PickUpLocationInput.ClearAndEnterText(pickUp);
             WebDriverExtensions.GetWait(_driver).Until(c => c.WaitForElementsVisible(Auto_CompleteListPickUp));
-            PickUpLocation.SendKeys(Keys.Enter);
+            PickUpLocationInput.SendKeys(Keys.Enter);
         }
 
-        public void EnterDestinationLocation(string destination)
+        public void EnterDestinationLocation(string whereTo)
         {
-            Destination.SendKeys(destination);
+            Destination.ClearAndEnterText(whereTo);
             WebDriverExtensions.GetWait(_driver).Until(c => c.WaitForElementsVisible(Auto_CompleteListDropOff));
             Destination.SendKeys(Keys.Enter);
         }
 
         public string GetPickUpLocation()
         {
-            var js = (IJavaScriptExecutor)_driver;
-            var pickupLocation = (string)js.ExecuteScript("return document.getElementById('pickupLocation').value;");
-            return pickupLocation;
+            var value = PickUpLocationInput.GetAttribute("Id");
+            var location = GetTextWithJsById(value);
+            return location;
         }
 
         public string GetDropOffLocation()
         {
-            var js = (IJavaScriptExecutor)_driver;
-            var dropoffLocation = (string)js.ExecuteScript("return document.getElementById('dropoffLocation').value;");
-            return dropoffLocation;
+            var value = Destination.GetAttribute("Id");
+            var destination = GetTextWithJsById(value);
+            return destination;
         }
 
-        public void ClickDateField() => PickUpDate.Click();
+        public void ClickDateField() => PickUpDateButton.Click();
 
         public void SelectDate(DateTime taxiDate)
         {
-            var currentMonthYearText = CurrentMonth.Text;
-
             var desiredMonthYearText = taxiDate.ToString("MMMM yyyy");
+            var currentMonthYearText = CurrentMonth.Text;
             while (!currentMonthYearText.Contains(desiredMonthYearText))
             {
                 NextMonthArrow.Click();
             }
-            var desiredDayElement = CurrentDays.FirstOrDefault(element => element.Text.Contains($"{taxiDate.Day}"));
-            desiredDayElement.Click();
+            var list = _driver.WaitForElementsVisible(CurrentDays);
+            var desiredDayElement = list.FirstOrDefault(element => element.Text.Contains($"{taxiDate.Day}"));
+            var dayElement = new Button(desiredDayElement);
+            dayElement.Click();
         }
 
-        public string GetSelectedDate() => PickUpDate.Text;
+        public string GetSelectedDate() => PickUpDateButton.Text;
 
-        public void ClickTimeField() => PickUpTime.Click();
+        public void ClickTimeField() => PickUpTimeButton.Click();
 
         public void ConfirmTime() => ConfirmTimeButton.Click();
 
@@ -84,30 +84,44 @@ namespace BookingPages
 
         public void SelectMinutesValue(string minutes) => SelectMinutes.SelectByValue(minutes);
 
-        public string GetPickUpTime() => PickUpTime.Text;
+        public string GetPickUpTime() => PickUpTimeButton.Text;
 
         public void ClickSearch() => SearchButton.Click();
 
         public void SelectTaxi()
         {
-            var expensivePrice = _driver.GetWaitForElementsVisible(SearchResultsList);
-            var lastTaxi = expensivePrice.LastOrDefault(x => x.Displayed);
-            lastTaxi.Click();
+            var expensivePrice = _driver.GetWaitForElementsVisible(SearchResultsList).LastOrDefault(x => x.Displayed);
+            var taxiElement = new Button(expensivePrice);
+            taxiElement.Click();
         }
 
         public void ClickContinueButton() => ContinueButton.Click();
 
         public bool IsSummaryDisplayed()
         {
-            var isDisplayed = ItinerarySummary.Displayed;
+            var summary = new Button(ItinerarySummary);
+            var isDisplayed = summary.IsElementDisplayed(ItinerarySummary);
             return isDisplayed;
         }
 
-        public bool IsDisplayedList()
+        public bool IsAnyTaxiDisplayed()
         {
-            var expensivePrice = _driver.GetWaitForElementsVisible(SearchResultsList);
-            var list = expensivePrice.Where(x => x.Displayed).ToList();
-            return list.Any();
+            var taxiList = _driver.GetWaitForElementsVisible(SearchResultsList).Where(x => x.Displayed).ToList();
+            if (taxiList.Count > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private string GetTextWithJsById(string attributeName)
+        {
+            var js = (IJavaScriptExecutor)_driver;
+            var stringValue = (string)js.ExecuteScript($"return document.getElementById('{attributeName}').value;");
+            return stringValue;
         }
     }
 }

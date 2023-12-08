@@ -17,7 +17,7 @@ namespace Booking_Tests_Waits
         private string _location = "New York";
         private string _halfLocation = "New Yo";
         private string _expectedLocation = "Central New York City";
-        private DateTime _checkInDate = new DateTime(2023, 12, 01);
+        private DateTime _checkInDate = new DateTime(2024, 01, 01);
         private DateTime _checkOutDate = new DateTime(2024, 01, 02);
         private const string _expectedAdultNr = "3";
         private const string _expectedChildrenNr = "0";

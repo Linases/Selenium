@@ -7,14 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Apache.NMS" Version="2.1.0" />
-    <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.15.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Functionality_Tests\Functionality_Tests_Suit.csproj" />
     <ProjectReference Include="..\Utilities\Utilities.csproj" />
-    <ProjectReference Include="..\Wrappers\Wrappers.csproj" />
   </ItemGroup>
 
 </Project>

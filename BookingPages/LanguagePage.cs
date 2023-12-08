@@ -1,15 +1,18 @@
-﻿using Microsoft.Win32;
-using OpenQA.Selenium;
-using SeleniumExtras.WaitHelpers;
+﻿using OpenQA.Selenium;
+using System.Collections.ObjectModel;
+using System.Xml.Linq;
 using Utilities;
+using Wrappers;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BookingPages
 {
     public class LanguagePage
     {
         private readonly IWebDriver _driver;
-        private By LanguageElements => By.XPath("//*[@class='cf67405157'and text()]");
-        private IWebElement LanguagePictureButton => _driver.FindElement(By.XPath("//*[@data-testid='header-language-picker-trigger']"));
+        private By LanguageElementsList => By.XPath("//*[@class='cf67405157'and text()]");
+        private Button LanguagePictureButton => new Button(By.XPath("//*[@data-testid='header-language-picker-trigger']"));
+
         public LanguagePage(IWebDriver driver)
         {
             _driver = driver;
@@ -25,9 +28,9 @@ namespace BookingPages
 
         public void SelectLanguge(string language)
         {
-            var languageElements = _driver.GetWait().Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(LanguageElements));
-            var selectedLanguage = languageElements.FirstOrDefault(x => x.Text.Contains(language));
-            selectedLanguage.Click();
+            var list = _driver.WaitForElementsVisible(LanguageElementsList);
+            var element = list.FirstOrDefault(element => element.Text.Contains($"{language}"));
+            element.Click();
         }
     }
 }
