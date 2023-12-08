@@ -18,8 +18,7 @@ namespace Wrappers
         {
             try
             {
-                Element = WebDriverExtensions.GetWait(Driver, 10, 200).Until(ExpectedConditions.ElementIsVisible(locator));
-
+                WebDriverExtensions.GetWait(Driver, 10, 200).Until(ExpectedConditions.ElementIsVisible(locator));
                 if (Element.Displayed)
                 {
                     Click();

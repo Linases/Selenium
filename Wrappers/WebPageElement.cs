@@ -11,14 +11,14 @@ namespace Wrappers
     public class WebPageElement : IWebElement
     {
         protected IWebDriver Driver = BrowserFactory.GetDriver(BrowserType.Chrome);
-        protected IWebElement Element;
+        protected readonly IWebElement Element;
 
-        public WebPageElement(IWebElement element)
+        protected WebPageElement(IWebElement element)
         {
             Element = element;
         }
 
-        public WebPageElement(By locator)
+        protected WebPageElement(By locator)
         {
             Element = Driver.FindElements(locator).FirstOrDefault();
         }

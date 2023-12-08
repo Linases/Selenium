@@ -26,9 +26,9 @@ namespace Wrappers
             Element.SendKeys(Keys.Backspace);
         }
 
-        private void DeleteAndEnterText(string text, By locator)
+        public void DeleteAndEnterText(string text, By locator)
         {
-            Element = WebDriverExtensions.GetWait(Driver).Until(ExpectedConditions.ElementToBeClickable(locator));
+            WebDriverExtensions.GetWait(Driver).Until(ExpectedConditions.ElementToBeClickable(locator));
             Click();
             if (Element.GetAttribute("value").Length > 0)
             {

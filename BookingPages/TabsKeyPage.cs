@@ -16,12 +16,12 @@ namespace BookingPages
         private By MonthsYearsList => (By.XPath("//select[@data-name='year-month']/option"));
         private By ListDays => (By.XPath("//*[@data-name='day']/option"));
         private ReadOnlyCollection<IWebElement> CurrencyChoices => _driver.FindElements(By.XPath("//*[@data-testid='selection-item']"));
-        private Button CurrencyButton => new Button(_driver.FindElement(By.XPath("//*[@data-testid='header-currency-picker-trigger']")));
-        private WebPageElement CurrencyTitle => new WebPageElement(_driver.FindElement(By.XPath("//*[@data-testid='header-currency-picker-trigger']/span")));
+        private Button CurrencyButton => new Button(By.XPath("//*[@data-testid='header-currency-picker-trigger']"));
+        private Button CurrencyTitle => new Button(By.XPath("//*[@data-testid='header-currency-picker-trigger']/span"));
         private Button SkipToMainButton => new Button(SkipToMain);
-        private Button Register => new Button(_driver.FindElement(By.XPath("//*[@data-testid='header-sign-up-button']")));
-        private TextBox SearchField => new TextBox(_driver.FindElement(By.XPath("//input[@placeholder='Where are you going?']")));
-        private WebPageElement Menu => new WebPageElement(_driver.FindElement(By.XPath("//*[@data-testid='web-shell-header-mfe']")));
+        private Button Register => new Button(By.XPath("//*[@data-testid='header-sign-up-button']"));
+        private TextBox SearchField => new TextBox(By.XPath("//input[@placeholder='Where are you going?']"));
+        private Button Menu => new Button(By.XPath("//*[@data-testid='web-shell-header-mfe']"));
 
         public TabsKeyPage(IWebDriver driver)
         {
@@ -105,7 +105,7 @@ namespace BookingPages
 
         public bool IsAutocompleteDisplayed()
         {
-            var element = new WebPageElement(AutocompleteList);
+            var element = new Button(AutocompleteList);
             var areDisplayed = element.AllElementsAreDisplayed(AutocompleteList);
             return areDisplayed;
         }

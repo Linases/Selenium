@@ -16,38 +16,37 @@ namespace Booking_Pages
         private By CloseButton => (By.XPath("//*[@title='Close']//*[@class= 'bk-icon -iconset-close_bold']"));
         private By CloseButtonFinishBooking => (By.XPath("//span[@class= 'abandoned-cart-growl-item__chevron bicon-rightchevron']"));
         private By SearchResults => (By.XPath("//*[contains(@aria-label, 'Search results')]"));
-        private By Checkbox5stars => (By.XPath("//*[contains(@data-component,'arp-left-column')]//div[@data-filters-item='class:class=5']"));
-        private By DissmissGeniusAlert => (By.CssSelector(".c0528ecc22 button"));
-        private By PriceLowest => (By.XPath("//*[@data-id='price']"));
         private By ListByPrices => (By.XPath("//*[@data-testid='price-and-discounted-price']"));
         private By RoomsChoices => (By.XPath("//select[@data-testid='select-room-trigger']"));
         private By BookAndPayButtonLocator => (By.CssSelector(".bui-modal__footer button"));
         private By SeeAvailabilityButton => By.XPath("//*[text()='See availability']");
         private By HotelsListBlock => (By.CssSelector(".d4924c9e74"));
-        private TextBox SearchField => new TextBox(_driver.FindElement(By.XPath("//input[@placeholder='Where are you going?']")));
-        private Button SearchButton => new Button(_driver.FindElement(By.XPath("//*[@type = 'submit']")));
-        private Button EnteredGuestsNumber => new Button(_driver.FindElement(By.XPath("//*[@data-testid='occupancy-config']")));
-        private Button AdultsNrMinus => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[1]")));
-        private Button AdultsNrPlus => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[2]")));
-        private Button ChildrenNrMinus => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[3]")));
-        private Button ChildrenNrPlus => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[4]")));
-        private Button RoomsNrMinus => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[5]")));
-        private Button RoomsNrPlius => new Button(_driver.FindElement(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[6]")));
-        private Button DoneButton => new Button(_driver.FindElement(By.XPath("//*[text()='Done']")));
-        private Button CheckBookingButton => new Button(_driver.FindElement(By.XPath("//*[@data-component='booking-overview-trigger']")));
-        private Button BookAndPayButton => new Button(_driver.FindElement(By.CssSelector(".bui-modal__footer button")));
-        private Button MoreFacilities => new Button(_driver.FindElement(By.XPath("(//*[@data-filters-group='hotelfacility']//button)[1]")));
-        private Button FivestarsHotelsNumber => new Button(_driver.FindElement(By.XPath("//*[contains(@data-component,'arp-left-column')]//div[@data-filters-item='class:class=5']//*[@data-testid='filters-group-label-container']/span")));
-        private Button SortButton => new Button(_driver.FindElement(By.XPath("//*[text()='Sort by:']")));
-        private By FitnessCenter => (By.XPath("//*[@data-filters-item='hotelfacility:hotelfacility=11']"));
-        private Button FitnessCenterCheckboxValue => new Button(_driver.FindElement(By.XPath("(//*[@data-filters-item='hotelfacility:hotelfacility=11']//*[@data-testid='filters-group-label-container']/span)[1]")));
-        private Button ReserveButton => new Button(_driver.FindElement(By.XPath("//*[@class='bui-button__text js-reservation-button__text']")));
-        private TextBox FirstName => new TextBox(_driver.FindElement(By.Id("firstname")));
-        private TextBox LastName => new TextBox(_driver.FindElement(By.Id("lastname")));
-        private TextBox Email => new TextBox(_driver.FindElement(By.Id("email")));
-        private TextBox PhoneNr => new TextBox(_driver.FindElement(By.Id("phone")));
-        private Button NextDetailsButton => new Button(_driver.FindElement(By.XPath("//*[contains(@class, 'bui-button--primary')]")));
-       
+        private Button PriceLowest => new Button(By.XPath("//*[@data-id='price']"));
+        private Button Checkbox5stars => new Button(By.XPath("//*[contains(@data-component,'arp-left-column')]//div[@data-filters-item='class:class=5']"));
+        private TextBox SearchField => new TextBox(By.XPath("//input[@placeholder='Where are you going?']"));
+        private Button SearchButton => new Button(By.XPath("//*[@type = 'submit']"));
+        private Button EnteredGuestsNumber => new Button(By.XPath("//*[@data-testid='occupancy-config']"));
+        private Button AdultsNrMinus => new Button(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[1]"));
+        private Button AdultsNrPlus => new Button(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[2]"));
+        private Button ChildrenNrMinus => new Button(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[3]"));
+        private Button ChildrenNrPlus => new Button(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[4]"));
+        private Button RoomsNrMinus => new Button(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[5]"));
+        private Button RoomsNrPlius => new Button(By.XPath("(//button[contains(@class, 'c21c56c305 ') and @type='button' and @aria-hidden='true'])[6]"));
+        private Button DoneButton => new Button(By.XPath("//*[text()='Done']"));
+        private Button CheckBookingButton => new Button(By.XPath("//*[@data-component='booking-overview-trigger']"));
+        private Button BookAndPayButton => new Button(By.CssSelector(".bui-modal__footer button"));
+        private Button MoreFacilities => new Button(By.XPath("(//*[@data-filters-group='hotelfacility']//button)[1]"));
+        private Button FivestarsHotelsNumber => new Button(By.XPath("//*[contains(@data-component,'arp-left-column')]//div[@data-filters-item='class:class=5']//*[@data-testid='filters-group-label-container']/span"));
+        private Button SortButton => new Button(By.XPath("//*[text()='Sort by:']"));
+        private Button FitnessCenter => new Button(By.XPath("//*[@data-filters-item='hotelfacility:hotelfacility=11']"));
+        private Button FitnessCenterCheckboxValue => new Button(By.XPath("(//*[@data-filters-item='hotelfacility:hotelfacility=11']//*[@data-testid='filters-group-label-container']/span)[1]"));
+        private Button ReserveButton => new Button(By.XPath("//*[@class='bui-button__text js-reservation-button__text']"));
+        private TextBox FirstName => new TextBox(By.Id("firstname"));
+        private TextBox LastName => new TextBox(By.Id("lastname"));
+        private TextBox Email => new TextBox(By.Id("email"));
+        private TextBox PhoneNr => new TextBox(By.Id("phone"));
+        private Button NextDetailsButton => new Button(By.XPath("//*[contains(@class, 'bui-button--primary')]"));
+
         public SearchPage(IWebDriver driver)
         {
             _driver = driver;
@@ -76,13 +75,13 @@ namespace Booking_Pages
                     return false;
                 }
             });
-            var matchingOption = new WebPageElement(firstMatchingOption);
+            var matchingOption = new Button(firstMatchingOption);
             matchingOption.Click();
         }
 
         public bool IsListofHotelsDisplayed()
         {
-            var hotel = new WebPageElement(HotelsListBlock);
+            var hotel = new Button(HotelsListBlock);
             var isDisplayed = hotel.IsElementDisplayed(HotelsListBlock);
             return isDisplayed;
         }
@@ -236,22 +235,21 @@ namespace Booking_Pages
 
         public void Select5Stars()
         {
-            var button = new Button(Checkbox5stars);
-            button.Click();
+           Checkbox5stars.Click();
         }
 
         public string GetSearchResults()
         {
-            var searchfField = new WebPageElement(SearchResults);
+            var searchfField = new TextBox(SearchResults);
             return searchfField.GetTextToBePresentInElement(SearchResults, GetFiveStartsHotelsCeckboxValue());
         }
 
         public string GetSearchResultsFitnessCenter()
         {
-            var searchfField = new WebPageElement(SearchResults);
+            var searchfField = new TextBox(SearchResults);
             return searchfField.GetTextToBePresentInElement(SearchResults, GetFitnessCenterCheckboxValue());
         }
-        
+
         public string GetFiveStartsHotelsCeckboxValue() => FivestarsHotelsNumber.Text;
 
         public string GetFitnessCenterCheckboxValue() => FitnessCenterCheckboxValue.Text;
@@ -260,8 +258,7 @@ namespace Booking_Pages
 
         public void SelectPriceFilter()
         {
-            var filter = new Button(PriceLowest);
-            filter.Click();
+           PriceLowest.Click();
         }
 
         public bool IsFilteredByLowestPrice()
@@ -276,8 +273,7 @@ namespace Booking_Pages
         public void ChooseFitnessCenter()
         {
             ClickMoreFacilities();
-            var fitness = new Button(FitnessCenter);
-            fitness.Click();
+            FitnessCenter.Click();
         }
 
         public void SelectHotel()
@@ -287,12 +283,12 @@ namespace Booking_Pages
 
             var seeAvailabilityButton = firstMatchingOption.FindElement(SeeAvailabilityButton);
             seeAvailabilityButton.Click();
-        } 
+        }
 
         public void SelectNumberOfRooms(string number)
         {
             var selectElement = new DropDown(RoomsChoices);
-            selectElement.SelectFromListByValue(RoomsChoices,number);
+            selectElement.SelectFromListByValue(RoomsChoices, number);
         }
 
         public void ClickReserve() => ReserveButton.Click();
@@ -309,7 +305,7 @@ namespace Booking_Pages
 
         public string GetFirstName() => GetTextWithJsById($"{FirstName.GetAttribute("Id")}");
 
-        public string GetEmail() =>GetTextWithJsById($"{Email.GetAttribute("Id")}");
+        public string GetEmail() => GetTextWithJsById($"{Email.GetAttribute("Id")}");
 
         public string GetPhoneNr() => GetTextWithJsById($"{PhoneNr.GetAttribute("Id")}");
 

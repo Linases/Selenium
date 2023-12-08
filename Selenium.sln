@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Booking_Tests_Waits", "Book
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "Utilities\Utilities.csproj", "{57DB3CC4-D627-424B-B4CC-950BA241DCE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wrappers", "Wrappers\Wrappers.csproj", "{1F27013C-0E1D-4270-9792-2DD331AB0A82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wrappers", "Wrappers\Wrappers.csproj", "{1F27013C-0E1D-4270-9792-2DD331AB0A82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

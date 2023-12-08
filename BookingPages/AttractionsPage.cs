@@ -15,26 +15,25 @@ namespace BookingPages
         private By AttractionsDetails => (By.XPath("//*[@data-testid='inline-ticket-config']"));
         private By Timeslot => (By.XPath("//*[@data-testid='timeslot-selector']"));
         private By DatePicker => (By.XPath("//*[@data-testid='datepicker']"));
-        private By SearchField => (By.XPath("//input[@placeholder='Where are you going?']"));
         private By CurrentDaysLocator => (By.CssSelector(".a10b0e2d13 td"));
-        private TextBox SearchFieldText => new TextBox(_driver.FindElement(SearchField));
-        private Button DaysFieldButton => new Button(_driver.FindElement(By.XPath("//*[text()='Select your dates']")));
-        private Button NextMonthArrow => new Button(_driver.FindElement(By.CssSelector(".a10b0e2d13 button")));
+        private TextBox SearchField => new TextBox(By.XPath("//input[@placeholder='Where are you going?']"));
+        private Button DaysFieldButton => new Button(By.XPath("//*[text()='Select your dates']"));
+        private Button NextMonthArrow => new Button(By.CssSelector(".a10b0e2d13 button"));
         private ReadOnlyCollection<IWebElement> CurrentMonths => _driver.FindElements(By.CssSelector(".a10b0e2d13 h3"));
-        private Button SearchButton => new Button(_driver.FindElement(By.XPath("//*[@type = 'submit']")));
-        private WebPageElement AttractionsDetailsElement => new WebPageElement(AttractionsDetails);
-        private WebPageElement DatePickerElement => new WebPageElement(DatePicker);
-        private WebPageElement TimeslotElement => new WebPageElement(Timeslot);
-        private WebPageElement SelectedDayElement => new WebPageElement(SelectedDayField);
+        private Button SearchButton => new Button(By.XPath("//*[@type = 'submit']"));
+        private WebPageElement AttractionsDetailsElement => new Button(AttractionsDetails);
+        private WebPageElement DatePickerElement => new Button(DatePicker);
+        private WebPageElement TimeslotElement => new Button(Timeslot);
+        private WebPageElement SelectedDayElement => new Button(SelectedDayField);
 
         public AttractionsPage(IWebDriver driver)
         {
             _driver = driver;
         }
 
-        public void EnterDestination(string destination) => SearchFieldText.ClearAndEnterText(destination);
+        public void EnterDestination(string destination) => SearchField.ClearAndEnterText(destination);
 
-        public string GetDestination() => SearchFieldText.GetAttribute("value");
+        public string GetDestination() => SearchField.GetAttribute("value");
 
         public void SelectAutocompleteOption()
         {

@@ -110,7 +110,7 @@ namespace BookingPages
             {
                 findInputElement.SendKeys(text);
                 var input = _driver.GetWait().Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(LocationDropdown)).FirstOrDefault();
-                var firstCorrectInput = new WebPageElement(input);
+                var firstCorrectInput = new Button(input);
                 firstCorrectInput.Click();
             }
         }

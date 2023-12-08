@@ -12,20 +12,14 @@ namespace BookingPages
         private By Auto_CompleteListPickUp => (By.CssSelector("#pickupLocation-items"));
         private By Auto_CompleteListDropOff => (By.CssSelector("#dropoffLocation-items"));
         private By SearchResultsList => (By.CssSelector(".SRM_527ba3f0"));
-        private By PickUpDate => (By.XPath("//button[@data-test='rw-date-field__link--pickup']/span"));
-        private By PickUpTime => (By.XPath("//button[@data-test='rw-time-field--pickup']/span"));
-        private By PickUpLocation => (By.Id("pickupLocation"));
-        private By DropOffLocation => (By.Id("dropoffLocation"));
         private By CurrentDays => (By.XPath("//*[@data-test='rw-calendar']//td"));
         private By ItinerarySummary => (By.XPath("//*[@data-testid='route-summary-wrapper']"));
-        private TextBox PickUpLocationInput => new TextBox(PickUpLocation);
-        private TextBox Destination => new TextBox(DropOffLocation);
-        private Button PickUpDateButton => new Button(PickUpDate);
-        private TextBox PickUpDateText => new TextBox(PickUpDate);
-        private Button PickUpTimeButton => new Button(PickUpTime);
-        private TextBox PickUpTimeText => new TextBox(PickUpTime);
+        private TextBox PickUpLocationInput => new TextBox(_driver.FindElement(By.Id("pickupLocation")));
+        private TextBox Destination => new TextBox(_driver.FindElement(By.Id("dropoffLocation")));
+        private Button PickUpDateButton => new Button(_driver.FindElement(By.XPath("//button[@data-test='rw-date-field__link--pickup']/span")));
+        private Button PickUpTimeButton => new Button(_driver.FindElement(By.XPath("//button[@data-test='rw-time-field--pickup']/span")));
         private Button SearchButton => new Button(_driver.FindElement(By.XPath("(//span[@data-test='button-content'])[1]")));
-        private WebPageElement CurrentMonth => new WebPageElement(By.CssSelector(".rw-c-date-picker__calendar-caption"));
+        private Button CurrentMonth => new Button(By.CssSelector(".rw-c-date-picker__calendar-caption"));
         private Button NextMonthArrow => new Button(By.XPath("//*[@data-test='rw-date-picker__btn--next']"));
         private DropDown SelectHour => new DropDown(_driver.FindElement(By.CssSelector("#pickupHour")));
         private DropDown SelectMinutes => new DropDown(_driver.FindElement(By.CssSelector("#pickupMinute")));
@@ -83,7 +77,7 @@ namespace BookingPages
             dayElement.Click();
         }
 
-        public string GetSelectedDate() => PickUpDateText.Text;
+        public string GetSelectedDate() => PickUpDateButton.Text;
 
         public void ClickTimeField() => PickUpTimeButton.Click();
 
@@ -93,7 +87,7 @@ namespace BookingPages
 
         public void SelectMinutesValue(string minutes) => SelectMinutes.SelectByValue(minutes);
 
-        public string GetPickUpTime() => PickUpTimeText.Text;
+        public string GetPickUpTime() => PickUpTimeButton.Text;
 
         public void ClickSearch() => SearchButton.Click();
 
@@ -108,7 +102,7 @@ namespace BookingPages
 
         public bool IsSummaryDisplayed()
         {
-            var summary = new WebPageElement(ItinerarySummary);
+            var summary = new Button(ItinerarySummary);
             var isDisplayed = summary.IsElementDisplayed(ItinerarySummary);
             return isDisplayed;
         }
